@@ -10,11 +10,17 @@ def calc_hhi(x):
 def main(filename):
     with open(filename, newline="") as f:
         reader = csv.DictReader(f)
-        cleaned_reader = [row for row in reader if row["software"] not in ["NodeBB", "gotosocial", "Yellbot","misskey", "sharkey"]]
-        user_counts = [int(row["user_count"]) if row["user_count"] else 0 for row in cleaned_reader]
+        # Remove some fediverse software that seems to report inaccurate
+        # user numbers; shouldn't affect atproto counts since there are
+        # no name collisions
+        cleaned_reader = [row for row in reader if row["software"] not in
+            ["NodeBB", "gotosocial", "Yellbot","misskey", "sharkey"]]
+        user_counts = [int(row["user_count"])
+            if row["user_count"] else 0 for row in cleaned_reader]
 
+    # Remove clearly bogus data with < 0 users; also sort just in 
+    # case we ever want to compute CDFs or anything
     user_counts = [a for a in sorted(user_counts) if a > 0]
-    #print(user_counts)
 
     hhi = calc_hhi(user_counts)
     print(f"HHI for user_count: {hhi:.4f}")
