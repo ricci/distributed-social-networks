@@ -18,8 +18,14 @@ def main(filename):
             if "software" not in row or row["software"] not in
              ["NodeBB", "gotosocial", "Yellbot","misskey", "sharkey"]]
 
-        # Different CSVs have different row names
-        user_counts = [int(row["user_count"] if "user_count" in row else row["accountCount"]) for row in cleaned_reader]
+        # Different CSVs have different row names, and the fediverse one
+        # has some empty columns
+        user_counts = [
+            int(row["user_count"]) if "user_count" in row and row["user_count"] != ""
+            else int(row["accountCount"]) if row.get("accountCount", "") != ""
+            else 0
+            for row in cleaned_reader
+        ]
 
     # Remove clearly bogus data with < 0 users
     user_counts = [a for a in user_counts if a > 0]
