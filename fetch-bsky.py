@@ -1,6 +1,7 @@
+#!/usr/bin/ env python3
+
 import requests
 import csv
-import sys
 
 URL = "https://relay1.us-east.bsky.network/xrpc/com.atproto.sync.listHosts"
 OUTPUT_FILE = "atproto-bsky-relay.csv"
