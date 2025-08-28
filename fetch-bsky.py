@@ -1,0 +1,69 @@
+import requests
+import csv
+import sys
+
+URL = "https://relay1.us-east.bsky.network/xrpc/com.atproto.sync.listHosts"
+OUTPUT_FILE = "atproto-bsky-relay.csv"
+
+def fetch_all():
+    cursor = None
+    all_hosts = []
+    pages = 0
+
+    while True:
+        params = {}
+        if cursor:
+            params["cursor"] = cursor
+
+        r = requests.get(URL, params=params, timeout=30)
+        r.raise_for_status()
+
+        data = r.json()
+        hosts = data.get("hosts", [])
+
+        # Filter out 'offline' hosts as suggested by @bnewbold.net
+        hosts = [h for h in hosts if h.get("status") != "offline"]
+
+        all_hosts.extend(hosts)
+        pages += 1
+        print(f"Fetched page {pages} (+{len(hosts)} hosts), cursor={data.get('cursor')}")
+
+        cursor = data.get("cursor")
+        if not cursor:
+            break
+
+    return all_hosts
+
+def combine_bluesky(hosts):
+    is_bluesky = lambda h: h.get("hostname", "").endswith(".host.bsky.network")
+
+    bluesky_hosts = [h for h in hosts if is_bluesky(h)]
+    other_hosts = [h for h in hosts if not is_bluesky(h)]
+
+    if bluesky_hosts:
+        combined_status = "active" if all(h.get("status") == "active" for h in bluesky_hosts) else "mixed"
+        combined = {
+            "hostname": "bsky.network",
+            "status": combined_status,
+            "accountCount": sum(h.get("accountCount", 0) for h in bluesky_hosts),
+            "seq": max(h.get("seq", 0) for h in bluesky_hosts),
+        }
+        other_hosts.insert(0, combined)
+
+    return other_hosts
+
+if __name__ == "__main__":
+    hosts = fetch_all()
+
+    hosts = combine_bluesky(hosts)
+
+    fieldnames = ["hostname", "status", "accountCount", "seq"]
+    with open(OUTPUT_FILE, "w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        for host in hosts:
+            row = {k: host.get(k, "") for k in fieldnames}
+            writer.writerow(row)
+
+    print(f"Saved {len(hosts)} hosts")
+
