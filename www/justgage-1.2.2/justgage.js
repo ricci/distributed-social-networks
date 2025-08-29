@@ -97,9 +97,13 @@ JustGage = function(config) {
     // min value
     min: kvLookup('min', config, dataset, 0, 'float'),
 
+    txtMinimum: kvLookup('txtMinimum', config, dataset, false),
+
     // max : float
     // max value
     max: kvLookup('max', config, dataset, 100, 'float'),
+
+    txtMaximum: kvLookup('txtMaximum', config, dataset, false),
 
     // reverse : bool
     // reverse min and max
@@ -696,7 +700,11 @@ JustGage = function(config) {
     min = obj.config.max;
   }
 
-  obj.txtMinimum = min;
+  if (obj.config.txtMinimum) {
+      obj.txtMinimum = obj.config.txtMinimum;
+  } else {
+      obj.txtMinimum = min;
+  }
   if (obj.config.humanFriendly) {
     obj.txtMinimum = humanFriendlyNumber(min, obj.config.humanFriendlyDecimal);
   } else if (obj.config.formatNumber) {
@@ -717,7 +725,12 @@ JustGage = function(config) {
   if (obj.config.reverse) {
     max = obj.config.min;
   }
-  obj.txtMaximum = max;
+
+  if (obj.config.txtMaximum) {
+    obj.txtMaximum = obj.config.txtMaximum;
+  } else {
+    obj.txtMaximum = max;
+  }
   if (obj.config.humanFriendly) {
     obj.txtMaximum = humanFriendlyNumber(max, obj.config.humanFriendlyDecimal);
   } else if (obj.config.formatNumber) {
