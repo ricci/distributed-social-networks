@@ -22,11 +22,15 @@
     <h1>Are We Decentralized Yet?</h1>
 
     <div class="container">
-      <h3>How Concentrated Are The:</h3>
+      <h2>How Concentrated Are The:</h2>
       <div class="rating">
+        <h3>Fediverse</h3>
+        <h5>Mastodon, Pixelfed, etc.</h5>
         <div id="gageFedi" class="gage"></div>
       </div>
       <div class="rating">
+        <h3>Atmosphere</h3>
+        <h5>Bluesky, WhiteWind, etc.</h5>
         <div id="gageAtmosphere" class="gage"></div>
       </div>
       <h4>Data last updated: <span id="lastUpdate"></span></h4>
@@ -91,6 +95,7 @@
       txtMinimum: "competitive", 
       txtMaximum: "concentrated", 
       pointer: "true",
+      titlePosition: "below",
       pointerOptions: {
           toplength: -10,
           bottomlength: 5,
@@ -108,14 +113,12 @@
 
     var gFedi = new JustGage({
       id: "gageFedi",
-      title: "Fediverse",
       value: data["fedi"]["HHI"],
       defaults
     });
     var gAtmpsphere = new JustGage({
       id: "gageAtmosphere",
       value: data["at"]["HHI"],
-      title: "Atmosphere",
       defaults
     });
 
