@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta name="description" content="A site with statistics regarding the decentralization status of various web services" />
+    <meta charset="utf-8">
+    <title>Are We Decentralized Yet?</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Robert Ricci">
+
+    <script type="text/javascript" src="justgage-1.2.2/raphael-2.1.4.min.js""></script>
+    <script type="text/javascript" src="justgage-1.2.2/justgage.js"></script>
+
+    <script type="text/javascript" src="data.js"></script>
+
+    <link rel="stylesheet" href="css/index.css">
+
+</head>
+
+<body>
+  
+    <h1>Are We Distributed Yet?</h1>
+
+    <div class="container">
+      <h3>How Concentrated Are The:</h3>
+      <div class="rating">
+        <div id="gageFedi" class="gage"></div>
+      </div>
+      <div class="rating">
+        <div id="gageAtmosphere" class="gage"></div>
+      </div>
+      <h4>Data last updated: <span id="lastUpdate"></span></h4>
+    </div>
+
+    <div class="container">
+      <p>
+        This page measures the concentration of the <a
+          href="https://fediverse.party/">Fediverse</a> and the <a
+          href="https://atproto.com/">Atmosphere</a> according to the
+        <a href="https://en.wikipedia.org/wiki/Herfindahl%E2%80%93Hirschman_index">Herfindahl–Hirschman
+          Index</a>,
+        an indicator from economics used to measure competition between firms in
+        an industry.
+      </p>
+
+      <p>
+        A value of
+        <math><mfrac><mn>1</mn><mi>N</mi></mfrac><mo>*</mo></mo><mn>10000</mn></math>
+        (where <math><mi>N</mi></math> is the number of
+        firms, or in this case, servers) indicates perfect competition (all
+        servers are of equal size), while a value of 10000 indicates a monopoly
+        (there is only one server). In economics, values below 100 are considered
+        "Highly Competitive", below 1500 is "Unconcentrated", and above 2500 is
+        considered "Highly Concentrated".
+      </p>
+
+      <p>
+        This currently measures the concentration of user data: in the
+        Fediverse, these are <a href="https://w3c.github.io/activitypub/#server-to-server-interactions">servers</a> (also known as instances);
+        in the Atmosphere, they are the
+        <a
+          href="https://atproto.com/guides/glossary#pds-personal-data-server">PDSes</a>
+        that host users' <a
+          href="https://atproto.com/guides/glossary#data-repo">data repos</a>. Other metrics and
+        comparisons are possible, and I'm interested in exploring them.
+      </p>
+
+      <p>
+        Code and data are available <a href="https://github.com/ricci/distributed-social-networks/">on
+          GitHub</a>.
+        Comments and pull requests, including other metrics for measuring
+        distribution and resiliency, are welcome!
+      </p>
+
+      <p>
+        By Rob Ricci: <a href="https://discuss.systems/@ricci">@ricci@discuss.systems</a> / 
+            <a href="https://bsky.app/profile/ricci.io">@ricci.io</a> 
+      </p>
+
+          
+    </div>
+
+
+    <script>
+    var defaults = {
+      min: 0,
+      max: 10000,
+      titleFontFamily: "Kade-Regular",
+      valueFontFamily: "Kade-Regular",
+      valueFontColor: "white",
+      label: "HHI",
+      hideMinMax: "true",
+      pointer: "true",
+      pointerOptions: {
+          toplength: -10,
+          bottomlength: 5,
+          bottomwidth: 6,
+          color: '#8e8e93',
+          stroke: '#ffffff',
+          stroke_width: 2,
+          stroke_linecap: 'round'
+        },
+    };
+
+    var hhi_values = [
+
+    ];
+
+    var gFedi = new JustGage({
+      id: "gageFedi",
+      title: "Fediverse",
+      value: data["fedi"]["HHI"],
+      defaults
+    });
+    var gAtmpsphere = new JustGage({
+      id: "gageAtmosphere",
+      value: data["at"]["HHI"],
+      title: "Atmosphere",
+      defaults
+    });
+
+    document.getElementById("lastUpdate").textContent = data.lastUpdate; 
+    </script>
+
+</body>
+</html>

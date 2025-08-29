@@ -1,0 +1,42 @@
+
+    @font-face {
+        font-family: "Kade-Regular";
+        src: url("../fonts/kade.woff") format("woff");
+        font-weight: normal;
+        font-style: normal;
+    }
+
+    body {
+      background: #232c3c;
+      color: #e7e9eb;
+      font-family: "Kade-Regular";
+    }
+
+    a:link, a:visited, a:hover {
+      color: #aebeda;
+      text-decoration: none;
+    }
+
+    h1, h3, div.container {
+      text-align: center;
+    }
+
+    div.rating {
+      display: inline-block;
+      text-align: center;
+      width: 300px;
+    }
+
+    div.gage {
+      width: 270px;
+      margin: 0px 15px;
+      height: 200px;
+    }
+
+    p {
+      width: 500px;
+      text-align: left;
+      display: block;
+      margin: 20px auto;
+      color: #909296;
+    }
