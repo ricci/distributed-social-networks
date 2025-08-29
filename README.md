@@ -7,3 +7,4 @@ Simple code and data to measure how distributed various social networks are in p
 * `fedilist.csv`: Contains user data for the fediverse (ActivityPub), from https://fedilist.com/instance
 * `atproto-bsky-relay.csv`: Contains user data for the atmosphere (AT Protocol), scraped by `fetch-bsky.py` from the main bluesky relay
 * `mackuba.csv`: Contains user data for the atmosphere (AT Protocol), from https://blue.mackuba.eu/directory/pdses and bsky number comes from https://bsky.jazco.dev/stats
+* `www/`: Simple dashboard to display indices
