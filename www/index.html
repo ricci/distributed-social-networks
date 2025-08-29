@@ -42,26 +42,24 @@
           href="https://fediverse.party/">Fediverse</a> and the <a
           href="https://atproto.com/">Atmosphere</a> according to the
         <a href="https://en.wikipedia.org/wiki/Herfindahl%E2%80%93Hirschman_index">Herfindahl–Hirschman
-          Index</a>,
+          Index</a> (HHI),
         an indicator from economics used to measure competition between firms in
         an industry.
+        Mathematically, HHI is the sum of the squares of market shares of all servers.
       </p>
 
       <p>
-        A value of
-        <math><mfrac><mn>1</mn><mi>N</mi></mfrac><mo>*</mo></mo><mn>10000</mn></math>
-        (where <math><mi>N</mi></math> is the number of
-        firms, or in this case, servers) indicates perfect competition (all
-        servers are of equal size), while a value of 10000 indicates a monopoly
-        (there is only one server). In economics, values below 100 are considered
+        Values close to zero indicate perfectly competitive markets (eg. many servers, with users
+        spread evenly), while values close to 10000 indicate highly concentrated monopolies (eg.
+        most users on a single server). In economics, values below 100 are considered
         "Highly Competitive", below 1500 is "Unconcentrated", and above 2500 is
         considered "Highly Concentrated".
       </p>
 
       <p>
-        This currently measures the concentration of user data: in the
-        Fediverse, these are <a href="https://w3c.github.io/activitypub/#server-to-server-interactions">servers</a> (also known as instances);
-        in the Atmosphere, they are the
+        This site currently measures the concentration of user data: in the
+        Fediverse, this data is on <a href="https://w3c.github.io/activitypub/#server-to-server-interactions">servers</a> (also known as instances);
+        in the Atmosphere, it is on the
         <a
           href="https://atproto.com/guides/glossary#pds-personal-data-server">PDSes</a>
         that host users' <a
