@@ -30,8 +30,14 @@ def main(filename):
     # Remove clearly bogus data with < 0 users
     user_counts = [a for a in user_counts if a > 0]
 
+    # Sort for some simple stats
+    user_counts = sorted(user_counts, reverse=True)
+
     hhi = calc_hhi(user_counts)
     print(f"HHI for user_count: {hhi:.4f}")
+    print(f"Total servers: {len(user_counts)}")
+    print(f"Biggest server: {user_counts[0]} ({100*user_counts[0]/sum(user_counts):.2f}%)")
+    print(f"Rest of the servers: {sum(user_counts[1:])} ({100*sum(user_counts[1:])/sum(user_counts):.2f}%)")
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
