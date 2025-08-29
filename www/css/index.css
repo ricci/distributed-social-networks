@@ -44,8 +44,10 @@
     }
 
     p {
-      width: 400px;
+      width: 440px;
       text-align: left;
-      display: inline-block;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
       color: #909296;
     }
