@@ -27,11 +27,21 @@
         <h3>Fediverse</h3>
         <h5>Mastodon, Pixelfed, etc.</h5>
         <div id="gageFedi" class="gage"></div>
+        <table>
+            <tr><th>Servers</th><td><span id="fediServers"></span></td></tr>
+            <tr><th>Biggest</th><td><span id="fediBiggestAbs"></span></td><td>(<span id="fediBiggestPct"></span>%)</td></tr>
+            <tr><th>Rest</th><td><span id="fediRestAbs"></span></td><td>(<span id="fediRestPct"></span>%)</td></tr>
+        </table>
       </div>
       <div class="rating">
         <h3>Atmosphere</h3>
         <h5>Bluesky, WhiteWind, etc.</h5>
         <div id="gageAtmosphere" class="gage"></div>
+        <table>
+            <tr><th>Servers</th><td><span id="atServers"></span></td></tr>
+            <tr><th>Biggest</th><td><span id="atBiggestAbs"></span></td><td>(<span id="atBiggestPct"></span>%)</td></tr>
+            <tr><th>Rest</th><td><span id="atRestAbs"></span></td><td>(<span id="atRestPct"></span>%)</td></tr>
+        </table>
       </div>
       <h4>Data last updated: <span id="lastUpdate"></span></h4>
     </div>
@@ -120,7 +130,21 @@
       defaults
     });
 
+    function addCommas(num) {
+      return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
     document.getElementById("lastUpdate").textContent = data.lastUpdate; 
+    document.getElementById("fediServers").textContent = addCommas(data.fedi.servers);
+    document.getElementById("atServers").textContent = addCommas(data.at.servers);
+    document.getElementById("fediBiggestAbs").textContent = addCommas(data.fedi.biggest_abs);
+    document.getElementById("fediBiggestPct").textContent = data.fedi.biggest_pct;
+    document.getElementById("atBiggestAbs").textContent = addCommas(data.at.biggest_abs);
+    document.getElementById("atBiggestPct").textContent = data.at.biggest_pct;
+    document.getElementById("fediRestAbs").textContent = addCommas(data.fedi.rest_abs);
+    document.getElementById("fediRestPct").textContent = data.fedi.rest_pct;
+    document.getElementById("atRestAbs").textContent = addCommas(data.at.rest_abs);
+    document.getElementById("atRestPct").textContent = data.at.rest_pct;
     </script>
 
 </body>

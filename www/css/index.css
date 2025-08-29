@@ -51,3 +51,17 @@
       margin-right: auto;
       color: #909296;
     }
+
+    th {
+      text-align: left;
+      padding-right: 10px;
+    }
+
+    td {
+      text-align: right;
+    }
+
+    table {
+      margin-left: auto;
+      margin-right: auto;
+    }
