@@ -1,67 +1,66 @@
+@font-face {
+  font-family: "Kade-Regular";
+  src: url("../fonts/kade.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
 
-    @font-face {
-        font-family: "Kade-Regular";
-        src: url("../fonts/kade.woff") format("woff");
-        font-weight: normal;
-        font-style: normal;
-    }
+body {
+  background: #232c3c;
+  color: #e7e9eb;
+  font-family: "Kade-Regular";
+}
 
-    body {
-      background: #232c3c;
-      color: #e7e9eb;
-      font-family: "Kade-Regular";
-    }
+a:link, a:visited, a:hover {
+  color: #aebeda;
+  text-decoration: none;
+}
 
-    a:link, a:visited, a:hover {
-      color: #aebeda;
-      text-decoration: none;
-    }
+h1, h3, h4, h5, div.container {
+  text-align: center;
+}
 
-    h1, h3, h4, h5, div.container {
-      text-align: center;
-    }
+h3 {
+  margin-bottom: 6pt;
+  color: #e7e9eb;
+}
 
-    h3 {
-      margin-bottom: 6pt;
-      color: #e7e9eb;
-    }
+h5 {
+  margin-top: 0px;
+  color: #a7a9ab;
+}
 
-    h5 {
-      margin-top: 0px;
-      color: #a7a9ab;
-    }
+div.rating {
+  display: inline-block;
+  text-align: center;
+  width: 300px;
+}
 
-    div.rating {
-      display: inline-block;
-      text-align: center;
-      width: 300px;
-    }
+div.gage {
+  width: 270px;
+  margin: 0px 15px;
+  height: 210px;
+}
 
-    div.gage {
-      width: 270px;
-      margin: 0px 15px;
-      height: 210px;
-    }
+p {
+  width: 440px;
+  text-align: left;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  color: #909296;
+}
 
-    p {
-      width: 440px;
-      text-align: left;
-      display: block;
-      margin-left: auto;
-      margin-right: auto;
-      color: #909296;
-    }
+th {
+  text-align: left;
+  padding-right: 10px;
+}
 
-    th {
-      text-align: left;
-      padding-right: 10px;
-    }
+td {
+  text-align: right;
+}
 
-    td {
-      text-align: right;
-    }
-
-    table {
-      margin-left: auto;
-      margin-right: auto;
-    }
+table {
+  margin-left: auto;
+  margin-right: auto;
+}
