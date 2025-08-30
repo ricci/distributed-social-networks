@@ -9,29 +9,49 @@ def calc_hhi(x):
     hhi = sum([(a/total)**2 for a in x])
     return hhi
 
+# Software knows to misreport user accounts
+skipped_software = ["NodeBB", "gotosocial", "Yellbot","misskey", "sharkey"]
+
+# Different CSVs use different names for the user count field
+def get_usercount(row):
+    for key in ("user_count", "mau", "accountcount"):
+        val = row.get(key, "")
+        if val != "":
+            return int(val)
+    return 0
+
+def normalize_keys(row):
+    return {k.lower(): v for k, v in row.items()}
+
+def filter_rows(rows):
+    skiplist = [a.lower() for a in skipped_software]
+    for row in rows:
+        
+        # Normalize header case
+        row = normalize_keys(row)
+
+        # Skip negative or zero-user sites
+        usercount = get_usercount(row)
+        if usercount <= 0:
+            continue
+
+        # For fedi instances, skip ones with software known to provide
+        # inaccurate user counts; skip this for atproto
+        if not "software" in row.keys():
+            yield usercount
+            continue
+
+        if not any(token.lower() in row["software"].lower() for token in skiplist):
+            yield usercount
+            continue
+
 def main(filename):
     with open(filename, newline="") as f:
         reader = csv.DictReader(f)
-        # Remove some fediverse software that seems to report inaccurate
-        # user numbers
-        cleaned_reader = [row for row in reader
-            if "software" not in row or row["software"] not in
-             ["NodeBB", "gotosocial", "Yellbot","misskey", "sharkey"]]
 
-        # Different CSVs have different row names, and the fediverse one
-        # has some empty columns
-        user_counts = [
-            int(row["user_count"]) if "user_count" in row and row["user_count"] != ""
-            else int(row["accountCount"]) if row.get("accountCount", "") != ""
-            else 0
-            for row in cleaned_reader
-        ]
+        cleaned_reader = filter_rows(reader)
 
-    # Remove clearly bogus data with < 0 users
-    user_counts = [a for a in user_counts if a > 0]
-
-    # Sort for some simple stats
-    user_counts = sorted(user_counts, reverse=True)
+        user_counts = sorted([ count for count in cleaned_reader ], reverse=True)
 
     hhi = calc_hhi(user_counts)
     print(f"HHI for user_count: {hhi:.4f}")
