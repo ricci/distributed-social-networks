@@ -1,12 +1,12 @@
 var data = {
   "lastUpdate": "08-30-2025",
   "fedi": {
-     "HHI": 690,
-     "servers": 18593,
-     "biggest_abs": 268750,
-     "biggest_pct": 24.09,
-     "rest_abs": 846813,
-     "rest_pct": 75.91,
+     "HHI": 727,
+     "servers": 18592,
+     "biggest_abs": 277461,
+     "biggest_pct": 24.87,
+     "rest_abs": 838102,
+     "rest_pct": 75.13,
   },
   "at"  : {
      "HHI": 9911,
