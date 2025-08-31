@@ -2,12 +2,25 @@
 
 import csv
 import sys
+import math
 
 # https://en.wikipedia.org/wiki/Herfindahl%E2%80%93Hirschman_index
 def calc_hhi(x):
     total = sum(x)
     hhi = sum([(a/total)**2 for a in x])
     return hhi
+
+# https://www.statology.org/shannon-diversity-index/
+def calc_shannon(x):
+    total = sum(x)
+    shannon = -sum([((a/total)*math.log(a/total,math.e)) for a in x])
+    return shannon
+
+#  https://statologos.com/indice-de-diversidad-de-los-simpson/
+def calc_simpson(x):
+    total = sum(x)
+    simpson = 1 - sum([a*(a-1) for a in x]) / (total*(total-1))
+    return simpson
 
 # Software knows to misreport user accounts
 skipped_software = ["NodeBB", "gotosocial", "Yellbot","misskey", "sharkey"]
@@ -54,7 +67,11 @@ def main(filename):
         user_counts = sorted([ count for count in cleaned_reader ], reverse=True)
 
     hhi = calc_hhi(user_counts)
+    shannon = calc_shannon(user_counts)
+    simpson = calc_simpson(user_counts)
     print(f"HHI for user_count: {hhi:.4f}")
+    print(f"Shannon Diversity for user_count: {shannon:.4f}")
+    print(f"Simpson Diversity for user_count: {simpson:.4f}")
     print(f"Total servers: {len(user_counts)}")
     print(f"Biggest server: {user_counts[0]} ({100*user_counts[0]/sum(user_counts):.2f}%)")
     print(f"Rest of the servers: {sum(user_counts[1:])} ({100*sum(user_counts[1:])/sum(user_counts):.2f}%)")
