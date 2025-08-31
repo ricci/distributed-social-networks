@@ -2,6 +2,8 @@ var data = {
   "lastUpdate": "08-30-2025",
   "fedi": {
      "HHI": 727,
+     "shannon": 4.9015,
+     "simpson": 0.9273,
      "servers": 18592,
      "biggest_abs": 277461,
      "biggest_pct": 24.87,
@@ -10,6 +12,8 @@ var data = {
   },
   "at"  : {
      "HHI": 9911,
+     "shannon": 0.0379,
+     "simpson": 0.0089,
      "servers":  1643,
      "biggest_abs": 12261600,
      "biggest_pct": 99.55,
