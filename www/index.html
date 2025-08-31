@@ -33,6 +33,7 @@
         <h3>Fediverse</h3>
         <h5>Mastodon, Pixelfed, etc.</h5>
         <div id="gageFedi" class="gage"></div>
+        <div class="shannon">Shannon Diversity: <span id="fediShannon"></span></div>
         <table>
             <tr><th>Servers</th><td><span id="fediServers"></span></td></tr>
             <tr><th>Biggest</th><td><span id="fediBiggestAbs"></span></td><td>(<span id="fediBiggestPct"></span>%)</td></tr>
@@ -43,6 +44,7 @@
         <h3>Atmosphere</h3>
         <h5>Bluesky, WhiteWind, etc.</h5>
         <div id="gageAtmosphere" class="gage"></div>
+        <div class="shannon">Shannon Diversity: <span id="atShannon"></span></div>
         <table>
             <tr><th>Servers</th><td><span id="atServers"></span></td></tr>
             <tr><th>Biggest</th><td><span id="atBiggestAbs"></span></td><td>(<span id="atBiggestPct"></span>%)</td></tr>
@@ -125,6 +127,7 @@
       txtMaximum: "concentrated", 
       pointer: "true",
       titlePosition: "below",
+      label: "HHI",
       pointerOptions: {
           toplength: -10,
           bottomlength: 5,
@@ -135,10 +138,6 @@
           stroke_linecap: 'round'
         },
     };
-
-    var hhi_values = [
-
-    ];
 
     var gFedi = new JustGage({
       id: "gageFedi",
@@ -160,12 +159,15 @@
     document.getElementById("atServers").textContent = addCommas(data.at.servers);
     document.getElementById("fediBiggestAbs").textContent = addCommas(data.fedi.biggest_abs);
     document.getElementById("fediBiggestPct").textContent = data.fedi.biggest_pct;
+    document.getElementById("fediShannon").textContent = data.fedi.shannon;
+
     document.getElementById("atBiggestAbs").textContent = addCommas(data.at.biggest_abs);
     document.getElementById("atBiggestPct").textContent = data.at.biggest_pct;
     document.getElementById("fediRestAbs").textContent = addCommas(data.fedi.rest_abs);
     document.getElementById("fediRestPct").textContent = data.fedi.rest_pct;
     document.getElementById("atRestAbs").textContent = addCommas(data.at.rest_abs);
     document.getElementById("atRestPct").textContent = data.at.rest_pct;
+    document.getElementById("atShannon").textContent = data.at.shannon;
     </script>
 
 </body>

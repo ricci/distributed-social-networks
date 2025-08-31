@@ -38,8 +38,12 @@ div.rating {
 
 div.gage {
   width: 270px;
-  margin: -25px 15px;
+  margin: -35px 15px;
   height: 210px;
+}
+
+div.shannon {
+  margin-bottom: 15px;
 }
 
 p {
