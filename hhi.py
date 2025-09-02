@@ -22,6 +22,15 @@ def calc_simpson(x):
     simpson = 1 - sum([a*(a-1) for a in x]) / (total*(total-1))
     return simpson
 
+def calc_B(x,n):
+    assert(n<=100)
+    total = sum(x)
+    accum = 0
+    for b in range(0, len(x)-1):
+        accum += x[b]/total
+        if (accum >= n/100.0):
+            return(b+1)
+
 # Software knows to misreport user accounts
 skipped_software = ["NodeBB", "gotosocial", "Yellbot","misskey", "sharkey"]
 
@@ -69,12 +78,14 @@ def main(filename):
     hhi = calc_hhi(user_counts)
     shannon = calc_shannon(user_counts)
     simpson = calc_simpson(user_counts)
+    bs = [(b, calc_B(user_counts,b)) for b in [25,50,75,90,99] ]
     print(f"HHI for user_count: {hhi:.4f}")
     print(f"Shannon Diversity for user_count: {shannon:.4f}")
     print(f"Simpson Diversity for user_count: {simpson:.4f}")
     print(f"Total servers: {len(user_counts)}")
     print(f"Biggest server: {user_counts[0]} ({100*user_counts[0]/sum(user_counts):.2f}%)")
     print(f"Rest of the servers: {sum(user_counts[1:])} ({100*sum(user_counts[1:])/sum(user_counts):.2f}%)")
+    print(f"B values are {bs}")
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
