@@ -1,6 +1,6 @@
-= The B-Index
+# The B-Index
 
-== Short Version
+## Short Version
 
 The B-Index intends to model the number of entities that have blocking-level
 control over an account's participation in a distributed social network.
@@ -12,26 +12,26 @@ control over.
 For example, a network with B_50 = 20 would mean that 20 entities making
 blocking decisions can block an account from half of the network.
 
-== Uses
+## Uses
 
 The B-Index can be used for multiple purposes:
 
 * From an individual user perspective, it can be thought of as the ability of
-  administrators, etc. to block that user's access to the network; users may
-  prefer networks that have a high B-Index if they have concerns about being
-blocked from network access
+    administrators, etc. to block that user's access to the network; users may
+    prefer networks that have a high B-Index if they have concerns about being
+    blocked from network access
 
 * From a Trust and Safety perspective, it can be thought of as the amount of
-  cooperation required to limit bad actors' access to the network: users may
-  prefer networks with a low B-Index if they have concerns about being targeted
+    cooperation required to limit bad actors' access to the network: users may
+    prefer networks with a low B-Index if they have concerns about being targeted
 
 * From a resilience perspective, it can be thought of as the exposure of the
-  network to the disappearance of infrastructure due to financial collapse,
-  DoS attack, legal action, etc.; users may prefer networks with a high B-Index
-  if they have concerns about the stability or sustainability of individual
-  infrastructural elements
+    network to the disappearance of infrastructure due to financial collapse,
+    DoS attack, legal action, etc.; users may prefer networks with a high B-Index
+    if they have concerns about the stability or sustainability of individual
+    infrastructural elements
 
-== Calculating the B-Index
+## Calculating the B-Index
 
 The B-Index is calculated using the empirical Cumulative Distribution Function
 (eCDF) of the blocking power of the network. That is, each entity in the
@@ -80,11 +80,11 @@ abilities is:
    on the list as L_2
  * Continue until all entities have been processed
 
-== Visualizing B-Index
+## Visualizing B-Index
 
 The B-Index can be visualized across all N by simply plotting the eCDF of L.
 
-== Comparing Two Networks
+## Comparing Two Networks
 
 The most straightforward way to compare two networks is to compare the B_X
 values for the same X, such as B_50
@@ -101,7 +101,7 @@ here is that N entities have the power to control X_A% of network A, and X_B% of
 network B. Note that because B_X is discrete, it may not be possible to find exact
 matches for N.
 
-== Limitations
+## Limitations
 
 Like all metrics, the B-Index is intended to get a quantitative understanding
 of the behavior of a system. It is not intended to provide, nor is it a
@@ -123,9 +123,9 @@ events large or small. However, it *can* be used to model "what if" questions,
 such as "what happen if the biggest participant split in two," or "what would
 need to happen to get to a B_50 of 10".
 
-== Application to Specific Networks
+## Application to Specific Networks
 
-=== The Fediverse
+### The Fediverse
 
 In the fediverse, each entity is assumed to control one or more instances. For
 the purposes of calculating the B-Index, the list L is the set of "market
@@ -134,23 +134,22 @@ shares" for all fediverse instances using the best available data.
 Individual accounts' ability to block other accounts or instances is not
 considered.
 
-==== Shared Blocklists
+#### Shared Blocklists
 
 The definition above does not take into account the use of shared blocklists;
 these should be accounted for by considering
 
- * The number of entities that have to agree in order to get something on the
-   blocklist; in general, given the blocklists I am aware of, this is usually
-   the admins of n instances deciding to block the instance
-
- * The number of instances that subscribe to these blocklists
+* The number of entities that have to agree in order to get something on the
+    blocklist; in general, given the blocklists I am aware of, this is usually
+    the admins of n instances deciding to block the instance
+* The number of instances that subscribe to these blocklists
 
 To the best of my knowledge, the shared blocklists that do exist are at the
 instance-level, not the individual account level.
 
 It is not currently clear what data sources are available for this purpose.
 
-=== The Atmosphere
+### The Atmosphere
 
 *This section is a work in progress and I would appreciate comments*
 
@@ -197,12 +196,11 @@ need to be different.
 
 == Open Issues
 
-* What are interesing values for N? It seems useful to have a few standard
+* What are interesting values for N? It seems useful to have a few standard
   ones, like B_25, B_50, B_75, B_90, etc. how how to we pick "reasonable" ones?
-
 * Need a better name than "entity"; the general sense is "person or
-  organization that controls a server or set of servers" but I want to be 
-  careful to be neutral as to whether we are talking about sole administrators,
-  collectives that run infrastrcture, companies, etc. - "servers" is also a bit
-  of a loaded term as well.
+    organization that controls a server or set of servers" but I want to be 
+    careful to be neutral as to whether we are talking about sole administrators,
+    collectives that run infrastructure, companies, etc. - "servers" is also a bit
+    of a loaded term as well.
 
