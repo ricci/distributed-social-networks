@@ -49,7 +49,7 @@ entities have abilities to block overlapping parts of the network, this needs
 to be resolved as part of constructing $L$. $L$ must be sorted in descending
 order.
 
-$B_X$ is defined as: the smallest $a$ such that $sum_{i=1}^a L_i >= X$
+$B_X$ is defined as: the smallest $a$ such that $\sum_{i=1}^a L_i >= X$
 
 B-Index is a worst-case measure: that is, it measures the account's exposure
 to the most powerful blockers.
@@ -97,7 +97,7 @@ $B_X = 1$ for this network for any $X <= 90$. The most meaningful comparison for
 networks would be to compare $B_{90}$ for both $A$ and $B$.
 
 Another way to compare B-Indexes is to set the $N$ values the same and find X values
-$X_A$ and $X_B$ for each network such that $B_X_A = B_X_B = N$. The interpretation
+$X_A$ and $X_B$ for each network such that $B_{X_A} = B_{X_B} = N$. The interpretation
 here is that $N$ entities have the power to control $X_A$% of network $A$, and $X_B$% of
 network $B$. Note that because $B_X$ is discrete, it may not be possible to find exact
 matches for $N$.
