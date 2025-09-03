@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 
+import argparse
 import csv
-import sys
 import math
+import sys
 
 # https://en.wikipedia.org/wiki/Herfindahl%E2%80%93Hirschman_index
 def calc_hhi(x):
@@ -88,8 +89,11 @@ def main(filename):
     print(f"B values are {bs}")
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print(f"Usage: {sys.argv[0]} <csvfile>")
-        sys.exit(1)
-    main(sys.argv[1])
+    parser = argparse.ArgumentParser(
+                    prog=f"{sys.argv[0]}",
+                    description='Calculates statistics for social networks')
+    parser.add_argument('csvfile')
+
+    args = parser.parse_args()
+    main(args.csvfile)
 
