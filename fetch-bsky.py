@@ -2,6 +2,7 @@
 
 import requests
 import csv
+import sys
 
 URL = "https://relay1.us-east.bsky.network/xrpc/com.atproto.sync.listHosts"
 OUTPUT_FILE = "atproto-bsky-relay.csv"
@@ -54,12 +55,14 @@ def combine_bluesky(hosts):
     return other_hosts
 
 if __name__ == "__main__":
+    outfile = outfile = sys.argv[1] if len(sys.argv) == 2 else OUTPUT_FILE
+
     hosts = fetch_all()
 
     hosts = combine_bluesky(hosts)
 
     fieldnames = ["hostname", "status", "accountCount", "seq"]
-    with open(OUTPUT_FILE, "w", newline="", encoding="utf-8") as f:
+    with open(outfile, "w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
         for host in hosts:

@@ -2,6 +2,7 @@
 
 import requests
 import csv
+import sys
 from bs4 import BeautifulSoup
 
 URL = "https://fedilist.com/instance"
@@ -9,7 +10,8 @@ OUTPUT_FILE = "fedilist-fromhtml.csv"
 USERAGENT = "curl/7.54.1"
 
 if __name__ == "__main__":
-    # Parse without relying on whitespace
+    outfile = outfile = sys.argv[1] if len(sys.argv) == 2 else OUTPUT_FILE
+
     headers = { "User-Agent": USERAGENT }
     r = requests.get(URL, headers, timeout=30)
     r.raise_for_status()
@@ -32,7 +34,7 @@ if __name__ == "__main__":
         rows.append(row)
 
     # Write CSV to stdout
-    with open(OUTPUT_FILE, "w", newline="", encoding="utf-8") as f:
+    with open(outfile, "w", newline="", encoding="utf-8") as f:
         writer = csv.writer(f, lineterminator="\n")
         writer.writerow(headers)
         writer.writerows(rows)
