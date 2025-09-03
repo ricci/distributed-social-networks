@@ -49,7 +49,7 @@ entities have abilities to block overlapping parts of the network, this needs
 to be resolved as part of constructing $L$. $L$ must be sorted in descending
 order.
 
-$B_X$ is defined as: the smallest $a$ such that $\sum_{i=1}^a L_i >= X$
+$B_X$ is defined as the inverse eCDF of $L$ at $X$: that is, the smallest $a$ such that $\sum_{i=1}^a L_i >= X$
 
 B-Index is a worst-case measure: that is, it measures the account's exposure
 to the most powerful blockers.
@@ -195,7 +195,11 @@ for the B-Index, as they are not exactly blocking mechanisms; they are positive
 posts. They would be interesting to study of course, but the methodology would
 need to be different.
 
-== Open Issues
+### Nostr
+
+Nostr should be measured with this, but I will need help, I don't know it well enough to do this myself
+
+### Open Issues
 
 * What are interesting values for $N$? It seems useful to have a few standard
   ones, like $B_{25}$, $B_{50}$, $B_{75}, $B_{90}, etc. how do we pick "reasonable" ones?
