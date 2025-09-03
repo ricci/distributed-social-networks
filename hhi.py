@@ -2,6 +2,7 @@
 
 import argparse
 import csv
+import json
 import math
 import sys
 
@@ -68,7 +69,7 @@ def filter_rows(rows):
             yield usercount
             continue
 
-def main(filename):
+def main(filename, json_out = False):
     with open(filename, newline="") as f:
         reader = csv.DictReader(f)
 
@@ -80,20 +81,38 @@ def main(filename):
     shannon = calc_shannon(user_counts)
     simpson = calc_simpson(user_counts)
     bs = [(b, calc_B(user_counts,b)) for b in [25,50,75,90,99] ]
-    print(f"HHI for user_count: {hhi:.4f}")
-    print(f"Shannon Diversity for user_count: {shannon:.4f}")
-    print(f"Simpson Diversity for user_count: {simpson:.4f}")
-    print(f"Total servers: {len(user_counts)}")
-    print(f"Biggest server: {user_counts[0]} ({100*user_counts[0]/sum(user_counts):.2f}%)")
-    print(f"Rest of the servers: {sum(user_counts[1:])} ({100*sum(user_counts[1:])/sum(user_counts):.2f}%)")
-    print(f"B values are {bs}")
+    servers = len(user_counts)
+    biggest_abs = user_counts[0]
+    biggest_pct = 100*user_counts[0]/sum(user_counts)
+    rest_abs = sum(user_counts[1:])
+    rest_pct = 100*rest_abs/sum(user_counts)
+
+    if json_out:
+        print(json.dumps({"HHI": hhi,
+                          "shannon": shannon,
+                          "simpson": simpson,
+                          "servers": servers,
+                          "biggest_abs": biggest_abs,
+                          "biggest_pct": biggest_pct,
+                          "rest_abs": rest_abs,
+                          "rest_pct": rest_pct,
+                          "b_vals": bs}))
+    else:
+        print(f"HHI for user_count: {hhi:.4f}")
+        print(f"Shannon Diversity for user_count: {shannon:.4f}")
+        print(f"Simpson Diversity for user_count: {simpson:.4f}")
+        print(f"Total servers: {servers}")
+        print(f"Biggest server: {biggest_abs} ({biggest_pct:.2f}%)")
+        print(f"Rest of the servers: {rest_abs} ({rest_pct:.2f}%)")
+        print(f"B values are {bs}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
                     prog=f"{sys.argv[0]}",
                     description='Calculates statistics for social networks')
     parser.add_argument('csvfile')
+    parser.add_argument('--json', action='store_true')
 
     args = parser.parse_args()
-    main(args.csvfile)
+    main(args.csvfile, args.json)
 
