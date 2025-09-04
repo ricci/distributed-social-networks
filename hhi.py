@@ -34,7 +34,19 @@ def calc_B(x,n):
             return(b+1)
 
 # Software knows to misreport user accounts
-skipped_software = ["NodeBB", "gotosocial", "Yellbot","misskey", "sharkey"]
+SKIPPED_SOFTWARE = ["nodebb", "gotosocial", "yellbot","misskey", "sharkey"]
+def f_software(row):
+    if "software" not in row:
+        return True
+    else:
+        return all([s not in row["software"].lower() for s in SKIPPED_SOFTWARE]) 
+
+def f_count(row):
+    return get_usercount(row) > 0
+        
+def normalize_keys(row):
+    return {k.lower(): v for k, v in row.items()}
+
 
 # Different CSVs use different names for the user count field
 def get_usercount(row):
@@ -44,38 +56,21 @@ def get_usercount(row):
             return int(val)
     return 0
 
-def normalize_keys(row):
-    return {k.lower(): v for k, v in row.items()}
-
 def filter_rows(rows):
-    skiplist = [a.lower() for a in skipped_software]
-    for row in rows:
-        
-        # Normalize header case
-        row = normalize_keys(row)
+    rows = [normalize_keys(r) for r in rows]
+    rows = [r for r in rows if f_count(r)]
+    rows = [r for r in rows if f_software(r)]
 
-        # Skip negative or zero-user sites
-        usercount = get_usercount(row)
-        if usercount <= 0:
-            continue
-
-        # For fedi instances, skip ones with software known to provide
-        # inaccurate user counts; skip this for atproto
-        if not "software" in row.keys():
-            yield usercount
-            continue
-
-        if not any(token.lower() in row["software"].lower() for token in skiplist):
-            yield usercount
-            continue
+    return rows
 
 def main(filename, json_out = False):
     with open(filename, newline="") as f:
         reader = csv.DictReader(f)
+        rows = list(reader)
 
-        cleaned_reader = filter_rows(reader)
+    rows = filter_rows(rows)
 
-        user_counts = sorted([ count for count in cleaned_reader ], reverse=True)
+    user_counts = sorted([get_usercount(r)  for r in rows], reverse=True)
 
     hhi = calc_hhi(user_counts)
     shannon = calc_shannon(user_counts)
