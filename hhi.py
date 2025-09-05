@@ -122,14 +122,14 @@ def main(filename, json_out = False):
     rest_pct = 100*rest_abs/sum(user_counts)
 
     if json_out:
-        print(json.dumps({"HHI": hhi,
-                          "shannon": shannon,
-                          "simpson": simpson,
+        print(json.dumps({"HHI": int(hhi*10000),
+                          "shannon": round(shannon,4),
+                          "simpson": round(simpson,4),
                           "servers": servers,
                           "biggest_abs": biggest_abs,
-                          "biggest_pct": biggest_pct,
+                          "biggest_pct": round(biggest_pct,2),
                           "rest_abs": rest_abs,
-                          "rest_pct": rest_pct,
+                          "rest_pct": round(rest_pct,2),
                           "b_vals": bs}))
     else:
         print(f"HHI for user_count: {hhi:.4f}")
