@@ -36,30 +36,10 @@ def fetch_all():
 
     return all_hosts
 
-def combine_bluesky(hosts):
-    is_bluesky = lambda h: h.get("hostname", "").endswith(".host.bsky.network")
-
-    bluesky_hosts = [h for h in hosts if is_bluesky(h)]
-    other_hosts = [h for h in hosts if not is_bluesky(h)]
-
-    if bluesky_hosts:
-        combined_status = "active" if all(h.get("status") == "active" for h in bluesky_hosts) else "mixed"
-        combined = {
-            "hostname": "bsky.network",
-            "status": combined_status,
-            "accountCount": sum(h.get("accountCount", 0) for h in bluesky_hosts),
-            "seq": max(h.get("seq", 0) for h in bluesky_hosts),
-        }
-        other_hosts.insert(0, combined)
-
-    return other_hosts
-
 if __name__ == "__main__":
     outfile = outfile = sys.argv[1] if len(sys.argv) == 2 else OUTPUT_FILE
 
     hosts = fetch_all()
-
-    hosts = combine_bluesky(hosts)
 
     fieldnames = ["hostname", "status", "accountCount", "seq"]
     with open(outfile, "w", newline="", encoding="utf-8") as f:
