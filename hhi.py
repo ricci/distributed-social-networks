@@ -33,19 +33,37 @@ def calc_B(x,n):
         if (accum >= n/100.0):
             return(b+1)
 
-# Software knows to misreport user accounts
+
+COMBINE_HOSTS = [[
+    "mastodon.social", "mastodon.online"
+]]
+COMBINE_SUFFIXES = [ ".host.bsky.network" ]
+
+def combine_key(row):
+    domain = get_domain(row)
+    for hlist in COMBINE_HOSTS:
+        if domain in hlist:
+            return hlist[0]
+    for suffix in COMBINE_SUFFIXES:
+        if domain.endswith(suffix):
+            return suffix
+    return domain
+
+# Software known to misreport user accounts
 SKIPPED_SOFTWARE = ["nodebb", "gotosocial", "yellbot","misskey", "sharkey"]
 def f_software(row):
     if "software" not in row:
         return True
     else:
         return all([s not in row["software"].lower() for s in SKIPPED_SOFTWARE]) 
-
 def f_count(row):
     return get_usercount(row) > 0
         
 def normalize_keys(row):
     return {k.lower(): v for k, v in row.items()}
+
+def extract_domain_counts(row):
+    return { "domain": get_domain(row), "count": get_usercount(row) }
 
 
 # Different CSVs use different names for the user count field
@@ -56,12 +74,30 @@ def get_usercount(row):
             return int(val)
     return 0
 
+# Different CSVs use different columns for the hostname
+def get_domain(row):
+    for key in ("domain", "hostname"):
+        if key in row:
+            return row.get(key, "")
+    return None
+
 def filter_rows(rows):
     rows = [normalize_keys(r) for r in rows]
     rows = [r for r in rows if f_count(r)]
     rows = [r for r in rows if f_software(r)]
 
     return rows
+
+def combine_rows(rows):
+    combined = dict()
+    for row in rows:
+        key = combine_key(row)
+        combined[key] = combined.get(key,[]) + [row]
+    
+    newrows = list()
+    for k,v in combined.items():
+        newrows.append({"domain": k, "count": sum([r["count"] for r in v])})
+    return newrows
 
 def main(filename, json_out = False):
     with open(filename, newline="") as f:
@@ -70,7 +106,10 @@ def main(filename, json_out = False):
 
     rows = filter_rows(rows)
 
-    user_counts = sorted([get_usercount(r)  for r in rows], reverse=True)
+    extracted = [extract_domain_counts(row) for  row in rows]
+    combined = combine_rows(extracted)
+
+    user_counts = sorted([r["count"]  for r in combined], reverse=True)
 
     hhi = calc_hhi(user_counts)
     shannon = calc_shannon(user_counts)
