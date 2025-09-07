@@ -2,6 +2,8 @@
 
 Simple code and data to measure how distributed various social networks are in practice.
 
+This is used to feed https://arewedecentralizedyet.online/ .
+
 * `hhi.py <file.csv>`: Computes [Herfindahl–Hirschman index](https://en.wikipedia.org/wiki/Herfindahl%E2%80%93Hirschman_index) - values closer to 0 indicate competitive ecosystems, closer to 1 indicate monopolies
 * `fetch-bsky.py`: Scrapes PDS list and user counts from the main bluesky relay
 * `fetch-fedilist.py`: Scrapes host data from the HTML version of fedlist
