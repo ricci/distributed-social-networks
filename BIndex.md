@@ -142,7 +142,9 @@ these should be accounted for by considering
 
 * The number of entities that have to agree in order to get something on the
     blocklist; in general, given the blocklists I am aware of, this is usually
-    the admins of n instances deciding to block the instance
+    the admins of n instances deciding to block the instance. For the blocklists
+    I've found that appear to be widely used, this number seems to be 10 or
+    more
 * The number of instances that subscribe to these blocklists
 
 To the best of my knowledge, the shared blocklists that do exist are at the
@@ -172,13 +174,9 @@ As I understand it, here are the potential places where blocking could occur:
 * PDS: A PDS can refuse to talk to a relay or an AppView
 * Relay: A relay can refuse to include data from a particular DID or PDS
 * AppViews: An AppView can refuse to include a particular DID; it can also refuse to contact a particular PDS. It is not clear to me at this time whether AppViews talk to only one relay; if they can talk to many, then blocking an individual relay is possible
+* The PLC for did:plc; we might consider 'strong' and 'weak' hypothetical models here in the which we assume the PLC to be a truly neutral service that never under any circumstances ever blocks lookup of a DID, and a model under which it can (which is possible but maybe we can assume it won't)
 
 Some questions I have that I don't the answers to:
-
-It is not clear to me whether PLC would itself be considered a location where
-blocking can occur: eg. if the PLC can refuse to interoperate with specific
-relays, AppViews, etc. It is also unclear to me at this point whether it is
-possible for there to be more than one PLC in practice.
 
 Let's say that we have bluesky and blacksky, and each runs their own,
 independent set of all services in the blocking list above. If bluesky blocks a
@@ -188,6 +186,11 @@ blacksy's relay? Would that mean that such users on the bluesky side would have
 had to have somehow opted-in to blacksy's relay? If a bluesky user wants to 
 interact with a blacksky user who has been blocked from bluesky, does the bluesky
 user need to use an appview not controlled by bluesky?
+
+If a entity has an open, transparent, and truly independent process at the
+blocking level, perhaps we can count it as more than one; eg. if you have
+internal moderation, plus an external independent appeals board with binding
+decisions, perhaps that can count as two in the B-Index, not one.
 
 Note that bluesky's stackable moderation (labellers) and feeds are out of scope
 for the B-Index, as they are not exactly blocking mechanisms; they are positive
