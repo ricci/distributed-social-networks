@@ -34,33 +34,18 @@
         <h5>Mastodon, Pixelfed, etc.</h5>
         <div id="gageFedi" class="gage"></div>
         <div class="shannon">Shannon Index: <span id="fediShannon"></span></div>
-        <table>
-            <tr><th>Servers</th><td><span id="fediServers"></span></td></tr>
-            <tr><th>Biggest</th><td><span id="fediBiggestAbs"></span></td><td>(<span id="fediBiggestPct"></span>%)</td></tr>
-            <tr><th>Rest</th><td><span id="fediRestAbs"></span></td><td>(<span id="fediRestPct"></span>%)</td></tr>
-        </table>
       </div>
       <div class="rating">
         <h3>The Atmosphere</h3>
         <h5>Bluesky, WhiteWind, etc.</h5>
         <div id="gageAtmosphere" class="gage"></div>
         <div class="shannon">Shannon Index: <span id="atShannon"></span></div>
-        <table>
-            <tr><th>PDSes</th><td><span id="atServers"></span></td></tr>
-            <tr><th>Biggest</th><td><span id="atBiggestAbs"></span></td><td>(<span id="atBiggestPct"></span>%)</td></tr>
-            <tr><th>Rest</th><td><span id="atRestAbs"></span></td><td>(<span id="atRestPct"></span>%)</td></tr>
-        </table>
       </div>
       <div class="rating">
         <h3>Public Git Forges</h3>
         <h5>Github, Gitlab, etc.</h5>
         <div id="gageGit" class="gage"></div>
         <div class="shannon">Shannon Index: <span id="gitShannon"></span></div>
-        <table>
-            <tr><th>Forges</th><td><span id="gitServers"></span></td></tr>
-            <tr><th>Biggest</th><td><span id="gitBiggestAbs"></span></td><td>(<span id="gitBiggestPct"></span>%)</td></tr>
-            <tr><th>Rest</th><td><span id="gitRestAbs"></span></td><td>(<span id="gitRestPct"></span>%)</td></tr>
-        </table>
       </div>
       <h4>Data last updated: <span id="lastUpdate"></span></h4>
     </div>
@@ -188,26 +173,8 @@
 
     document.getElementById("lastUpdate").textContent = data.lastUpdate; 
 
-    document.getElementById("fediServers").textContent = addCommas(data.fedi.servers);
-    document.getElementById("atServers").textContent = addCommas(data.at.servers);
-    document.getElementById("gitServers").textContent = addCommas(data.git.servers);
-
-    document.getElementById("fediBiggestAbs").textContent = addCommas(data.fedi.biggest_abs);
-    document.getElementById("fediBiggestPct").textContent = data.fedi.biggest_pct;
     document.getElementById("fediShannon").textContent = data.fedi.shannon;
-    document.getElementById("fediRestAbs").textContent = addCommas(data.fedi.rest_abs);
-    document.getElementById("fediRestPct").textContent = data.fedi.rest_pct;
-
-    document.getElementById("atBiggestAbs").textContent = addCommas(data.at.biggest_abs);
-    document.getElementById("atBiggestPct").textContent = data.at.biggest_pct;
-    document.getElementById("atRestAbs").textContent = addCommas(data.at.rest_abs);
-    document.getElementById("atRestPct").textContent = data.at.rest_pct;
     document.getElementById("atShannon").textContent = data.at.shannon;
-
-    document.getElementById("gitBiggestAbs").textContent = addCommas(data.git.biggest_abs);
-    document.getElementById("gitBiggestPct").textContent = data.git.biggest_pct;
-    document.getElementById("gitRestAbs").textContent = addCommas(data.git.rest_abs);
-    document.getElementById("gitRestPct").textContent = data.git.rest_pct;
     document.getElementById("gitShannon").textContent = data.git.shannon;
     </script>
 
