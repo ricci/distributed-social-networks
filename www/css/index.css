@@ -43,7 +43,14 @@ div.gage {
 }
 
 div.shannon {
+  font-size: 15pt;
   margin-bottom: 15px;
+  color: #909296;
+}
+
+div.shannon span {
+  color: white;
+  margin-left: 10px;
 }
 
 p {
