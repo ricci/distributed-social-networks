@@ -1,14 +1,14 @@
 {
   "lastUpdate": "09-12-25",
   "fedi": {
-    "HHI": 719,
-    "shannon": 4.9265,
-    "simpson": 0.9281,
-    "servers": 18554,
-    "biggest_abs": 275006,
-    "biggest_pct": 24.72,
-    "rest_abs": 837294,
-    "rest_pct": 75.28,
+    "HHI": 720,
+    "shannon": 4.9256,
+    "simpson": 0.9279,
+    "servers": 18556,
+    "biggest_abs": 275985,
+    "biggest_pct": 24.77,
+    "rest_abs": 838071,
+    "rest_pct": 75.23,
     "b_vals": [
       [
         25,
@@ -24,11 +24,11 @@
       ],
       [
         90,
-        517
+        516
       ],
       [
         99,
-        7963
+        7950
       ]
     ]
   },
@@ -36,10 +36,10 @@
     "HHI": 9911,
     "shannon": 0.0374,
     "simpson": 0.0088,
-    "servers": 1471,
-    "biggest_abs": 12724549,
+    "servers": 1477,
+    "biggest_abs": 12743217,
     "biggest_pct": 99.56,
-    "rest_abs": 56628,
+    "rest_abs": 56731,
     "rest_pct": 0.44,
     "b_vals": [
       [
@@ -69,9 +69,9 @@
     "shannon": 0.197,
     "simpson": 0.0638,
     "servers": 1559,
-    "biggest_abs": 296939213,
+    "biggest_abs": 296998715,
     "biggest_pct": 96.74,
-    "rest_abs": 10015960,
+    "rest_abs": 10016150,
     "rest_pct": 3.26,
     "b_vals": [
       [
