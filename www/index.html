@@ -34,18 +34,21 @@
         <h5>Mastodon, Pixelfed, etc.</h5>
         <div id="gageFedi" class="gage"></div>
         <div class="shannon">Shannon Index: <span id="fediShannon"></span></div>
+            <div class="shannon-trend">One-week trend: <span id="fediShannonTrend"></span> (<span id="fediShannonTrendPct"></span>)%<img id="fediShannonIcon"></div>
       </div>
       <div class="rating">
         <h3>The Atmosphere</h3>
         <h5>Bluesky, WhiteWind, etc.</h5>
         <div id="gageAtmosphere" class="gage"></div>
         <div class="shannon">Shannon Index: <span id="atShannon"></span></div>
+        <div class="shannon-trend">One-week trend: <span id="atShannonTrend"></span> (<span id="atShannonTrendPct"></span>)%<img id="atShannonIcon"></div>
       </div>
       <div class="rating">
         <h3>Public Git Forges</h3>
         <h5>Github, Gitlab, etc.</h5>
         <div id="gageGit" class="gage"></div>
         <div class="shannon">Shannon Index: <span id="gitShannon"></span></div>
+        <div class="shannon-trend">One-week trend: <span id="gitShannonTrend"></span> (<span id="gitShannonTrendPct"></span>)%<img id="gitShannonIcon"></div>
       </div>
       <h4>Data last updated: <span id="lastUpdate"></span></h4>
     </div>
@@ -176,6 +179,12 @@
     document.getElementById("fediShannon").textContent = data.fedi.shannon;
     document.getElementById("atShannon").textContent = data.at.shannon;
     document.getElementById("gitShannon").textContent = data.git.shannon;
+    document.getElementById("fediShannonTrend").textContent = data.trends.fedi.weekly_shannon.toFixed(4);
+    document.getElementById("fediShannonTrendPct").textContent = (data.trends.fedi.weekly_shannon * 100 / data.fedi.shannon).toFixed(2);
+    document.getElementById("atShannonTrend").textContent = data.trends.at.weekly_shannon.toFixed(4);
+    document.getElementById("atShannonTrendPct").textContent = (data.trends.at.weekly_shannon * 100 / data.at.shannon).toFixed(2);
+    document.getElementById("gitShannonTrend").textContent = data.trends.git.weekly_shannon.toFixed(4);
+    document.getElementById("gitShannonTrendPct").textContent = (data.trends.git.weekly_shannon * 100 / data.git.shannon).toFixed(2);
     </script>
 
 </body>
