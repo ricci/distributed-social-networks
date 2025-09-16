@@ -53,6 +53,7 @@ div.shannon {
 
 div.shannon div.index {
   font-size: 15pt;
+  margin-bottom: 0.2em;
 }
 
 div.shannon div.index span {
@@ -60,9 +61,14 @@ div.shannon div.index span {
   margin-left: 10px;
 }
 
+div.shannon div.icon {
+    margin-top: 0.2em;
+    font-size: 15pt;
+}
+
 div.shannon div.icon img {
   display: inline;
-  height: 2em;
+  height: 1.5em;
   vertical-align: middle;
   margin-left: 10px;
 }
