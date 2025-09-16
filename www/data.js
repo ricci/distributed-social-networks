@@ -95,5 +95,10 @@ var data =  {
         3
       ]
     ]
+  },
+  "trends": {
+      "fedi": { "weekly_shannon": 0.0313},
+      "at": { "weekly_shannon": 0.0010},
+      "git": { "weekly_shannon": -0.0007}
   }
 }
