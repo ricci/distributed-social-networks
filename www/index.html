@@ -33,22 +33,31 @@
         <h3>The Fediverse</h3>
         <h5>Mastodon, Pixelfed, etc.</h5>
         <div id="gageFedi" class="gage"></div>
-        <div class="shannon">Shannon Index: <span id="fediShannon"></span></div>
-            <div class="shannon-trend">One-week trend: <span id="fediShannonTrend"></span> (<span id="fediShannonTrendPct"></span>)%<img id="fediShannonIcon"> <span id="fediShannonText"></span></div>
+        <div class="shannon">
+          <div class="index">Shannon Index: <span id="fediShannon"></span></div>
+          <div class="trend">One-week trend: <span id="fediShannonTrend"></span> (<span id="fediShannonTrendPct"></span>%)</div>
+          <div class="icon"><img id="fediShannonIcon"> <span id="fediShannonText"></span></div>
+        </div>
       </div>
       <div class="rating">
         <h3>The Atmosphere</h3>
         <h5>Bluesky, WhiteWind, etc.</h5>
         <div id="gageAtmosphere" class="gage"></div>
-        <div class="shannon">Shannon Index: <span id="atShannon"></span></div>
-        <div class="shannon-trend">One-week trend: <span id="atShannonTrend"></span> (<span id="atShannonTrendPct"></span>)%<img id="atShannonIcon"> <span id="atShannonText"></span></div>
+        <div class="shannon">
+          <div class="index">Shannon Index: <span id="atShannon"></span></div>
+          <div class="trend">One-week trend: <span id="atShannonTrend"></span> (<span id="atShannonTrendPct"></span>%)</div>
+          <div class="icon"><img id="atShannonIcon"> <span id="atShannonText"></span></div>
+        </div>
       </div>
       <div class="rating">
         <h3>Public Git Forges</h3>
         <h5>Github, Gitlab, etc.</h5>
         <div id="gageGit" class="gage"></div>
-        <div class="shannon">Shannon Index: <span id="gitShannon"></span></div>
-        <div class="shannon-trend">One-week trend: <span id="gitShannonTrend"></span> (<span id="gitShannonTrendPct"></span>)%<img id="gitShannonIcon"> <span id="gitShannonText"></span></div>
+        <div class="shannon">
+          <div class="index">Shannon Index: <span id="gitShannon"></span></div>
+          <div class="trend">One-week trend: <span id="gitShannonTrend"></span> (<span id="gitShannonTrendPct"></span>%)</div>
+          <div class="icon"><img id="gitShannonIcon"> <span id="gitShannonText"></span></div>
+        </div>
       </div>
       <h4>Data last updated: <span id="lastUpdate"></span></h4>
     </div>
@@ -174,6 +183,11 @@
       return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
 
+    function formatSignedFloat(value, digits = 2) {
+      const fixed = value.toFixed(digits);
+      return (value >= 0 ? "+" : "") + fixed;
+    }
+
     const shannon_trend_threshold = 1.0;
     function trend_icon(value) {
         if (value  >= shannon_trend_threshold) {
@@ -202,20 +216,20 @@
     document.getElementById("gitShannon").textContent = data.git.shannon;
 
     document.getElementById("fediShannonTrend").textContent = data.trends.fedi.weekly_shannon.toFixed(4);
-    const fediShannonTrendPct = (data.trends.fedi.weekly_shannon * 100 / data.fedi.shannon).toFixed(2);
-    document.getElementById("fediShannonTrendPct").textContent = fediShannonTrendPct;
+    const fediShannonTrendPct = data.trends.fedi.weekly_shannon * 100 / data.fedi.shannon;
+    document.getElementById("fediShannonTrendPct").textContent = formatSignedFloat(fediShannonTrendPct);
     document.getElementById("fediShannonIcon").src = trend_icon(fediShannonTrendPct);
     document.getElementById("fediShannonText").textContent = trend_text(fediShannonTrendPct);
 
     document.getElementById("atShannonTrend").textContent = data.trends.at.weekly_shannon.toFixed(4);
-    const atShannonTrendPct = (data.trends.at.weekly_shannon * 100 / data.at.shannon).toFixed(2);
-    document.getElementById("atShannonTrendPct").textContent = atShannonTrendPct;
+    const atShannonTrendPct = data.trends.at.weekly_shannon * 100 / data.at.shannon;
+    document.getElementById("atShannonTrendPct").textContent = formatSignedFloat(atShannonTrendPct);
     document.getElementById("atShannonIcon").src = trend_icon(atShannonTrendPct);
     document.getElementById("atShannonText").textContent = trend_text(atShannonTrendPct);
 
     document.getElementById("gitShannonTrend").textContent = data.trends.git.weekly_shannon.toFixed(4);
-    const gitShannonTrendPct = (data.trends.git.weekly_shannon * 100 / data.git.shannon).toFixed(2);
-    document.getElementById("gitShannonTrendPct").textContent = gitShannonTrendPct;
+    const gitShannonTrendPct = data.trends.git.weekly_shannon * 100 / data.git.shannon;
+    document.getElementById("gitShannonTrendPct").textContent = formatSignedFloat(gitShannonTrendPct);
     document.getElementById("gitShannonIcon").src = trend_icon(gitShannonTrendPct);
     document.getElementById("gitShannonText").textContent = trend_text(gitShannonTrendPct);
     </script>

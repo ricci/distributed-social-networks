@@ -43,16 +43,24 @@ div.gage {
 }
 
 div.shannon {
-  font-size: 15pt;
-  color: #909296;
+  background: #ffffff0d;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin-left: 4px;
+  margin-right: 4px;
+  border: 1px solid #ffffff1d;
 }
 
-div.shannon span {
+div.shannon div.index {
+  font-size: 15pt;
+}
+
+div.shannon div.index span {
   color: white;
   margin-left: 10px;
 }
 
-div.shannon-trend img {
+div.shannon div.icon img {
   display: inline;
   height: 2em;
   vertical-align: middle;
