@@ -1,14 +1,14 @@
 var data =  {
-  "lastUpdate": "09-16-25",
+  "lastUpdate": "09-19-25",
   "fedi": {
-    "HHI": 719,
-    "shannon": 4.9298,
-    "simpson": 0.928,
-    "servers": 18609,
-    "biggest_abs": 275849,
-    "biggest_pct": 24.81,
-    "rest_abs": 835964,
-    "rest_pct": 75.19,
+    "HHI": 730,
+    "shannon": 4.9139,
+    "simpson": 0.9269,
+    "servers": 18618,
+    "biggest_abs": 277588,
+    "biggest_pct": 24.94,
+    "rest_abs": 835414,
+    "rest_pct": 75.06,
     "b_vals": [
       [
         25,
@@ -16,19 +16,19 @@ var data =  {
       ],
       [
         50,
-        15
+        14
       ],
       [
         75,
-        104
+        105
       ],
       [
         90,
-        518
+        517
       ],
       [
         99,
-        7997
+        7988
       ]
     ]
   },
@@ -36,10 +36,10 @@ var data =  {
     "HHI": 9911,
     "shannon": 0.0373,
     "simpson": 0.0088,
-    "servers": 1469,
-    "biggest_abs": 12903076,
+    "servers": 1444,
+    "biggest_abs": 12999932,
     "biggest_pct": 99.56,
-    "rest_abs": 57317,
+    "rest_abs": 57692,
     "rest_pct": 0.44,
     "b_vals": [
       [
@@ -65,14 +65,14 @@ var data =  {
     ]
   },
   "git": {
-    "HHI": 9363,
-    "shannon": 0.1967,
-    "simpson": 0.0637,
+    "HHI": 9364,
+    "shannon": 0.1964,
+    "simpson": 0.0636,
     "servers": 1561,
-    "biggest_abs": 297727581,
-    "biggest_pct": 96.74,
-    "rest_abs": 10018900,
-    "rest_pct": 3.26,
+    "biggest_abs": 298281550,
+    "biggest_pct": 96.75,
+    "rest_abs": 10020492,
+    "rest_pct": 3.25,
     "b_vals": [
       [
         25,
