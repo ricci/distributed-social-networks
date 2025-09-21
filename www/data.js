@@ -97,14 +97,8 @@ var data =  {
     ]
   },
   "trends": {
-    "fedi": {
-      "weekly_shannon": 0.0313
-    },
-    "at": {
-      "weekly_shannon": 0.0010
-    },
-    "git": {
-      "weekly_shannon": -0.0007
-    }
+      "fedi": { "weekly_shannon": -0.0083},
+      "at": { "weekly_shannon": -0.0001},
+      "git": { "weekly_shannon": -0.0002}
   }
 }
