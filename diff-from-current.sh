@@ -1,10 +1,11 @@
 #!/bin/bash
 
-CSV=$1
-WHICH=$2
+WHICH=$1
+CSV=$2
+CSV2=$3
 
-CUR=$(jq < www/data.json .$WHICH.shannon)
-PREV=$(python3 ./hhi.py --json $CSV | jq .shannon)
+CUR=$(python3 ./hhi.py --json $CSV | jq .shannon)
+PREV=$(python3 ./hhi.py --json $CSV2 | jq .shannon)
 
 DIFF=$(echo "$CUR - $PREV" | bc -l)
 
