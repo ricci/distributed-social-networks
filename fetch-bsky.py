@@ -4,10 +4,11 @@ import requests
 import csv
 import sys
 
-URL = "https://relay1.us-east.bsky.network/xrpc/com.atproto.sync.listHosts"
+URLS = ["https://relay1.us-east.bsky.network/xrpc/com.atproto.sync.listHosts", "https://atproto.africa/xrpc/com.atproto.sync.listHosts"]
 OUTPUT_FILE = "atproto-bsky-relay.csv"
 
-def fetch_all():
+def fetch_all(url):
+    print(f"Fetching from {url}")
     cursor = None
     all_hosts = []
     pages = 0
@@ -17,7 +18,7 @@ def fetch_all():
         if cursor:
             params["cursor"] = cursor
 
-        r = requests.get(URL, params=params, timeout=30)
+        r = requests.get(url, params=params, timeout=30)
         r.raise_for_status()
 
         data = r.json()
@@ -39,13 +40,25 @@ def fetch_all():
 if __name__ == "__main__":
     outfile = outfile = sys.argv[1] if len(sys.argv) == 2 else OUTPUT_FILE
 
-    hosts = fetch_all()
+    host_dict = { }
+    for url in URLS:
+        hosts = fetch_all(url)
+        for host in hosts:
+            # We keep the largest value found
+            hostname = host['hostname']
+            if hostname in host_dict:
+                if host['accountCount'] > host_dict[hostname]['accountCount']:
+                    host_dict[hostname]['accountCount'] = host['accountCount'] 
+                if host['seq'] > host_dict[hostname]['seq']:
+                    host_dict[hostname]['seq'] = host['seq'] 
+            else:
+                host_dict[hostname] = host
 
     fieldnames = ["hostname", "status", "accountCount", "seq"]
     with open(outfile, "w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
-        for host in hosts:
+        for _,host in host_dict.items():
             row = {k: host.get(k, "") for k in fieldnames}
             writer.writerow(row)
 
