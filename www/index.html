@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <meta name="description" content="A site with statistics regarding the decentralization status of various web services" />
+    <meta name="description" content="A site with statistics regarding how concentrated user data is on various web services" />
     <meta charset="utf-8">
     <title>Are We Decentralized Yet?</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -69,10 +69,12 @@
           href="https://atproto.com/">Atmosphere</a>, and public git forges according to the
         <a href="https://en.wikipedia.org/wiki/Herfindahl%E2%80%93Hirschman_index">Herfindahl–Hirschman
         Index</a> (HHI) and the <a href="https://en.wikipedia.org/wiki/Diversity_index#Shannon_index">Shannon Index</a>.
+        User data is only one way to measure centralization: others include network structure, legal exposure, and
+        concentration of social and technical power.
       </p>
 
       <p>
-        HHI is an indicator from economics used to measure competition between firms in
+        <b>HHI</b> is an indicator from economics used to measure competition between firms in
         an industry.
         Mathematically, HHI is the sum of the squares of market shares of all servers.
         Values close to zero indicate perfectly competitive markets (eg. many servers, with users
@@ -83,15 +85,16 @@
       </p>
 
       <p>
-        The Shannon Index is an entropy-based measure used in ecological studies.
-        It is computed the same as Shannon entropy using the natural log: the negative sum over all servers of the "market
+        The <b>Shannon Index</b> is an entropy-based measure used in ecological studies. Because it is logarithmic,
+        it is more responsive than HHI to changes in the "smaller players".
+        It is computed as Shannon entropy using the natural log: the negative sum over all servers of the "market
         share" times the log of the market share. Lower values indicate lower entropy (a high concentration of one species),
         while higher values indicate a more even population. In this context,
-        the maximum value is the number of servers, which would mean that all servers have equal population.
+        the maximum value is the natural log of the number of servers.
       </p>
 
       <p>
-        For the social networks, this site currently measures the concentration of user data for active users: in the
+        For the social networks, this site measures the concentration of user data for active users: in the
         Fediverse, this data is on <a href="https://w3c.github.io/activitypub/#server-to-server-interactions">servers</a> (also known as instances);
         in the Atmosphere, it is on the
         <a
@@ -110,18 +113,6 @@
         roughly equivalent to the number of git repositories they crawl. Software
         Heritage's archive coverage can be found on <a href="https://archive.softwareheritage.org/">their coverage page</a>.
 
-      </p>
-
-      <p>
-        The location of user data is not the only interesting measure of 
-        centralization. On a technical level, there is the network
-        structure (peer to peer, relays, etc.), identity management, the
-        infrastructure on which it is hosted, etc. On a legal level, there are
-        issues regarding the jurisdictions where servers are located, companies
-        are located, etc. On a social level, there are issues around where
-        human power is concentrated in and on the platform, and whether that
-        power is disproportionately held by certain groups. If you would like
-        to help contribute other measures of decentralization, get in touch.
       </p>
 
       <p>
