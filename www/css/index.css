@@ -25,6 +25,10 @@ h3 {
   color: #e7e9eb;
 }
 
+h4 {
+  color: #909296;
+}
+
 h5 {
   margin-top: 0px;
   color: #a7a9ab;
@@ -95,4 +99,7 @@ td {
 table {
   margin-left: auto;
   margin-right: auto;
+  margin-top: 12pt;
+  color: #909296;
 }
+
