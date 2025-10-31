@@ -43,6 +43,7 @@
             <tr><th>Biggest</th><td><span id="fediBiggestAbs"></span></td><td>(<span id="fediBiggestPct"></span>%)</td></tr>
             <tr><th>Rest</th><td><span id="fediRestAbs"></span></td><td>(<span id="fediRestPct"></span>%)</td></tr>
         </table>
+        Data: <a href="https://fedilist.com/">Fedilist</a>
       </div>
       <div class="rating">
         <h3>The Atmosphere</h3>
@@ -58,6 +59,7 @@
             <tr><th>Biggest</th><td><span id="atBiggestAbs"></span></td><td>(<span id="atBiggestPct"></span>%)</td></tr>
             <tr><th>Rest</th><td><span id="atRestAbs"></span></td><td>(<span id="atRestPct"></span>%)</td></tr>
         </table>
+        Data: <a href="https://relay1.us-east.bsky.network/">Bluesky</a>
       </div>
       <div class="rating">
         <h3>Public Git Forges</h3>
@@ -73,6 +75,49 @@
             <tr><th>Biggest</th><td><span id="gitBiggestAbs"></span></td><td>(<span id="gitBiggestPct"></span>%)</td></tr>
             <tr><th>Rest</th><td><span id="gitRestAbs"></span></td><td>(<span id="gitRestPct"></span>%)</td></tr>
         </table>
+        Data: <a href="https://archive.softwareheritage.org/">Software&nbsp;Heritage</a>
+      </div>
+      <div class="rating">
+        <h3>Web Hosting</h3>
+        <h5>Cloudflare, AWS, etc.</h5>
+        <div id="gageHosting" class="gage"></div>
+        <div class="shannon">
+          <div class="index">Shannon Index: <span id="hostingShannon"></span></div>
+        </div>
+        <table>
+            <tr><th>Hosts</th><td><span id="hostingServers"></span></td></tr>
+            <tr><th>Biggest</th><td><span id="hostingBiggestAbs"></span></td><td>(<span id="hostingBiggestPct"></span>%)</td></tr>
+            <tr><th>Rest</th><td><span id="hostingRestAbs"></span></td><td>(<span id="hostingRestPct"></span>%)</td></tr>
+        </table>
+        Data: <a href="https://zenodo.org/records/15733582">Habib&nbsp;et&nbsp;al.</a>
+      </div>
+      <div class="rating">
+        <h3>DNS Hosting</h3>
+        <h5>Cloudflare DNS, Amazon Route 53, etc.</h5>
+        <div id="gageDNS" class="gage"></div>
+        <div class="shannon">
+          <div class="index">Shannon Index: <span id="dnsShannon"></span></div>
+        </div>
+        <table>
+            <tr><th>DNS Hosts</th><td><span id="dnsServers"></span></td></tr>
+            <tr><th>Biggest</th><td><span id="dnsBiggestAbs"></span></td><td>(<span id="dnsBiggestPct"></span>%)</td></tr>
+            <tr><th>Rest</th><td><span id="dnsRestAbs"></span></td><td>(<span id="dnsRestPct"></span>%)</td></tr>
+        </table>
+        Data: <a href="https://zenodo.org/records/15733582">Habib&nbsp;et&nbsp;al.</a>
+      </div>
+      <div class="rating">
+        <h3>TLS Certificates</h3>
+        <h5>Let's Encrypt, Digicert, etc.</h5>
+        <div id="gageCert" class="gage"></div>
+        <div class="shannon">
+          <div class="index">Shannon Index: <span id="certShannon"></span></div>
+        </div>
+        <table>
+            <tr><th>CAs</th><td><span id="certServers"></span></td></tr>
+            <tr><th>Biggest</th><td><span id="certBiggestAbs"></span></td><td>(<span id="certBiggestPct"></span>%)</td></tr>
+            <tr><th>Rest</th><td><span id="certRestAbs"></span></td><td>(<span id="certRestPct"></span>%)</td></tr>
+        </table>
+        Data: <a href="https://zenodo.org/records/15733582">Habib&nbsp;et&nbsp;al.</a>
       </div>
       <h4>Data last updated: <span id="lastUpdate"></span></h4>
     </div>
@@ -179,9 +224,24 @@
       value: data["at"]["HHI"],
       defaults
     });
-    var gAtmpsphere = new JustGage({
+    var gGit = new JustGage({
       id: "gageGit",
       value: data["git"]["HHI"],
+      defaults
+    });
+    var gHosting = new JustGage({
+      id: "gageHosting",
+      value: data["hosting"]["HHI"],
+      defaults
+    });
+    var gDNS = new JustGage({
+      id: "gageDNS",
+      value: data["dns"]["HHI"],
+      defaults
+    });
+    var gCert = new JustGage({
+      id: "gageCert",
+      value: data["cert"]["HHI"],
       defaults
     });
 
@@ -220,6 +280,9 @@
     document.getElementById("fediServers").textContent = addCommas(data.fedi.servers);
     document.getElementById("atServers").textContent = addCommas(data.at.servers);
     document.getElementById("gitServers").textContent = addCommas(data.git.servers);
+    document.getElementById("hostingServers").textContent = addCommas(data.hosting.servers);
+    document.getElementById("dnsServers").textContent = addCommas(data.dns.servers);
+    document.getElementById("certServers").textContent = addCommas(data.cert.servers);
 
     document.getElementById("fediBiggestAbs").textContent = addCommas(data.fedi.biggest_abs);
     document.getElementById("fediBiggestPct").textContent = data.fedi.biggest_pct;
@@ -238,6 +301,24 @@
     document.getElementById("gitRestAbs").textContent = addCommas(data.git.rest_abs);
     document.getElementById("gitRestPct").textContent = data.git.rest_pct;
     document.getElementById("gitShannon").textContent = data.git.shannon;
+
+    document.getElementById("hostingBiggestAbs").textContent = addCommas(data.hosting.biggest_abs);
+    document.getElementById("hostingBiggestPct").textContent = data.hosting.biggest_pct;
+    document.getElementById("hostingRestAbs").textContent = addCommas(data.hosting.rest_abs);
+    document.getElementById("hostingRestPct").textContent = data.hosting.rest_pct;
+    document.getElementById("hostingShannon").textContent = data.hosting.shannon;
+
+    document.getElementById("dnsBiggestAbs").textContent = addCommas(data.dns.biggest_abs);
+    document.getElementById("dnsBiggestPct").textContent = data.dns.biggest_pct;
+    document.getElementById("dnsRestAbs").textContent = addCommas(data.dns.rest_abs);
+    document.getElementById("dnsRestPct").textContent = data.dns.rest_pct;
+    document.getElementById("dnsShannon").textContent = data.dns.shannon;
+
+    document.getElementById("certBiggestAbs").textContent = addCommas(data.cert.biggest_abs);
+    document.getElementById("certBiggestPct").textContent = data.cert.biggest_pct;
+    document.getElementById("certRestAbs").textContent = addCommas(data.cert.rest_abs);
+    document.getElementById("certRestPct").textContent = data.cert.rest_pct;
+    document.getElementById("certShannon").textContent = data.cert.shannon;
 
     document.getElementById("fediShannonTrend").textContent = data.trends.fedi.weekly_shannon.toFixed(4);
     const fediShannonTrendPct = data.trends.fedi.weekly_shannon * 100 / data.fedi.shannon;
