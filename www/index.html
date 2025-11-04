@@ -28,8 +28,9 @@
     </noscript>
 
     <div class="container">
-      <h2>How Concentrated Is User Data On:</h2>
-      <div class="rating">
+      <h2>Accounts On Decentralized Social Networks</h2>
+
+      <div class="rating" id="fedi">
         <h3>The Fediverse</h3>
         <h5>Mastodon, Pixelfed, etc.</h5>
         <div id="gageFedi" class="gage"></div>
@@ -43,9 +44,12 @@
             <tr><th>Biggest</th><td><span id="fediBiggestAbs"></span></td><td>(<span id="fediBiggestPct"></span>%)</td></tr>
             <tr><th>Rest</th><td><span id="fediRestAbs"></span></td><td>(<span id="fediRestPct"></span>%)</td></tr>
         </table>
-        Data: <a href="https://fedilist.com/">Fedilist</a>
+        <div class="data">
+            Data: <a href="https://fedilist.com/">Fedilist</a> (<span id="fediUpdated"></span>)
+        </div>
       </div>
-      <div class="rating">
+
+      <div class="rating" id="atmosphere">
         <h3>The Atmosphere</h3>
         <h5>Bluesky, WhiteWind, etc.</h5>
         <div id="gageAtmosphere" class="gage"></div>
@@ -59,8 +63,31 @@
             <tr><th>Biggest</th><td><span id="atBiggestAbs"></span></td><td>(<span id="atBiggestPct"></span>%)</td></tr>
             <tr><th>Rest</th><td><span id="atRestAbs"></span></td><td>(<span id="atRestPct"></span>%)</td></tr>
         </table>
-        Data: <a href="https://relay1.us-east.bsky.network/">Bluesky</a>
+        <div class="data">
+            Data: <a href="https://relay1.us-east.bsky.network/">Bluesky</a> (<span id="atUpdated"></span>)
+        </div>
       </div>
+    </div>
+
+
+    <div class="container">
+      <h2>Hosting Services</h2>
+
+      <div class="rating">
+        <h3>Web Hosting</h3>
+        <h5>Cloudflare, AWS, etc.</h5>
+        <div id="gageHosting" class="gage"></div>
+        <div class="shannon">
+          <div class="index">Shannon Index: <span id="hostingShannon"></span></div>
+        </div>
+        <table>
+            <tr><th>Hosts</th><td><span id="hostingServers"></span></td></tr>
+            <tr><th>Biggest</th><td><span id="hostingBiggestAbs"></span></td><td>(<span id="hostingBiggestPct"></span>%)</td></tr>
+            <tr><th>Rest</th><td><span id="hostingRestAbs"></span></td><td>(<span id="hostingRestPct"></span>%)</td></tr>
+        </table>
+        Data: <a href="https://zenodo.org/records/15733582">Habib&nbsp;et&nbsp;al.</a>
+      </div>
+
       <div class="rating">
         <h3>Public Git Forges</h3>
         <h5>Github, Gitlab, etc.</h5>
@@ -77,20 +104,10 @@
         </table>
         Data: <a href="https://archive.softwareheritage.org/">Software&nbsp;Heritage</a>
       </div>
-      <div class="rating">
-        <h3>Web Hosting</h3>
-        <h5>Cloudflare, AWS, etc.</h5>
-        <div id="gageHosting" class="gage"></div>
-        <div class="shannon">
-          <div class="index">Shannon Index: <span id="hostingShannon"></span></div>
-        </div>
-        <table>
-            <tr><th>Hosts</th><td><span id="hostingServers"></span></td></tr>
-            <tr><th>Biggest</th><td><span id="hostingBiggestAbs"></span></td><td>(<span id="hostingBiggestPct"></span>%)</td></tr>
-            <tr><th>Rest</th><td><span id="hostingRestAbs"></span></td><td>(<span id="hostingRestPct"></span>%)</td></tr>
-        </table>
-        Data: <a href="https://zenodo.org/records/15733582">Habib&nbsp;et&nbsp;al.</a>
-      </div>
+    </div>
+
+    <div class="container">
+      <h2>Network Infrastructure</h2>
       <div class="rating">
         <h3>DNS Hosting</h3>
         <h5>Cloudflare DNS, Amazon Route 53, etc.</h5>
@@ -119,7 +136,6 @@
         </table>
         Data: <a href="https://zenodo.org/records/15733582">Habib&nbsp;et&nbsp;al.</a>
       </div>
-      <h4>Data last updated: <span id="lastUpdate"></span></h4>
     </div>
 
     <div class="container">
@@ -202,6 +218,7 @@
       txtMaximum: "concentrated", 
       pointer: "true",
       titlePosition: "below",
+      //label: "HHI <a href="#HHI">?</a>",
       label: "HHI",
       pointerOptions: {
           toplength: -10,
@@ -275,7 +292,8 @@
         }
     }
 
-    document.getElementById("lastUpdate").textContent = data.lastUpdate; 
+    document.getElementById("fediUpdated").textContent = data.lastUpdate; 
+    document.getElementById("atUpdated").textContent = data.lastUpdate; 
 
     document.getElementById("fediServers").textContent = addCommas(data.fedi.servers);
     document.getElementById("atServers").textContent = addCommas(data.at.servers);
