@@ -108,7 +108,6 @@ p {
   display: block;
   margin-left: auto;
   margin-right: auto;
-  /* color: #909296; */
 }
 
 th {
@@ -124,7 +123,7 @@ table {
   margin-left: auto;
   margin-right: auto;
   margin-top: 12pt;
-  color: #a0a2a6;
+  color: #b0b2b6;
 }
 
 div.data {
