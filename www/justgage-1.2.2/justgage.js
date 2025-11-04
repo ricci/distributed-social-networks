@@ -688,7 +688,7 @@ JustGage = function(config) {
   obj.txtLabel.attr({
     "font-size": obj.params.labelFontSize,
     "font-weight": "normal",
-    "font-family": "Arial",
+    "font-family": obj.config.valueFontFamily,
     "fill": obj.config.labelFontColor,
     "fill-opacity": "0"
   });
@@ -714,7 +714,7 @@ JustGage = function(config) {
   obj.txtMin.attr({
     "font-size": obj.params.minFontSize,
     "font-weight": "normal",
-    "font-family": "Arial",
+    "font-family": obj.config.valueFontFamily,
     "fill": obj.config.labelFontColor,
     "fill-opacity": (obj.config.hideMinMax || obj.config.donut) ? "0" : "1"
   });
@@ -740,7 +740,7 @@ JustGage = function(config) {
   obj.txtMax.attr({
     "font-size": obj.params.maxFontSize,
     "font-weight": "normal",
-    "font-family": "Arial",
+    "font-family": obj.config.valueFontFamily,
     "fill": obj.config.labelFontColor,
     "fill-opacity": (obj.config.hideMinMax || obj.config.donut) ? "0" : "1"
   });
