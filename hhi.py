@@ -68,7 +68,7 @@ def extract_domain_counts(row):
 
 # Different CSVs use different names for the user count field
 def get_usercount(row):
-    for key in ("user_count", "mau", "accountcount","origins","count"):
+    for key in ("user_count", "mau", "accountcount","origins", "count", "nb_hostnames"):
         val = row.get(key, "")
         if val != "":
             return int(val)
@@ -76,7 +76,7 @@ def get_usercount(row):
 
 # Different CSVs use different columns for the hostname
 def get_domain(row):
-    for key in ("domain", "hostname","instance","org_id"):
+    for key in ("domain", "hostname","instance","org_id","e.id","o.name","a.asn","asn"):
         if key in row:
             return row.get(key, "")
     return None
@@ -138,6 +138,7 @@ def main(filename, json_out = False):
         print(f"Total servers: {servers}")
         print(f"Biggest server: {biggest_abs} ({biggest_pct:.2f}%)")
         print(f"Rest of the servers: {rest_abs} ({rest_pct:.2f}%)")
+        print(f"Total users: {biggest_abs + rest_abs}")
         print(f"B values are {bs}")
 
 if __name__ == "__main__":
