@@ -1,14 +1,14 @@
 {
-  "lastUpdate": "10-04-2025",
+  "lastUpdate": "11-03-2025",
   "fedi": {
-    "HHI": 744,
-    "shannon": 4.9546,
-    "simpson": 0.9255,
-    "servers": 18753,
-    "biggest_abs": 273503,
-    "biggest_pct": 25.33,
-    "rest_abs": 806338,
-    "rest_pct": 74.67,
+    "HHI": 760,
+    "shannon": 4.9689,
+    "simpson": 0.924,
+    "servers": 18615,
+    "biggest_abs": 266716,
+    "biggest_pct": 25.95,
+    "rest_abs": 760896,
+    "rest_pct": 74.05,
     "b_vals": [
       [
         25,
@@ -16,31 +16,35 @@
       ],
       [
         50,
-        15
+        16
       ],
       [
         75,
-        113
+        115
       ],
       [
         90,
-        551
+        568
       ],
       [
         99,
-        8298
+        8401
+      ],
+      [
+        99.5,
+        13477
       ]
     ]
   },
   "at": {
-    "HHI": 9911,
-    "shannon": 0.0377,
-    "simpson": 0.0089,
-    "servers": 1450,
-    "biggest_abs": 13501148,
-    "biggest_pct": 99.55,
-    "rest_abs": 60486,
-    "rest_pct": 0.45,
+    "HHI": 9877,
+    "shannon": 0.0537,
+    "simpson": 0.0123,
+    "servers": 1358,
+    "biggest_abs": 14480741,
+    "biggest_pct": 99.38,
+    "rest_abs": 89909,
+    "rest_pct": 0.62,
     "b_vals": [
       [
         25,
@@ -61,18 +65,22 @@
       [
         99,
         1
+      ],
+      [
+        99.5,
+        2
       ]
     ]
   },
   "git": {
-    "HHI": 9369,
-    "shannon": 0.1951,
-    "simpson": 0.0631,
+    "HHI": 9377,
+    "shannon": 0.1932,
+    "simpson": 0.0623,
     "servers": 1561,
-    "biggest_abs": 301077661,
-    "biggest_pct": 96.78,
-    "rest_abs": 10031852,
-    "rest_pct": 3.22,
+    "biggest_abs": 306320880,
+    "biggest_pct": 96.82,
+    "rest_abs": 10069843,
+    "rest_pct": 3.18,
     "b_vals": [
       [
         25,
@@ -93,10 +101,49 @@
       [
         99,
         3
+      ],
+      [
+        99.5,
+        4
       ]
     ]
   },
-  "hosting": {"HHI": 744, "shannon": 4.9738, "simpson": 0.9256, "servers": 20955, "biggest_abs": 282775, "biggest_pct": 24.98, "rest_abs": 849111, "rest_pct": 75.02, "b_vals": [[25, 2], [50, 15], [75, 109], [90, 535], [99, 10312], [99.5, 15296]]},
+  "hosting": {
+    "HHI": 744,
+    "shannon": 4.9738,
+    "simpson": 0.9256,
+    "servers": 20955,
+    "biggest_abs": 282775,
+    "biggest_pct": 24.98,
+    "rest_abs": 849111,
+    "rest_pct": 75.02,
+    "b_vals": [
+      [
+        25,
+        2
+      ],
+      [
+        50,
+        15
+      ],
+      [
+        75,
+        109
+      ],
+      [
+        90,
+        535
+      ],
+      [
+        99,
+        10312
+      ],
+      [
+        99.5,
+        15296
+      ]
+    ]
+  },
   "dns": {
     "HHI": 1545,
     "shannon": 3.7577,
@@ -171,13 +218,13 @@
   },
   "trends": {
     "fedi": {
-      "weekly_shannon": 0.0286
+      "weekly_shannon": 0.0157
     },
     "at": {
-      "weekly_shannon": 0.0004
+      "weekly_shannon": 0.0015
     },
     "git": {
       "weekly_shannon": -0.0006
     }
-  },
+  }
 }

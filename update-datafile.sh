@@ -3,7 +3,7 @@
 ATFILE="data/at/$(./newest.sh data/at)"
 FEDIFILE="data/fedi/$(./newest.sh data/fedi)"
 GITFILE="data/git/$(./newest.sh data/git)"
-HOSTFILE="hosting-byid.csv"
+HOSTFILE="worldwide.csv"
 DNSFILE="dns-byid.csv"
 CERTFILE="cert-byid.csv"
 
@@ -21,7 +21,7 @@ GITFILE_OLD="data/git/$(ls -1 data/git | ./weekago.sh)"
 
 /usr/local/bin/jq --argjson val "$(python3 hhi.py --json $DNSFILE)" '.dns = $val' www/data.json > data.json.tmp && mv data.json.tmp www/data.json
 
-/usr/local/bin/jq --argjson val "$(python3 hhi.py --json $CERTFILE)" '.dns = $val' www/data.json > data.json.tmp && mv data.json.tmp www/data.json
+/usr/local/bin/jq --argjson val "$(python3 hhi.py --json $CERTFILE)" '.cert = $val' www/data.json > data.json.tmp && mv data.json.tmp www/data.json
 
 /usr/local/bin/jq --argjson val "$(sh ./diff-from-current.sh fedi $FEDIFILE $FEDIFILE_OLD)" '.trends.fedi.weekly_shannon = $val' www/data.json > data.json.tmp && mv data.json.tmp www/data.json
 
