@@ -30,6 +30,32 @@
     <div class="container">
       <h2>Accounts On Decentralized Social Networks</h2>
 
+      <details class="help" id="social-details">
+        <summary>What does this measure?</summary>
+        <div>
+            <p>
+                For the social networks, this site measures where user accounts are stored: in the
+                Fediverse, these accounts are on <a href="https://w3c.github.io/activitypub/#server-to-server-interactions">servers</a> (also known as instances);
+                in the Atmosphere, they are on the
+                <a
+                  href="https://atproto.com/guides/glossary#pds-personal-data-server">PDSes</a>
+                that host users' <a
+                  href="https://atproto.com/guides/glossary#data-repo">data repos</a>.
+                All PDSes run by the company Bluesky Social PBC are aggregated in this
+                dataset, since they are under the control of a single entity. Similarly,
+                mastodon.social and mastodon.online are combined as they are run by the
+                same company.
+            </p>
+            <p>
+                At the present, Fediverse servers count Monthly Active Users, as reported
+                by the server. Atmosphere uses the count for each PDS provided by the Bluesky relays:
+                this account is roughly the number of active users since November 2023, when
+                <a href="https://github.com/bluesky-social/atproto/discussions/1832">Bluesky rearranged
+                its PDSes</a>.
+            </p>
+        </div>
+      </details>
+
       <div class="rating" id="fedi">
         <h3>The Fediverse</h3>
         <h5>Mastodon, Pixelfed, etc.</h5>
@@ -67,6 +93,52 @@
             Data: <a href="https://relay1.us-east.bsky.network/">Bluesky</a> (<span id="atUpdated"></span>)
         </div>
       </div>
+
+
+       <details class="help  tab metric-help" id="social-metrics-hhi">
+        <summary>What is HHI?</summary>
+        <div class="panel">
+            <p>
+                The <a href="https://en.wikipedia.org/wiki/Herfindahl%E2%80%93Hirschman_index">Herfindahl–Hirschman
+                Index</a> (<strong>HHI</strong>) is an indicator from economics used to measure competition between
+                firms in an industry.
+                Mathematically, HHI is the sum of the squares of market shares of all servers.
+                Values close to zero indicate perfectly competitive markets (eg. many servers, with users
+                spread evenly), while values close to 10000 indicate highly concentrated monopolies (eg.
+                most users on a single server). In economics, values below 100 are considered
+                "Highly Competitive", below 1500 is "Unconcentrated", and above 2500 is
+                considered "Highly Concentrated".
+            </p>
+            <p>
+                This method of measuring centralization for Internet systems is described in the paper
+                <a href="https://doi.org/10.1145/3718958.3750492">"Formalizing Dependence of Web Infrastructure"
+                by Habib et al.</a>, which appeared in the <a href="https://conferences.sigcomm.org/sigcomm/2025/">ACM
+                SIGCOMM conference in 2025</a>. The authors motivate this measure by describing it as a special case
+                of the "Earth Mover Distance": the amount of "work" it would take to change one statistical distribution
+                into another. Here, the empirical distribution measured for the system's current deployment is
+                compared to an idealized fully-decentralized distribution.
+            </p>
+        </div>
+       </details>
+       <details class="help tab metric-help" id="social-metrics-shannon">
+        <summary>What is the Shannon Index?</summary>
+        <div class="panel">
+            <p>
+               The <a href="https://en.wikipedia.org/wiki/Diversity_index#Shannon_index">Shannon Index</a>
+               is an entropy-based measure used in ecological studies to measure population diversity.
+                It is computed as Shannon entropy using the natural log: the negative sum over all servers of the "market
+                share" times the log of the market share. Lower values indicate lower entropy (a high concentration of one species),
+                while higher values indicate a more even population. In this context,
+                the maximum value is the natural log of the number of servers.
+            </p>
+            <p>
+                Because the Shannon Index is logarithmic, it is more responsive than HHI to changes in the "smaller players":
+                participants that are already large do not change the index much when their size changes. Changes in the smaller
+                participants, on the other hand, are more noticeable in the computed index. Thus, it is a good way of looking
+                at systems that are undergoing change at the smaller end of the hosting scale.
+            </p>
+        </div>
+       </details>
     </div>
 
 
@@ -150,14 +222,6 @@
       </p>
 
       <p>
-        <b>HHI</b> is an indicator from economics used to measure competition between firms in
-        an industry.
-        Mathematically, HHI is the sum of the squares of market shares of all servers.
-        Values close to zero indicate perfectly competitive markets (eg. many servers, with users
-        spread evenly), while values close to 10000 indicate highly concentrated monopolies (eg.
-        most users on a single server). In economics, values below 100 are considered
-        "Highly Competitive", below 1500 is "Unconcentrated", and above 2500 is
-        considered "Highly Concentrated".
       </p>
 
       <p>
@@ -167,20 +231,6 @@
         share" times the log of the market share. Lower values indicate lower entropy (a high concentration of one species),
         while higher values indicate a more even population. In this context,
         the maximum value is the natural log of the number of servers.
-      </p>
-
-      <p>
-        For the social networks, this site measures the concentration of user data for active users: in the
-        Fediverse, this data is on <a href="https://w3c.github.io/activitypub/#server-to-server-interactions">servers</a> (also known as instances);
-        in the Atmosphere, it is on the
-        <a
-          href="https://atproto.com/guides/glossary#pds-personal-data-server">PDSes</a>
-        that host users' <a
-          href="https://atproto.com/guides/glossary#data-repo">data repos</a>.
-        All PDSes run by the company Bluesky Social PBC are aggregated in this
-        dataset, since they are under the control of a single entity. Similarly,
-        mastodon.social and mastodon.online are combined as they are run by the
-        same company.
       </p>
 
       <p>
@@ -218,8 +268,11 @@
       txtMaximum: "concentrated", 
       pointer: "true",
       titlePosition: "below",
-      //label: "HHI <a href="#HHI">?</a>",
+      //label: "HHI ???",
       label: "HHI",
+      labelFontColor: "#ffffff",
+
+      labelMinFontSize: 18,
       pointerOptions: {
           toplength: -10,
           bottomlength: 5,
@@ -355,6 +408,14 @@
     document.getElementById("gitShannonTrendPct").textContent = formatSignedFloat(gitShannonTrendPct);
     document.getElementById("gitShannonIcon").src = trend_icon(gitShannonTrendPct);
     document.getElementById("gitShannonText").textContent = trend_text(gitShannonTrendPct);
+
+    document.querySelectorAll('.details-tabs').forEach(group => {
+        group.addEventListener('toggle', e => {
+            if (e.target.tagName === 'DETAILS' && e.target.open) {
+                group.querySelectorAll('details[open]').forEach(d => { if (d !== e.target) d.open = false; });
+            }
+        }, true);
+    });
     </script>
 
 </body>

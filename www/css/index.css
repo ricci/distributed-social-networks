@@ -122,3 +122,8 @@ div.data {
   font-size: 0.8em;
   color: #909296;
 }
+
+details summary {
+  color: #909296;
+  margin-bottom: 5px;
+}
