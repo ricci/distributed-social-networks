@@ -92,10 +92,161 @@
         <div class="data">
             Data: <a href="https://relay1.us-east.bsky.network/">Bluesky</a> (<span id="atUpdated"></span>)
         </div>
+      </div> 
+
+      <div class="insert-metrics-help"></div>
+ 
+    </div>
+
+
+    <div class="container">
+      <h2>Hosting Services</h2>
+
+      <details class="help" id="hosting-details">
+        <summary>What does this measure?</summary>
+        <div>
+            <p>
+                For web serving, this site uses data from a number of sources that have been aggregated by the <a href="https://iyp.iijlab.net/">Internet Yellow Pages</a>
+                project from <a href="https://www.iijlab.net/">the IIJ Research Laboratory</a>. It uses the worldwide <a href="https://tranco-list.eu/">Tranco Top 1m</a> list of the million most popular websites, compiled by the DistriNet research group. The URLs of these websites' 
+                front pages are mapped to IP addresses, which are then mapped to <a href="https://www.ripe.net/manage-ips-and-asns/as-numbers/">AS numbers.</a>
+                We use the <a href="https://blog.apnic.net/2023/03/21/improving-the-inference-of-sibling-autonomous-systems/">sibling AS</a> dataset from the <a href="https://inetintel.notion.site/Internet-Intelligence-Lab-Georgia-Tech-1a739459e28a4e8084556a5ef518c009">Internet Intelligence Research Lab</a> to aggregate ASes run by the same organization.
+                The process is similar to that used by <a href="https://doi.org/10.1145/3718958.3750492">Habib et al. in SIGCOMM 2025</a>, though we use a different data
+                source and compute statistics worldwide.
+                Note that because this style of measurement looks at the main URL for the site's front page, it will, in many cases,
+                count the CDN serving a site rather than the site's origin server.
+            </p>
+            <p>
+                For the public git forges, this site uses the number of "origins" of type "git" archived
+                by <a href="https://softwareheritage.org">Software Heritage</a>; this is
+                roughly equivalent to the number of git repositories they crawl. Software
+                Heritage's archive coverage can be found on <a href="https://archive.softwareheritage.org/">their coverage page</a>.
+                The likely undercounts the true number of repositories, and each "fork" counts as a separate repository.
+            </p>
+        </div>
+      </details>
+
+      <div class="rating">
+        <h3>Web Serving</h3>
+        <h5>Cloudflare, AWS, etc.</h5>
+        <div id="gageHosting" class="gage"></div>
+        <div class="shannon">
+          <div class="index">Shannon Index: <span id="hostingShannon"></span></div>
+        </div>
+        <div class="spacer"></div>
+        <table>
+            <tr><th>Hosts</th><td><span id="hostingServers"></span></td></tr>
+            <tr><th>Biggest</th><td><span id="hostingBiggestAbs"></span></td><td>(<span id="hostingBiggestPct"></span>%)</td></tr>
+            <tr><th>Rest</th><td><span id="hostingRestAbs"></span></td><td>(<span id="hostingRestPct"></span>%)</td></tr>
+        </table>
+        <div class="data">
+            Data: <a href="https://iyp.iijlab.net/">IYP</a> (<span id="hostingUpdated"></span>)
+        </div>
       </div>
 
+      <div class="rating">
+        <h3>Public Git Forges</h3>
+        <h5>Github, Gitlab, etc.</h5>
+        <div id="gageGit" class="gage"></div>
+        <div class="shannon">
+          <div class="index">Shannon Index: <span id="gitShannon"></span></div>
+          <div class="trend">One-week trend: <span id="gitShannonTrend"></span> (<span id="gitShannonTrendPct"></span>%)</div>
+          <div class="icon"><img id="gitShannonIcon"> <span id="gitShannonText"></span></div>
+        </div>
+        <table>
+            <tr><th>Forges</th><td><span id="gitServers"></span></td></tr>
+            <tr><th>Biggest</th><td><span id="gitBiggestAbs"></span></td><td>(<span id="gitBiggestPct"></span>%)</td></tr>
+            <tr><th>Rest</th><td><span id="gitRestAbs"></span></td><td>(<span id="gitRestPct"></span>%)</td></tr>
+        </table>
+        <div class="data">
+            Data: <a href="https://archive.softwareheritage.org/">Software&nbsp;Heritage</a> (<span id="gitUpdated"></span>)
+        </div>
+      </div>
 
-       <details class="help  tab metric-help" id="social-metrics-hhi">
+      <div class="insert-metrics-help"></div>
+    </div>
+
+    <div class="container">
+      <h2>Network Infrastructure</h2>
+      <details class="help" id="network-details">
+        <summary>What does this measure?</summary>
+        <div>
+            <p>
+                The measurements in this section come from the paper <a href="https://doi.org/10.1145/3718958.3750492">"Formalizing Dependence of Web Infrastructure"
+                by Habib et al.</a>, which appeared in the <a href="https://conferences.sigcomm.org/sigcomm/2025/">ACM
+                SIGCOMM conference in 2025</a>. The authors of this work collected information for the most popular
+                10,000 websites in 150 countries using <a href="https://developer.chrome.com/docs/crux">Google's CrUX</a> dataset. These measurements were taken once in May 2023.
+            </p>
+
+            <p>
+                DNS server data is reported by the network (AS) hosting the authoritative nameservers for the domains in the set.
+                Certificate authority (CA) data was collected by connecting to the front page of the webserver and finding the root CA of the certificate provided by the server.
+            </p>
+        </div>
+      </details>
+      <div class="rating">
+        <h3>DNS Hosting</h3>
+        <h5>Cloudflare DNS, Amazon Route 53, etc.</h5>
+        <div id="gageDNS" class="gage"></div>
+        <div class="shannon">
+          <div class="index">Shannon Index: <span id="dnsShannon"></span></div>
+        </div>
+        <table>
+            <tr><th>DNS Hosts</th><td><span id="dnsServers"></span></td></tr>
+            <tr><th>Biggest</th><td><span id="dnsBiggestAbs"></span></td><td>(<span id="dnsBiggestPct"></span>%)</td></tr>
+            <tr><th>Rest</th><td><span id="dnsRestAbs"></span></td><td>(<span id="dnsRestPct"></span>%)</td></tr>
+        </table>
+        <div class="data">
+            Data: <a href="https://zenodo.org/records/15733582">Habib&nbsp;et&nbsp;al.</a> (05-2023)
+        </div>
+      </div>
+      <div class="rating">
+        <h3>TLS Certificates</h3>
+        <h5>Let's Encrypt, Digicert, etc.</h5>
+        <div id="gageCert" class="gage"></div>
+        <div class="shannon">
+          <div class="index">Shannon Index: <span id="certShannon"></span></div>
+        </div>
+        <table>
+            <tr><th>CAs</th><td><span id="certServers"></span></td></tr>
+            <tr><th>Biggest</th><td><span id="certBiggestAbs"></span></td><td>(<span id="certBiggestPct"></span>%)</td></tr>
+            <tr><th>Rest</th><td><span id="certRestAbs"></span></td><td>(<span id="certRestPct"></span>%)</td></tr>
+        </table>
+        <div class="data">
+            Data: <a href="https://zenodo.org/records/15733582">Habib&nbsp;et&nbsp;al.</a> (05-2023)
+        </div>
+      </div>
+
+      <div class="insert-metrics-help"></div>
+
+    </div>
+
+    <div class="container">
+      <p>
+        This page measures the concentration of user data on a variety of systems according to the
+        <a href="https://en.wikipedia.org/wiki/Herfindahl%E2%80%93Hirschman_index">Herfindahl–Hirschman
+        Index</a> (HHI) and the <a href="https://en.wikipedia.org/wiki/Diversity_index#Shannon_index">Shannon Index</a>.
+        User data is only one way to measure centralization: others include network structure, legal exposure, and
+        concentration of social and technical power.
+      </p>
+
+      <p>
+        Code and data are available <a href="https://codeberg.org/ricci/are-we-decentralized-yet">on
+          Codeberg</a>.
+        Comments and pull requests, including other metrics for measuring
+        distribution and resiliency, are welcome!
+      </p>
+
+      <p>
+      By <a href="https://ricci.io/">Rob Ricci</a>: <a href="https://discuss.systems/@ricci">@ricci@discuss.systems</a> / 
+            <a href="https://bsky.app/profile/ricci.io">@ricci.io</a> 
+      </p>
+
+          
+    </div>
+
+
+    <template id="about-metrics">
+      <details>
         <summary>What is HHI?</summary>
         <div class="panel">
             <p>
@@ -119,8 +270,9 @@
                 compared to an idealized fully-decentralized distribution.
             </p>
         </div>
-       </details>
-       <details class="help tab metric-help" id="social-metrics-shannon">
+      </details>
+
+      <details>
         <summary>What is the Shannon Index?</summary>
         <div class="panel">
             <p>
@@ -139,125 +291,13 @@
             </p>
         </div>
        </details>
-    </div>
-
-
-    <div class="container">
-      <h2>Hosting Services</h2>
-
-      <div class="rating">
-        <h3>Web Hosting</h3>
-        <h5>Cloudflare, AWS, etc.</h5>
-        <div id="gageHosting" class="gage"></div>
-        <div class="shannon">
-          <div class="index">Shannon Index: <span id="hostingShannon"></span></div>
-        </div>
-        <table>
-            <tr><th>Hosts</th><td><span id="hostingServers"></span></td></tr>
-            <tr><th>Biggest</th><td><span id="hostingBiggestAbs"></span></td><td>(<span id="hostingBiggestPct"></span>%)</td></tr>
-            <tr><th>Rest</th><td><span id="hostingRestAbs"></span></td><td>(<span id="hostingRestPct"></span>%)</td></tr>
-        </table>
-        Data: <a href="https://zenodo.org/records/15733582">Habib&nbsp;et&nbsp;al.</a>
-      </div>
-
-      <div class="rating">
-        <h3>Public Git Forges</h3>
-        <h5>Github, Gitlab, etc.</h5>
-        <div id="gageGit" class="gage"></div>
-        <div class="shannon">
-          <div class="index">Shannon Index: <span id="gitShannon"></span></div>
-          <div class="trend">One-week trend: <span id="gitShannonTrend"></span> (<span id="gitShannonTrendPct"></span>%)</div>
-          <div class="icon"><img id="gitShannonIcon"> <span id="gitShannonText"></span></div>
-        </div>
-        <table>
-            <tr><th>Forges</th><td><span id="gitServers"></span></td></tr>
-            <tr><th>Biggest</th><td><span id="gitBiggestAbs"></span></td><td>(<span id="gitBiggestPct"></span>%)</td></tr>
-            <tr><th>Rest</th><td><span id="gitRestAbs"></span></td><td>(<span id="gitRestPct"></span>%)</td></tr>
-        </table>
-        Data: <a href="https://archive.softwareheritage.org/">Software&nbsp;Heritage</a>
-      </div>
-    </div>
-
-    <div class="container">
-      <h2>Network Infrastructure</h2>
-      <div class="rating">
-        <h3>DNS Hosting</h3>
-        <h5>Cloudflare DNS, Amazon Route 53, etc.</h5>
-        <div id="gageDNS" class="gage"></div>
-        <div class="shannon">
-          <div class="index">Shannon Index: <span id="dnsShannon"></span></div>
-        </div>
-        <table>
-            <tr><th>DNS Hosts</th><td><span id="dnsServers"></span></td></tr>
-            <tr><th>Biggest</th><td><span id="dnsBiggestAbs"></span></td><td>(<span id="dnsBiggestPct"></span>%)</td></tr>
-            <tr><th>Rest</th><td><span id="dnsRestAbs"></span></td><td>(<span id="dnsRestPct"></span>%)</td></tr>
-        </table>
-        Data: <a href="https://zenodo.org/records/15733582">Habib&nbsp;et&nbsp;al.</a>
-      </div>
-      <div class="rating">
-        <h3>TLS Certificates</h3>
-        <h5>Let's Encrypt, Digicert, etc.</h5>
-        <div id="gageCert" class="gage"></div>
-        <div class="shannon">
-          <div class="index">Shannon Index: <span id="certShannon"></span></div>
-        </div>
-        <table>
-            <tr><th>CAs</th><td><span id="certServers"></span></td></tr>
-            <tr><th>Biggest</th><td><span id="certBiggestAbs"></span></td><td>(<span id="certBiggestPct"></span>%)</td></tr>
-            <tr><th>Rest</th><td><span id="certRestAbs"></span></td><td>(<span id="certRestPct"></span>%)</td></tr>
-        </table>
-        Data: <a href="https://zenodo.org/records/15733582">Habib&nbsp;et&nbsp;al.</a>
-      </div>
-    </div>
-
-    <div class="container">
-      <p>
-        This page measures the concentration of user data on the <a
-          href="https://fediverse.party/">Fediverse</a>, the <a
-          href="https://atproto.com/">Atmosphere</a>, and public git forges according to the
-        <a href="https://en.wikipedia.org/wiki/Herfindahl%E2%80%93Hirschman_index">Herfindahl–Hirschman
-        Index</a> (HHI) and the <a href="https://en.wikipedia.org/wiki/Diversity_index#Shannon_index">Shannon Index</a>.
-        User data is only one way to measure centralization: others include network structure, legal exposure, and
-        concentration of social and technical power.
-      </p>
-
-      <p>
-      </p>
-
-      <p>
-        The <b>Shannon Index</b> is an entropy-based measure used in ecological studies. Because it is logarithmic,
-        it is more responsive than HHI to changes in the "smaller players".
-        It is computed as Shannon entropy using the natural log: the negative sum over all servers of the "market
-        share" times the log of the market share. Lower values indicate lower entropy (a high concentration of one species),
-        while higher values indicate a more even population. In this context,
-        the maximum value is the natural log of the number of servers.
-      </p>
-
-      <p>
-        For the public git forges, this site uses the number of "origins" of type "git" archived
-        by <a href="https://softwareheritage.org">Software Heritage</a>; this is
-        roughly equivalent to the number of git repositories they crawl. Software
-        Heritage's archive coverage can be found on <a href="https://archive.softwareheritage.org/">their coverage page</a>.
-
-      </p>
-
-      <p>
-        Code and data are available <a href="https://codeberg.org/ricci/are-we-decentralized-yet">on
-          Codeberg</a>.
-        Comments and pull requests, including other metrics for measuring
-        distribution and resiliency, are welcome!
-      </p>
-
-      <p>
-        By Rob Ricci: <a href="https://discuss.systems/@ricci">@ricci@discuss.systems</a> / 
-            <a href="https://bsky.app/profile/ricci.io">@ricci.io</a> 
-      </p>
-
-          
-    </div>
-
-
+      </template>
     <script>
+    document.querySelectorAll('.insert-metrics-help').forEach(el => {
+        const tmpl = document.getElementById('about-metrics');
+        el.appendChild(tmpl.content.cloneNode(true));
+    });
+
     var defaults = {
       min: 0,
       max: 10000,
@@ -347,6 +387,10 @@
 
     document.getElementById("fediUpdated").textContent = data.lastUpdate; 
     document.getElementById("atUpdated").textContent = data.lastUpdate; 
+    document.getElementById("gitUpdated").textContent = data.lastUpdate; 
+
+    // Should come from file
+    document.getElementById("hostingUpdated").textContent = "10-31-2025";
 
     document.getElementById("fediServers").textContent = addCommas(data.fedi.servers);
     document.getElementById("atServers").textContent = addCommas(data.at.servers);
