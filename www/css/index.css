@@ -25,11 +25,16 @@ div.container > * {
   vertical-align: top;
 }
 
+div.wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;  /* centers when fewer items fit */
+    gap: 25px;                /* space between containers */ 
+}
+
 div.container {
   background: #ffffff11;
   padding: 15px;
-  margin-right: auto;
-  margin-left: auto;
   width: fit-content;
   margin-bottom: 25px;
   border-radius: 10px;
