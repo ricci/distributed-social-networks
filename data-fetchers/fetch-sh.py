@@ -4,9 +4,11 @@ import requests
 import csv
 import sys
 from bs4 import BeautifulSoup
+from pathlib import Path
 
 URL = "https://archive.softwareheritage.org/coverage/"
-OUTPUT_FILE = "sh-fromhtml.csv"
+OUTPUT_FILE = (Path(__file__).parent / "../data-static/sh-fromhtml.csv").resolve()
+
 
 if __name__ == "__main__":
     outfile = outfile = sys.argv[1] if len(sys.argv) == 2 else OUTPUT_FILE

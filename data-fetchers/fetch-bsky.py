@@ -1,11 +1,15 @@
-#!/usr/bin/ env python3
+#!/usr/bin/env python3
 
 import requests
 import csv
 import sys
 
+from pathlib import Path
+
 URLS = ["https://relay1.us-east.bsky.network/xrpc/com.atproto.sync.listHosts", "https://atproto.africa/xrpc/com.atproto.sync.listHosts"]
 OUTPUT_FILE = "atproto-bsky-relay.csv"
+OUTPUT_FILE = (Path(__file__).parent / "../data-static/atproto-bsky-relay.csv").resolve()
+
 
 def fetch_all(url):
     print(f"Fetching from {url}")

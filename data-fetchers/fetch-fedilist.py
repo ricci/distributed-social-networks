@@ -4,9 +4,12 @@ import requests
 import csv
 import sys
 from bs4 import BeautifulSoup
+from pathlib import Path
 
 URL = "https://fedilist.com/instance"
-OUTPUT_FILE = "fedilist-fromhtml.csv"
+
+OUTPUT_FILE = (Path(__file__).parent / "../data-static/fedilist-fromhtml.csv").resolve()
+
 USERAGENT = "curl/7.54.1"
 
 if __name__ == "__main__":
