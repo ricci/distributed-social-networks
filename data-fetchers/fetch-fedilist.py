@@ -16,7 +16,8 @@ if __name__ == "__main__":
     outfile = outfile = sys.argv[1] if len(sys.argv) == 2 else OUTPUT_FILE
 
     headers = { "User-Agent": USERAGENT }
-    r = requests.get(URL, headers=headers, timeout=30)
+    # verify=False should be temporary, they let their cert expire
+    r = requests.get(URL, headers=headers, timeout=30, verify=False)
     r.raise_for_status()
 
     soup = BeautifulSoup(r.content, "html.parser")
