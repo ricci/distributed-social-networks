@@ -1,15 +1,26 @@
 from collections import defaultdict
 from neo4j import GraphDatabase
 from pathlib import Path
+from string import Template
 import csv
 import pickle
+import sys
+
+country = None
+
+if len(sys.argv) > 1:
+    country = sys.argv[1]
 
 # IYP sandbox (beta) database
 URI = 'neo4j://sandbox.ihr.live:7687'
 AUTH = None
 db = GraphDatabase.driver(URI, auth=AUTH)
 
-OUTPUT_FILE = (Path(__file__).parent / "../data-static/hosting-worldwide-from-iyp.csv").resolve()
+OUTPUT_FILE = ""
+if not country:
+    OUTPUT_FILE = (Path(__file__).parent / "../data-static/hosting-worldwide-from-iyp.csv").resolve()
+else:
+    OUTPUT_FILE = (Path(__file__).parent / f"../data-static/hosting-by-country/{country}.csv").resolve()
 
 # Will be used to cache AS sibling sets
 picklefile = (Path(__file__).parent / "sets.pickle").resolve()
@@ -41,10 +52,10 @@ def find_in_sibset(asn):
     if s is not None:
         return s
     else: 
+        # This query gets all ASes that are siblings of the passed set
+        # NB: the AS *itself* is not in the returned set, so we have to add
+        # it explicitly
         records, _, _ = db.execute_query(
-            # This query gets all ASes that are siblings of the passed set
-            # NB: the AS *itself* is not in the returned set, so we have to add
-            # it explicitly
             '''
             MATCH (a:AS)-[:SIBLING_OF]-(s:AS) 
             WHERE a.asn = {:d}
@@ -68,17 +79,30 @@ def group_records_by_asn(records):
 
 
 db.verify_connectivity()
-records, _, _ = db.execute_query(
-    """
-    MATCH (dn:DomainName)-[r:RANK {reference_name:'tranco.top1m'}]-(:Ranking  {name: 'Tranco top 1M'})
-    WITH dn
-    MATCH (dn)-[:PART_OF]-(hn:HostName)-[:RESOLVES_TO {reference_name: 'openintel.tranco1m'}]-(:IP)-[:PART_OF]-(:Prefix)-[:ORIGINATE]-(a:AS)
-    WHERE dn.name = hn.name
-    RETURN 
-    a.asn, COUNT(DISTINCT hn) as nb_hostnames ORDER BY nb_hostnames DESC
-    """
-)
 
+query = ""
+if not country:
+    # If we're doing worldwide, we use the Tranco list, which is worldwide
+    query = """
+        MATCH (dn:DomainName)-[r:RANK {reference_name:'tranco.top1m'}]-(:Ranking  {name: 'Tranco top 1M'})
+        WITH dn
+        MATCH (dn)-[:PART_OF]-(hn:HostName)-[:RESOLVES_TO {reference_name: 'openintel.tranco1m'}]-(:IP)-[:PART_OF]-(:Prefix)-[:ORIGINATE]-(a:AS)
+        WHERE dn.name = hn.name
+        RETURN 
+        a.asn, COUNT(DISTINCT hn) as nb_hostnames ORDER BY nb_hostnames DESC
+        """
+else:
+    # If we're doing one country, we use crUX since it's organized that way
+    query = Template("""
+        MATCH (hn:HostName)-[r:RANK {reference_name:'google.crux_top1m_country'}]-(:Ranking)-[:COUNTRY]-(cc:Country)
+        WHERE cc.country_code = '$country' AND r.rank < 10001
+        WITH hn
+        MATCH (hn)-[:RESOLVES_TO {reference_name: 'openintel.crux'}]-(:IP)-[:PART_OF]-(:Prefix)-[:ORIGINATE]-(a:AS)
+        RETURN 
+        a.asn, COUNT(DISTINCT hn) as nb_hostnames ORDER BY nb_hostnames DESC
+        """).substitute(country=country)
+
+records, _, _ = db.execute_query(query)
 
 grouped = group_records_by_asn(records)
 
