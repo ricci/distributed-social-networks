@@ -4,7 +4,7 @@ import requests
 import csv
 import sys
 
-URLS = ["https://relay1.us-east.bsky.network/xrpc/com.atproto.sync.listHosts", "https://atproto.africa/xrpc/com.atproto.sync.listHosts", "https://atrelay.ricci.social/xrpc/com.atproto.sync.listHosts"]
+URLS = ["https://relay1.us-east.bsky.network/xrpc/com.atproto.sync.listHosts", "https://atproto.africa/xrpc/com.atproto.sync.listHosts"]
 OUTPUT_FILE = "atproto-bsky-relay.csv"
 
 def fetch_all(url):
