@@ -3,7 +3,7 @@
 ATFILE="data/at/$(./helpers/newest.sh data/at)"
 FEDIFILE="data/fedi/$(./helpers/newest.sh data/fedi)"
 GITFILE="data/git/$(./helpers/newest.sh data/git)"
-HOSTFILE="data-static/worldwide.csv"
+HOSTFILE="data-static/hosting-worldwide-from-iyp.csv"
 DNSFILE="data-static/dns-byid.csv"
 CERTFILE="data-static/cert-byid.csv"
 
