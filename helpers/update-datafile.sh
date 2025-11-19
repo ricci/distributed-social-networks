@@ -4,6 +4,7 @@ ATFILE="data/at/$(./helpers/newest.sh data/at)"
 FEDIFILE="data/fedi/$(./helpers/newest.sh data/fedi)"
 GITFILE="data/git/$(./helpers/newest.sh data/git)"
 HOSTFILE="data-static/hosting-worldwide-from-iyp.csv"
+EMAILFILE="all_providers_common_2021-06-08_0914.csv"
 DNSFILE="data-static/dns-byid.csv"
 CERTFILE="data-static/cert-byid.csv"
 
@@ -18,6 +19,8 @@ GITFILE_OLD="data/git/$(ls -1 data/git | ./helpers/weekago.sh)"
 /usr/local/bin/jq --argjson val "$(python3 centralization-stats.py --json $GITFILE)" '.git = $val' www/data.json > data.json.tmp && mv data.json.tmp www/data.json
 
 /usr/local/bin/jq --argjson val "$(python3 centralization-stats.py --json $HOSTFILE)" '.hosting = $val' www/data.json > data.json.tmp && mv data.json.tmp www/data.json
+
+/usr/local/bin/jq --argjson val "$(python3 centralization-stats.py --json $EMAILFILE)" '.email = $val' www/data.json > data.json.tmp && mv data.json.tmp www/data.json
 
 /usr/local/bin/jq --argjson val "$(python3 centralization-stats.py --json $DNSFILE)" '.dns = $val' www/data.json > data.json.tmp && mv data.json.tmp www/data.json
 

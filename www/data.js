@@ -216,6 +216,7 @@ var data =  {
       ]
     ]
   },
+  "email": {"HHI": 1323, "shannon": 4.6535, "simpson": 0.8676, "servers": 14274, "biggest_abs": 26696.666666666664, "biggest_pct": 33.28, "rest_abs": 53515.333333333336, "rest_pct": 66.72, "b_vals": [[25, 1], [50, 3], [75, 103], [90, 6221], [99, 13440], [99.5, 13841]]},
   "trends": {
     "fedi": {
       "weekly_shannon": -0.0140
