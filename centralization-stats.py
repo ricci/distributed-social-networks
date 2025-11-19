@@ -68,15 +68,20 @@ def extract_domain_counts(row):
 
 # Different CSVs use different names for the user count field
 def get_usercount(row):
-    for key in ("user_count", "mau", "monthly_active_users", "active_users", "accountcount","origins", "count", "nb_hostnames"):
+    for key in ("user_count", "mau", "monthly_active_users", "active_users", "accountcount","origins", "count", "nb_hostnames", "domains_of_provider"):
         val = row.get(key, "")
         if val != "":
-            return int(val)
+            try:
+                int(val)
+            except ValueError:
+                return float(val)
+            else:
+                return int(val)
     return 0
 
 # Different CSVs use different columns for the hostname
 def get_domain(row):
-    for key in ("domain", "hostname","instance","name","org_id","e.id","o.name","a.asn","asn"):
+    for key in ("domain", "hostname","instance","name","org_id","e.id","o.name","a.asn","asn", "provider"):
         if key in row:
             return row.get(key, "")
     return None

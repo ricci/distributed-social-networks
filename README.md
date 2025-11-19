@@ -9,10 +9,10 @@ This is used to feed https://arewedecentralizedyet.online/ .
 * `data-fetchers/` contains various scripts to grab statistics from a number of sources
 * `data-static/` contains static versions of the data - some are fetched with scripts from `data-fetchers/`, others are one-time dumps from sources such as academic papers
 * `habib-paper/` code and data specifically related to the Habib et al. paper
+* `lin-paper/` code and data specifically related to the Lin et al. paper
 * `helpers/` helper scripts for things like running all data fetchers, maintaining the website
 * `www/` code for the website; intended for static hosting
 
 TODO:
-* Add email hosting, get data from https://dl.acm.org/doi/10.1145/3487552.3487820
 * Add matrix, see https://codeberg.org/ricci/are-we-decentralized-yet/issues/2
 
