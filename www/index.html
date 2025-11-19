@@ -167,6 +167,44 @@
     </div>
 
     <div class="container">
+      <h2>Email</h2>
+
+      <details class="help" id="email-details">
+        <summary>What does this measure?</summary>
+        <div>
+            <p>
+                For email services, data comes from the paper <a href="https://doi.org/10.1145/3487552.3487820">Who's Got Your Mail?: Characterizing Mail Service Provider Usage by Liu et al.</a>, which appeared in the <a href="https://conferences.sigcomm.org/imc/2021/">ACM Internet Measurement Conference in 2021</a>.
+                The authors use a variety of methods, including MX records, SMTP banner analysis, and TLS certificate analysis
+                to uncover the provider serving mail for a particular domain. The statistics here come from examining
+                the top 1 million domains on the Alexa list, and finding the email providers for those domains
+                that consistently had MX records for a period of a few years.
+                
+            </p>
+        </div>
+      </details>
+
+      <div class="rating">
+        <h3>Email Services</h3>
+        <h5>Gmail, Outlook, etc.</h5>
+        <div id="gageEmail" class="gage"></div>
+        <div class="shannon">
+          <div class="index">Shannon Index: <span id="emailShannon"></span></div>
+        </div>
+        <div class="spacer"></div>
+        <table>
+            <tr><th>Services</th><td><span id="emailServers"></span></td></tr>
+            <tr><th>Biggest</th><td><span id="emailBiggestAbs"></span></td><td>(<span id="emailBiggestPct"></span>%)</td></tr>
+            <tr><th>Rest</th><td><span id="emailRestAbs"></span></td><td>(<span id="emailRestPct"></span>%)</td></tr>
+        </table>
+        <div class="data">
+            Data: <a href="https://github.com/ucsdsysnet/mx_inference">Liu&nbsp;et&nbsp;al.</a> (06-2021)
+        </div>
+      </div>
+
+      <div class="insert-metrics-help"></div>
+    </div>
+
+    <div class="container">
       <h2>Network Infrastructure</h2>
       <details class="help" id="network-details">
         <summary>What does this measure?</summary>
@@ -346,6 +384,11 @@
       value: data["hosting"]["HHI"],
       defaults
     });
+    var gEmail = new JustGage({
+      id: "gageEmail",
+      value: data["email"]["HHI"],
+      defaults
+    });
     var gDNS = new JustGage({
       id: "gageDNS",
       value: data["dns"]["HHI"],
@@ -358,7 +401,7 @@
     });
 
     function addCommas(num) {
-      return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      return Math.round(num).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
 
     function formatSignedFloat(value, digits = 2) {
@@ -398,6 +441,7 @@
     document.getElementById("atServers").textContent = addCommas(data.at.servers);
     document.getElementById("gitServers").textContent = addCommas(data.git.servers);
     document.getElementById("hostingServers").textContent = addCommas(data.hosting.servers);
+    document.getElementById("emailServers").textContent = addCommas(data.email.servers);
     document.getElementById("dnsServers").textContent = addCommas(data.dns.servers);
     document.getElementById("certServers").textContent = addCommas(data.cert.servers);
 
@@ -424,6 +468,12 @@
     document.getElementById("hostingRestAbs").textContent = addCommas(data.hosting.rest_abs);
     document.getElementById("hostingRestPct").textContent = data.hosting.rest_pct;
     document.getElementById("hostingShannon").textContent = data.hosting.shannon;
+
+    document.getElementById("emailBiggestAbs").textContent = addCommas(data.email.biggest_abs);
+    document.getElementById("emailBiggestPct").textContent = data.email.biggest_pct;
+    document.getElementById("emailRestAbs").textContent = addCommas(data.email.rest_abs);
+    document.getElementById("emailRestPct").textContent = data.email.rest_pct;
+    document.getElementById("emailShannon").textContent = data.email.shannon;
 
     document.getElementById("dnsBiggestAbs").textContent = addCommas(data.dns.biggest_abs);
     document.getElementById("dnsBiggestPct").textContent = data.dns.biggest_pct;
