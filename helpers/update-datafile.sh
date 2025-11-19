@@ -4,7 +4,7 @@ ATFILE="data/at/$(./helpers/newest.sh data/at)"
 FEDIFILE="data/fedi/$(./helpers/newest.sh data/fedi)"
 GITFILE="data/git/$(./helpers/newest.sh data/git)"
 HOSTFILE="data-static/hosting-worldwide-from-iyp.csv"
-EMAILFILE="all_providers_common_2021-06-08_0914.csv"
+EMAILFILE="liu-paper/all_providers_common_2021-06-08_0914.csv"
 DNSFILE="data-static/dns-byid.csv"
 CERTFILE="data-static/cert-byid.csv"
 

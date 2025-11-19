@@ -1,6 +1,6 @@
-# Data From Lin et al., IMC '21
+# Data From Liu et al., IMC '21
 
-This directory contains data from "Who’s Got Your Mail? Characterizing Mail Service Provider Usage" by Lin, et al., IMC '21
+This directory contains data from "Who’s Got Your Mail? Characterizing Mail Service Provider Usage" by Liu, et al., IMC '21
 
 This data was copied from the original authors' git repository at https://github.com/ucsdsysnet/mx_inference/tree/master/imc-21-results/data (revision 3c56b70)
 

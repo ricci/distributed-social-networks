@@ -9,7 +9,7 @@ This is used to feed https://arewedecentralizedyet.online/ .
 * `data-fetchers/` contains various scripts to grab statistics from a number of sources
 * `data-static/` contains static versions of the data - some are fetched with scripts from `data-fetchers/`, others are one-time dumps from sources such as academic papers
 * `habib-paper/` code and data specifically related to the Habib et al. paper
-* `lin-paper/` code and data specifically related to the Lin et al. paper
+* `liu-paper/` code and data specifically related to the Liu et al. paper
 * `helpers/` helper scripts for things like running all data fetchers, maintaining the website
 * `www/` code for the website; intended for static hosting
 
