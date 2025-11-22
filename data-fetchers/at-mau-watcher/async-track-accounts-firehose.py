@@ -4,8 +4,8 @@ import asyncio
 import json
 import os
 import signal
-from datetime import datetime, timezone
-from typing import Dict, Optional
+from datetime import datetime, timezone, timedelta
+from typing import Dict, Optional, Tuple
 
 import aiohttp
 from atproto import (
@@ -20,6 +20,8 @@ from atproto import (
 SNAPSHOT_FILE = "accounts_snapshot.json"
 SNAPSHOT_INTERVAL = 300  # seconds
 RESOLVE_TTL_SECONDS = 24 * 60 * 60  # 1 day
+RESOLUTION_QUEUE_SIZE = 10000
+RESOLUTION_WORKERS = 10
 
 # -----------------------------
 # In-memory state
@@ -28,9 +30,11 @@ RESOLVE_TTL_SECONDS = 24 * 60 * 60  # 1 day
 #   "pds": str | None,
 #   "handle": str | None,
 #   "last_seen": datetime,
-#   "last_resolved": datetime | None,
+#   "last_resolved": datetime | None,  # last time we ATTEMPTED resolution
 # }
 accounts: Dict[str, Dict[str, object]] = {}
+
+# Lock to protect `accounts`
 accounts_lock = asyncio.Lock()
 
 
@@ -38,6 +42,10 @@ accounts_lock = asyncio.Lock()
 # Snapshot load/save
 # -----------------------------
 def load_snapshot(path: str) -> None:
+    """
+    Load snapshot from JSON into `accounts`.
+    Safe to call before the event loop starts (no concurrent access yet).
+    """
     if not os.path.exists(path):
         return
 
@@ -50,7 +58,6 @@ def load_snapshot(path: str) -> None:
             last_seen_str = entry["last_seen"]
             last_seen = datetime.fromisoformat(last_seen_str)
         except Exception:
-            # If parsing fails, skip that entry
             continue
 
         last_resolved_str = entry.get("last_resolved")
@@ -72,63 +79,7 @@ def load_snapshot(path: str) -> None:
     print(f"Loaded snapshot from {path}: {loaded} accounts")
 
 
-def save_snapshot(path: str, verbose: bool = True) -> None:
-    data = {}
-    for did, entry in accounts.items():
-        ls = entry["last_seen"]
-        if isinstance(ls, datetime):
-            last_seen_str = ls.isoformat()
-        else:
-            last_seen_str = str(ls)
-
-        lr = entry.get("last_resolved")
-        if isinstance(lr, datetime):
-            last_resolved_str = lr.isoformat()
-        elif lr is None:
-            last_resolved_str = None
-        else:
-            last_resolved_str = str(lr)
-
-        data[did] = {
-            "pds": entry.get("pds"),
-            "handle": entry.get("handle"),
-            "last_seen": last_seen_str,
-            "last_resolved": last_resolved_str,
-        }
-
-    tmp_path = path + ".tmp"
-    with open(tmp_path, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=2, sort_keys=True)
-    os.replace(tmp_path, path)
-
-    if verbose:
-        print(f"Saved snapshot to {path}: {len(data)} accounts")
-
-async def async_save_snapshot(path: str, verbose: bool = True) -> None:
-    # Make a deep-ish copy under lock
-    async with accounts_lock:
-        snapshot_copy = {
-            did: {
-                "pds": e.get("pds"),
-                "handle": e.get("handle"),
-                "last_seen": (
-                    e["last_seen"].isoformat()
-                    if isinstance(e["last_seen"], datetime)
-                    else str(e["last_seen"])
-                ),
-                "last_resolved": (
-                    e["last_resolved"].isoformat()
-                    if isinstance(e.get("last_resolved"), datetime)
-                    else None
-                ),
-            }
-            for did, e in accounts.items()
-        }
-
-    # File writing happens outside the lock
-    await asyncio.to_thread(_write_snapshot_file, path, snapshot_copy, verbose)
-
-def _write_snapshot_file(path: str, snapshot_copy: dict, verbose: bool):
+def _write_snapshot_file(path: str, snapshot_copy: Dict[str, Dict[str, object]], verbose: bool) -> None:
     tmp_path = path + ".tmp"
     with open(tmp_path, "w", encoding="utf-8") as f:
         json.dump(snapshot_copy, f, indent=2, sort_keys=True)
@@ -136,10 +87,43 @@ def _write_snapshot_file(path: str, snapshot_copy: dict, verbose: bool):
     if verbose:
         print(f"Saved snapshot to {path}: {len(snapshot_copy)} accounts")
 
+
+async def async_save_snapshot(path: str, verbose: bool = True) -> None:
+    """
+    Take a consistent snapshot of `accounts` under the lock,
+    then write it to disk in a thread.
+    """
+    async with accounts_lock:
+        snapshot_copy: Dict[str, Dict[str, object]] = {}
+        for did, entry in accounts.items():
+            ls = entry["last_seen"]
+            if isinstance(ls, datetime):
+                last_seen_str = ls.isoformat()
+            else:
+                last_seen_str = str(ls)
+
+            lr = entry.get("last_resolved")
+            if isinstance(lr, datetime):
+                last_resolved_str = lr.isoformat()
+            elif lr is None:
+                last_resolved_str = None
+            else:
+                last_resolved_str = str(lr)
+
+            snapshot_copy[did] = {
+                "pds": entry.get("pds"),
+                "handle": entry.get("handle"),
+                "last_seen": last_seen_str,
+                "last_resolved": last_resolved_str,
+            }
+
+    await asyncio.to_thread(_write_snapshot_file, path, snapshot_copy, verbose)
+
+
 async def periodic_snapshot(path: str, interval_seconds: int) -> None:
     """
     Periodically write the current state to disk.
-    No stdout prints from here; it just rewrites the JSON file.
+    No stdout from here (verbose=False).
     """
     while True:
         await asyncio.sleep(interval_seconds)
@@ -150,7 +134,9 @@ async def periodic_snapshot(path: str, interval_seconds: int) -> None:
 # DID / PDS resolution helpers
 # -----------------------------
 async def resolve_did_document(
-    did: str, session: aiohttp.ClientSession, timeout_seconds: float = 5.0
+    did: str,
+    session: aiohttp.ClientSession,
+    timeout_seconds: float = 5.0,
 ) -> Optional[dict]:
     """
     Fetch the DID document for `did`.
@@ -164,7 +150,6 @@ async def resolve_did_document(
         domain = did[len("did:web:") :]
         url = f"https://{domain}/.well-known/did.json"
     else:
-        # Extend here for other DID methods if they start showing up.
         return None
 
     try:
@@ -221,11 +206,48 @@ def extract_handle_from_diddoc(doc: dict) -> Optional[str]:
             return aka[len("at://") :]
     return None
 
-async def resolve_and_update_entry(did, entry, session):
+
+async def resolve_if_needed(
+    did: str,
+    session: aiohttp.ClientSession,
+    force_resolve: bool,
+    resolve_ttl_seconds: int = RESOLVE_TTL_SECONDS,
+) -> None:
+    """
+    Resolution worker entry point.
+
+    - Checks last_resolved and TTL under lock.
+    - If we actually need to resolve, updates last_resolved, then
+      does network I/O and updates pds/handle.
+    """
     now = datetime.now(timezone.utc)
+
     async with accounts_lock:
+        entry = accounts.get(did)
+        if entry is None:
+            # We somehow got a DID that no longer exists; ignore.
+            return
+
+        need_resolve = False
+        lr = entry.get("last_resolved")
+
+        if force_resolve:
+            need_resolve = True
+        else:
+            if lr is None:
+                need_resolve = True
+            elif isinstance(lr, datetime):
+                age = (now - lr).total_seconds()
+                if age >= resolve_ttl_seconds:
+                    need_resolve = True
+
+        if not need_resolve:
+            return
+
+        # Mark that we attempted a resolution at this time
         entry["last_resolved"] = now
 
+    # Network work OUTSIDE the lock
     doc = await resolve_did_document(did, session)
     if not doc:
         return
@@ -234,18 +256,30 @@ async def resolve_and_update_entry(did, entry, session):
     handle = extract_handle_from_diddoc(doc)
 
     async with accounts_lock:
+        entry2 = accounts.get(did)
+        if entry2 is None:
+            return
         if pds is not None:
-            entry["pds"] = pds
+            entry2["pds"] = pds
         if handle is not None:
-            entry["handle"] = handle
+            entry2["handle"] = handle
 
-async def update_account(
+
+# -----------------------------
+# Update on firehose events
+# -----------------------------
+async def update_account_and_maybe_queue(
     did: str,
-    session: aiohttp.ClientSession,
     *,
-    force_resolve: bool = False,
-    resolve_ttl_seconds: int = RESOLVE_TTL_SECONDS,
+    force_resolve: bool,
+    resolve_queue: "asyncio.Queue[Tuple[str, bool]]",
 ) -> None:
+    """
+    Update last_seen for DID and decide whether to enqueue for resolution.
+
+    We keep this very cheap: only touch the dict and do simple TTL logic,
+    then push to the queue. No network here.
+    """
     now = datetime.now(timezone.utc)
 
     async with accounts_lock:
@@ -261,6 +295,7 @@ async def update_account(
         else:
             entry["last_seen"] = now
 
+        # Decide if we should enqueue resolution:
         need_resolve = False
 
         if force_resolve:
@@ -271,17 +306,42 @@ async def update_account(
                 need_resolve = True
             elif isinstance(lr, datetime):
                 age = (now - lr).total_seconds()
-                if age >= resolve_ttl_seconds:
+                if age >= RESOLVE_TTL_SECONDS:
                     need_resolve = True
 
-    # Do the network resolution OUTSIDE the lock
     if need_resolve:
-        await resolve_and_update_entry(did, entry, session)
+        try:
+            resolve_queue.put_nowait((did, force_resolve))
+        except asyncio.QueueFull:
+            # We could log this once or keep a counter if you care.
+            pass
+
+
+# -----------------------------
+# Resolution worker
+# -----------------------------
+async def resolution_worker(
+    resolve_queue: "asyncio.Queue[Tuple[str, bool]]",
+    session: aiohttp.ClientSession,
+    worker_id: int,
+) -> None:
+    """
+    Background worker that processes DID resolution tasks from the queue.
+    """
+    while True:
+        did, force = await resolve_queue.get()
+        try:
+            await resolve_if_needed(did, session, force_resolve=force)
+        finally:
+            resolve_queue.task_done()
+
 
 # -----------------------------
 # Firehose callback
 # -----------------------------
-def make_on_message_handler(session: aiohttp.ClientSession):
+def make_on_message_handler(
+    resolve_queue: "asyncio.Queue[Tuple[str, bool]]",
+):
     async def on_message_handler(message) -> None:
         evt = parse_subscribe_repos_message(message)
 
@@ -297,23 +357,16 @@ def make_on_message_handler(session: aiohttp.ClientSession):
         elif isinstance(evt, models.ComAtprotoSyncSubscribeRepos.Identity):
             did = evt.did
         else:
-            # Ignore other event types
             return
 
         if did is None:
             return
 
-        await update_account(did, session, force_resolve=force_resolve)
-
-        entry = accounts[did]
-        # Still log individual events – easy enough to pipe through logger later.
-        print(
-            f"[{entry['last_seen'].isoformat()}] "
-            f"did={did} "
-            f"handle={entry.get('handle') or '-'} "
-            f"pds={entry.get('pds') or '-'} "
-            f"last_resolved="
-            f"{entry.get('last_resolved').isoformat() if entry.get('last_resolved') else '-'}"
+        # Fast path: update last_seen, TTL-check, enqueue resolution if needed.
+        await update_account_and_maybe_queue(
+            did,
+            force_resolve=force_resolve,
+            resolve_queue=resolve_queue,
         )
 
     return on_message_handler
@@ -347,18 +400,31 @@ def parse_args() -> argparse.Namespace:
         help=f"Seconds between periodic snapshots (default: {SNAPSHOT_INTERVAL})",
         default=SNAPSHOT_INTERVAL,
     )
+    parser.add_argument(
+        "--resolve-workers",
+        type=int,
+        help=f"Number of concurrent DID resolution workers (default: {RESOLUTION_WORKERS})",
+        default=RESOLUTION_WORKERS,
+    )
+    parser.add_argument(
+        "--resolve-ttl-seconds",
+        type=int,
+        help=f"Re-resolve DIDs older than this many seconds (default: {RESOLVE_TTL_SECONDS})",
+        default=RESOLVE_TTL_SECONDS,
+    )
     return parser.parse_args()
 
 
 # -----------------------------
-# Main async run
+# Main async logic
 # -----------------------------
 async def run(args: argparse.Namespace) -> None:
     snapshot_path = args.snapshot_file
     snapshot_interval = args.snapshot_interval
 
-    # Load snapshot BEFORE starting
-    load_snapshot(snapshot_path)
+    # Adjust TTL if overridden
+    global RESOLVE_TTL_SECONDS
+    RESOLVE_TTL_SECONDS = args.resolve_ttl_seconds
 
     loop = asyncio.get_running_loop()
 
@@ -370,8 +436,11 @@ async def run(args: argparse.Namespace) -> None:
     try:
         loop.add_signal_handler(signal.SIGUSR1, on_sigusr1)
     except (NotImplementedError, AttributeError):
-        # Not available on some platforms (e.g., Windows)
         print("SIGUSR1 handler not available on this platform.")
+
+    resolve_queue: "asyncio.Queue[Tuple[str, bool]]" = asyncio.Queue(
+        maxsize=RESOLUTION_QUEUE_SIZE
+    )
 
     async with aiohttp.ClientSession() as session:
         if args.relay:
@@ -381,27 +450,32 @@ async def run(args: argparse.Namespace) -> None:
             client = AsyncFirehoseSubscribeReposClient()
             print("Using default relay from atproto library")
 
-        on_message = make_on_message_handler(session)
+        # Start resolution workers
+        for i in range(args.resolve_workers):
+            asyncio.create_task(resolution_worker(resolve_queue, session, i))
+
+        on_message = make_on_message_handler(resolve_queue)
 
         # Background task: periodic snapshot (no stdout prints)
         asyncio.create_task(periodic_snapshot(snapshot_path, snapshot_interval))
 
         try:
-            # This will run until interrupted; auto-reconnects on inactivity.
             await client.start(on_message)
         finally:
-            # On exit, save one last snapshot (with a log line)
+            # On exit, save one last snapshot
             await async_save_snapshot(snapshot_path, verbose=True)
 
 
 # -----------------------------
 # Entry point
 # -----------------------------
-if __name__ == "__main__":
+def main():
     args = parse_args()
-    try:
-        asyncio.run(run(args))
-    except KeyboardInterrupt:
-        # Best-effort snapshot on Ctrl+C, with the correct path
-        save_snapshot(args.snapshot_file, verbose=True)
-        print("Shutdown via KeyboardInterrupt, snapshot saved.")
+    # Load snapshot BEFORE starting the event loop (no need for locking yet)
+    load_snapshot(args.snapshot_file)
+    asyncio.run(run(args))
+
+
+if __name__ == "__main__":
+    main()
+
