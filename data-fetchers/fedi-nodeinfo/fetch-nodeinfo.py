@@ -9,8 +9,10 @@ import urllib.robotparser
 import re
 import argparse
 import random
+import time
 from datetime import datetime, timezone
 from typing import Optional, Dict, Tuple, List
+from contextlib import asynccontextmanager
 
 USER_AGENT = "fetch-nodeinfo-bot (+https://arewedecentralizedyet.online/)"
 
@@ -43,7 +45,7 @@ def load_state(path: str) -> None:
     if os.path.exists(path):
         try:
             with open(path, "r", encoding="utf-8") as f:
-                state = json.load(f)
+                state_hosts = json.load(f)
         except Exception as e:
             print(f"# Warning: could not read state file {path}: {e}", file=sys.stderr)
             state_hosts = {}
@@ -69,6 +71,106 @@ def get_host_state(host: str) -> Dict:
     return hs
 
 # ---------------------------------------------------------------------
+# Per-host tate limiter
+# ---------------------------------------------------------------------
+class TokenBucket:
+    def __init__(self, rate: float, capacity: int):
+        """
+        rate: tokens per second
+        capacity: max burst size
+        """
+        self.rate = rate
+        self.capacity = capacity
+        self.tokens = float(capacity)
+        self.timestamp = time.monotonic()
+        self._lock = asyncio.Lock()
+
+    async def acquire(self):
+        while True:
+            async with self._lock:
+                now = time.monotonic()
+                delta = now - self.timestamp
+                self.timestamp = now
+
+                # Refill
+                self.tokens = min(self.capacity, self.tokens + delta * self.rate)
+
+                if self.tokens >= 1.0:
+                    self.tokens -= 1.0
+                    return  # got a token, go ahead
+
+                # Need to wait for enough tokens to accumulate
+                missing = 1.0 - self.tokens
+                wait = missing / self.rate if self.rate > 0 else 1.0
+
+            # Sleep *outside* the lock so others can progress
+            await asyncio.sleep(wait)
+
+
+class PerHostLimiter:
+    def __init__(self, rate: float = 5.0, capacity: int = 5):
+        """
+        rate/capacity are the default per-host token bucket params.
+        """
+        self.rate = rate
+        self.capacity = capacity
+        self._buckets: dict[str, TokenBucket] = {}
+        self._dict_lock = asyncio.Lock()
+
+    async def _get_bucket(self, host: str | None) -> TokenBucket:
+        key = host or "<no-host>"
+        async with self._dict_lock:
+            bucket = self._buckets.get(key)
+            if bucket is None:
+                bucket = TokenBucket(self.rate, self.capacity)
+                self._buckets[key] = bucket
+            return bucket
+
+    async def acquire(self, host: str | None):
+        bucket = await self._get_bucket(host)
+        await bucket.acquire()
+
+class RateLimitedSession:
+    """
+    Thin wrapper around aiohttp.ClientSession enforcing per-host rate limits.
+    """
+
+    def __init__(self, limiter: PerHostLimiter, *args, **kwargs):
+        self._session = aiohttp.ClientSession(*args, **kwargs)
+        self._limiter = limiter
+
+    @asynccontextmanager
+    async def request(self, method, url, **kwargs):
+        host = urllib.parse.urlparse(url).hostname
+        await self._limiter.acquire(host)
+        async with self._session.request(method, url, **kwargs) as resp:
+            yield resp
+
+    @asynccontextmanager
+    async def get(self, url, **kwargs):
+        async with self.request("GET", url, **kwargs) as resp:
+            yield resp
+
+    @asynccontextmanager
+    async def post(self, url, **kwargs):
+        async with self.request("POST", url, **kwargs) as resp:
+            yield resp
+
+    async def close(self):
+        await self._session.close()
+
+    async def __aenter__(self):
+        await self._session.__aenter__()
+        return self
+
+    async def __aexit__(self, exc_type, exc, tb):
+        return await self._session.__aexit__(exc_type, exc, tb)
+
+    @property
+    def connector(self):
+        return self._session.connector
+
+# ---------------------------------------------------------------------
 # Robots.txt handling (with TTL & state tracking)
 # ---------------------------------------------------------------------
 async def is_allowed(session: aiohttp.ClientSession, url: str, now: datetime) -> bool:
@@ -88,8 +190,8 @@ async def is_allowed(session: aiohttp.ClientSession, url: str, now: datetime) ->
     # public access to nodeinfo.json file, but then direct you to a different
     # host that just has a blanket deny-everything rule - gotta say, the intent
     # seems clear that you should be able to follow these links
-    if netloc == "public-api.wordpress.com":
-        return True
+    #if netloc == "public-api.wordpress.com":
+    #    return True
 
     # TTL check: reuse previous decision if fresh
     last_checked_str = robots_state.get("last_checked")
@@ -149,6 +251,16 @@ async def fetch_json(session: aiohttp.ClientSession, url: str, now: datetime) ->
             if resp.status != 200:
                 err = f"HTTP {resp.status}"
                 print(f"# {err} for {url}", file=sys.stderr)
+                #print("\n===== HTTP ERROR =====")
+                #print(f"URL: {url}")
+                #print(f"Status: {resp.status}")
+                #print("Headers:")
+                #for k, v in resp.headers.items():
+                #    print(f"  {k}: {v}")
+                #body = await resp.text()
+                #print("Body:")
+                #print(body)
+                #print("===== END ERROR =====\n")
                 return None, err
             try:
                 data = await resp.json(content_type=None)
@@ -253,7 +365,7 @@ async def fetch_nodeinfo_for_host(
 
 
 # ---------------------------------------------------------------------
-# Worker task
+# worker task
 # ---------------------------------------------------------------------
 async def process_host(
     host: str,
@@ -332,14 +444,16 @@ async def process_host(
 # ---------------------------------------------------------------------
 # Main async driver
 # ---------------------------------------------------------------------
-async def main_async(hosts: list, nodeinfo_dir: str, state_path: str) -> None:
+async def main_async(hosts: list, nodeinfo_dir: str, state_path: str, ratelimit: float) -> None:
 
     timeout = aiohttp.ClientTimeout(total=REQUEST_TIMEOUT)
     connector = aiohttp.TCPConnector(limit=MAX_CONCURRENT, limit_per_host=1)
+    limiter = PerHostLimiter(rate=ratelimit, capacity=int(ratelimit) + 5)
 
-    async with aiohttp.ClientSession(
+    async with RateLimitedSession(
         timeout=timeout,
         connector=connector,
+        limiter=limiter,
         headers={"User-Agent": USER_AGENT},
     ) as session:
         sem = asyncio.Semaphore(MAX_CONCURRENT)
@@ -390,11 +504,27 @@ def main() -> None:
         default=0,
         help="Number of hosts to fetch (selected randomly)"
     )
+    parser.add_argument(
+        "--ratelimit",
+        type=float,
+        default=5,
+        help="Per-host rate limit (requests per second)"
+    )
+    parser.add_argument(
+        "--max-concurrent",
+        type=int,
+        default=0,
+        help="Maximum number of concurrent connections"
+    )
 
     args = parser.parse_args()
 
     ROBOTS_TTL_SECS = max(0.0, args.robots_ttl_hours) * 3600.0
     NODEINFO_TTL_SECS = max(0.0, args.nodeinfo_ttl_hours) * 3600.0
+
+    if args.max_concurrent:
+        global MAX_CONCURRENT
+        MAX_CONCURRENT = args.max_concurrent
 
     hosts = load_hostnames(args.hosts_json)
 
@@ -410,8 +540,13 @@ def main() -> None:
     os.makedirs(args.nodeinfo_dir, exist_ok=True)
     print(f"# Created {args.nodeinfo_dir}")
 
-    asyncio.run(main_async(hosts, args.nodeinfo_dir, args.state_file))
-
+    try:
+        asyncio.run(main_async(hosts, args.nodeinfo_dir, args.state_file, args.ratelimit))
+    except KeyboardInterrupt:
+        # Ctrl-C: try to persist whatever is in state_hosts right now
+        print("# Caught KeyboardInterrupt, saving state before exit...", file=sys.stderr)
+        save_state(args.state_file)
+        sys.exit(1)
 
 if __name__ == "__main__":
     main()
