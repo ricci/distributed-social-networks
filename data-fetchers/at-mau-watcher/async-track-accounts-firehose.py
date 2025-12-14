@@ -1,6 +1,7 @@
 #!/usr/bin/env /usr/local/bin/python3
 import argparse
 import asyncio
+import copy
 import json
 import os
 import signal
@@ -80,9 +81,20 @@ def load_snapshot(path: str) -> None:
 
 
 def _write_snapshot_file(path: str, snapshot_copy: Dict[str, Dict[str, object]], verbose: bool) -> None:
+    def _json_default(obj):
+        if isinstance(obj, datetime):
+            return obj.isoformat()
+        raise TypeError(f"Object of type {type(obj).__name__} is not JSON serializable")
+
     tmp_path = path + ".tmp"
     with open(tmp_path, "w", encoding="utf-8") as f:
-        json.dump(snapshot_copy, f, indent=2, sort_keys=True)
+        json.dump(
+            snapshot_copy,
+            f,
+            indent=2,
+            sort_keys=True,
+            default=_json_default,
+        )
     os.replace(tmp_path, path)
     if verbose:
         print(f"Saved snapshot to {path}: {len(snapshot_copy)} accounts")
@@ -94,28 +106,7 @@ async def async_save_snapshot(path: str, verbose: bool = True) -> None:
     then write it to disk in a thread.
     """
     async with accounts_lock:
-        snapshot_copy: Dict[str, Dict[str, object]] = {}
-        for did, entry in accounts.items():
-            ls = entry["last_seen"]
-            if isinstance(ls, datetime):
-                last_seen_str = ls.isoformat()
-            else:
-                last_seen_str = str(ls)
-
-            lr = entry.get("last_resolved")
-            if isinstance(lr, datetime):
-                last_resolved_str = lr.isoformat()
-            elif lr is None:
-                last_resolved_str = None
-            else:
-                last_resolved_str = str(lr)
-
-            snapshot_copy[did] = {
-                "pds": entry.get("pds"),
-                "handle": entry.get("handle"),
-                "last_seen": last_seen_str,
-                "last_resolved": last_resolved_str,
-            }
+        snapshot_copy = copy.deepcopy(accounts)
 
     await asyncio.to_thread(_write_snapshot_file, path, snapshot_copy, verbose)
 
@@ -480,4 +471,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
