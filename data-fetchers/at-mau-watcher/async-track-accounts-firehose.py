@@ -355,7 +355,9 @@ def make_on_message_handler(
             did = evt.did
             force_resolve = True
         elif isinstance(evt, models.ComAtprotoSyncSubscribeRepos.Identity):
+            # Identity events should force an immediate re-resolve
             did = evt.did
+            force_resolve = True
         else:
             return
 
