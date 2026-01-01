@@ -3,7 +3,188 @@ import sys
 import os
 import json
 import csv
-from typing import List, Optional
+from typing import List, Optional, Tuple
+
+def _coerce_int(value: object) -> Optional[int]:
+    if value is None:
+        return None
+    if isinstance(value, int):
+        return value
+    if isinstance(value, str):
+        try:
+            return int(value)
+        except ValueError:
+            return None
+    return None
+
+AKKOMA_FORKS = {"akkoma", "pleroma"}
+MISSKEY_FORKS = {
+    "misskey",
+    "sharkey",
+    "iceshark",
+    "cherrypick",
+    "foundkey",
+    "firefish",
+    "iceshrimp",
+    "iceshrimp.net",
+    "meisskey",
+    "calckey",
+    "yojo-art",
+}
+
+def _is_akkoma_fork(software_name: Optional[str]) -> bool:
+    return (software_name or "").lower() in AKKOMA_FORKS
+
+def _is_misskey_fork(software_name: Optional[str]) -> bool:
+    return (software_name or "").lower() in MISSKEY_FORKS
+
+def _extract_metadata_non_activitypub_users(nodeinfo_wrapper: dict) -> Optional[int]:
+    ni = nodeinfo_wrapper.get("nodeinfo") or {}
+    metadata = ni.get("metadata") or {}
+    if not isinstance(metadata, dict):
+        return None
+    users = metadata.get("users")
+    if isinstance(users, dict):
+        total = 0
+        for key, value in users.items():
+            if str(key).lower() == "activitypub":
+                continue
+            count = _coerce_int(value)
+            if count is not None:
+                total += count
+        return total
+    stats = metadata.get("stats")
+    if isinstance(stats, dict):
+        total = 0
+        for key, value in stats.items():
+            if str(key).lower() == "activitypub" or not isinstance(value, dict):
+                continue
+            count = _coerce_int(value.get("users"))
+            if count is not None:
+                total += count
+        return total
+    return None
+
+def _extract_local_posts(nodeinfo_wrapper: dict) -> Optional[int]:
+    ni = nodeinfo_wrapper.get("nodeinfo") or {}
+    usage = ni.get("usage") or {}
+    if not isinstance(usage, dict):
+        return None
+    return _coerce_int(usage.get("localPosts"))
+
+def _extract_local_comments(nodeinfo_wrapper: dict) -> Optional[int]:
+    ni = nodeinfo_wrapper.get("nodeinfo") or {}
+    usage = ni.get("usage") or {}
+    if not isinstance(usage, dict):
+        return None
+    return _coerce_int(usage.get("localComments"))
+
+SOFTWARE_QUIRKS = {
+    # Non-native or intentionally bogus nodeinfo.
+    "gnusocial": {"no_monthly_users": True},
+    "lipupini": {"no_monthly_users": True},
+    # Does not report monthly active users.
+    "gancio": {"no_monthly_users": True},
+    # Use total users when monthly is missing.
+    "ghost": {"monthly_from_total": True, "cms": True},
+    "writefreely": {"monthly_from_total": True},
+    # Zero monthly means inactive.
+    "mastodon": {"zero_monthly_skip": True, "trust_monthly_gt_total": True},
+    "pixelfed": {"zero_monthly_skip": True, "trust_monthly_gt_total": True},
+    "fedibird": {"zero_monthly_skip": True, "trust_monthly_gt_total": True},
+    "kmyblue": {"zero_monthly_skip": True, "trust_monthly_gt_total": True},
+    "funkwhale": {"zero_monthly_skip": True},
+    "zer0": {"zero_monthly_skip": True},
+    # Monthly can exceed total; trust monthly.
+    "lemmy": {"trust_monthly_gt_total": True},
+    # WordPress monthly counts posters; total counts ActivityPub-enabled accounts.
+    # Monthly can exceed total; cap monthly to total.
+    "wordpress": {"cap_monthly_to_total": True, "cms": True},
+    "sutty-distributed-press": {"cms": True},
+    "drupal": {"cms": True},
+    # Total can be inflated; cap total to monthly.
+    "yellbot": {"cap_total_to_monthly": True},
+    # Bridge: use non-activitypub metadata user counts.
+    "bridgy-fed": {"use_metadata_non_activitypub_users": True},
+    # Does not report monthly users.
+    "mobilizon": {"no_monthly_users": True},
+    # Does not report monthly users.
+    "tanukey": {"no_monthly_users": True},
+    # Does not report monthly users.
+    "webfan": {"no_monthly_users": True},
+    # Does not report monthly users.
+    "truefans": {"no_monthly_users": True},
+    # Does not report monthly users.
+    "bonfire": {"no_monthly_users": True},
+    # Does not report monthly users.
+    "wildebeest": {"no_monthly_users": True},
+    # Does not report monthly users.
+    "forte": {"no_monthly_users": True},
+    # Does not report monthly users.
+    "careercupid": {"no_monthly_users": True},
+    # Relay software; not counted as user nodes.
+    "activity-relay": {"relay": True},
+    "aoderelay": {"relay": True},
+    "activityrelay": {"relay": True},
+    "ccworld-ap-bridge": {"relay": True, "no_monthly_users": True},
+    # Bridge: use non-activitypub metadata user counts.
+    "mostr": {"use_metadata_non_activitypub_users": True},
+    # Detect activity via localPosts; if active, treat total users as monthly active.
+    "gotosocial": {"detect_activity_from_posts": True},
+    "microblogpub": {"detect_activity_from_posts": True},
+    "takahe": {"detect_activity_from_posts": True},
+    # Detect activity via localPosts/localComments; if active, treat total users as monthly active.
+    "plume": {"detect_activity_from_posts_and_comments": True},
+}
+
+KNOWN_SOFTWARE = {
+    # Included as known; activitypub already filtered globally.
+    "nodebb",
+    # Known; no special handling.
+    "peertube",
+    "microdotblog",
+    "brighteon",
+    "bookwyrm",
+    "loops",
+    "neodb",
+    "friendica",
+    "hometown",
+    "mbin",
+    "kbin",
+    "wafrn",
+    "hubzilla",
+    "piefed",
+    "owncast",
+    "snac",
+    "mitra",
+    "hollo",
+    "flohmarkt",
+    "beulta",
+    "betula",
+    "drupal",
+    "ktistec",
+    "mammuthus",
+    "postmarks",
+    "forgejo",
+    "vernissage",
+    "gitea",
+    "bovine",
+    "killbait",
+    "wellesley",
+    "wxwclub",
+    "smithereen",
+    "pulsar",
+    "incise",
+}
+
+def _get_quirks(software_name: Optional[str]) -> Tuple[str, dict]:
+    software_key = (software_name or "").lower()
+    quirks = dict(SOFTWARE_QUIRKS.get(software_key, {}))
+    if _is_misskey_fork(software_name):
+        quirks["no_monthly_users"] = True
+    if _is_akkoma_fork(software_name):
+        quirks["trust_monthly_gt_total"] = True
+    return software_key, quirks
 
 def extract_fields(nodeinfo_wrapper: dict):
     hostname = nodeinfo_wrapper.get("hostname", "")
@@ -23,8 +204,8 @@ def extract_fields(nodeinfo_wrapper: dict):
     if isinstance(usage, dict):
         users = usage.get("users") or {}
         if isinstance(users, dict):
-            users_total = users.get("total")
-            active_month = users.get("activeMonth")
+            users_total = _coerce_int(users.get("total"))
+            active_month = _coerce_int(users.get("activeMonth"))
 
     if isinstance(ni.get("protocols"), list):
         protocols = [str(p) for p in ni["protocols"]]
@@ -83,20 +264,28 @@ def main() -> None:
         if not candidates:
             continue
 
-        ts_newest, path_newest = max(candidates, key=lambda x: x[0])
-
-        if now - ts_newest > cutoff:
+        candidates_recent = [c for c in candidates if now - c[0] <= cutoff]
+        if not candidates_recent:
             continue
 
-        selected_files.append(path_newest)
+        ts_newest, path_newest = max(candidates_recent, key=lambda x: x[0])
+        ts_oldest, path_oldest = min(candidates_recent, key=lambda x: x[0])
 
-    selected_files.sort()
+        selected_files.append({
+            "newest": path_newest,
+            "oldest": path_oldest,
+        })
+
+    selected_files.sort(key=lambda item: item["newest"])
+
+    unknown_software_report = {}
 
     with open(output_csv, "w", encoding="utf-8", newline="") as f:
         writer = csv.writer(f)
         writer.writerow(["hostname", "software", "users_total", "active_month", "protocols"])
 
-        for path in selected_files:
+        for item in selected_files:
+            path = item["newest"]
             try:
                 with open(path, "r", encoding="utf-8") as jf:
                     wrapper = json.load(jf)
@@ -109,6 +298,89 @@ def main() -> None:
             if not protocols or not any(str(p).lower() == "activitypub" for p in protocols):
                 continue
 
+            software_key, quirks = _get_quirks(software_name)
+
+            if quirks.get("no_monthly_users") or quirks.get("relay"):
+                continue
+            if quirks.get("use_metadata_non_activitypub_users"):
+                bridge_users = _extract_metadata_non_activitypub_users(wrapper)
+                users_total = bridge_users
+                active_month = bridge_users
+            if quirks.get("detect_activity_from_posts"):
+                try:
+                    with open(item["oldest"], "r", encoding="utf-8") as jf:
+                        oldest_wrapper = json.load(jf)
+                except Exception:
+                    continue
+                oldest_posts = _extract_local_posts(oldest_wrapper)
+                newest_posts = _extract_local_posts(wrapper)
+                if oldest_posts is None or newest_posts is None:
+                    continue
+                if newest_posts > oldest_posts:
+                    active_month = users_total
+                else:
+                    continue
+            if quirks.get("detect_activity_from_posts_and_comments"):
+                try:
+                    with open(item["oldest"], "r", encoding="utf-8") as jf:
+                        oldest_wrapper = json.load(jf)
+                except Exception:
+                    continue
+                oldest_posts = _extract_local_posts(oldest_wrapper)
+                newest_posts = _extract_local_posts(wrapper)
+                oldest_comments = _extract_local_comments(oldest_wrapper)
+                newest_comments = _extract_local_comments(wrapper)
+                if (
+                    oldest_posts is None
+                    or newest_posts is None
+                    or oldest_comments is None
+                    or newest_comments is None
+                ):
+                    continue
+                if newest_posts > oldest_posts or newest_comments > oldest_comments:
+                    active_month = users_total
+                else:
+                    continue
+            if quirks.get("monthly_from_total"):
+                active_month = users_total
+            if quirks.get("zero_monthly_skip") and active_month == 0:
+                continue
+            if (
+                software_key not in SOFTWARE_QUIRKS
+                and software_key not in KNOWN_SOFTWARE
+                and not _is_misskey_fork(software_name)
+                and not _is_akkoma_fork(software_name)
+            ):
+                report_entry = unknown_software_report.setdefault(
+                    software_key or "(unknown)",
+                    {"count": 0, "active_month_total": 0, "users_total_total": 0},
+                )
+                report_entry["count"] += 1
+                if isinstance(active_month, int):
+                    report_entry["active_month_total"] += active_month
+                if isinstance(users_total, int):
+                    report_entry["users_total_total"] += users_total
+
+            if active_month is not None and users_total is not None and active_month > users_total:
+                if quirks.get("cap_monthly_to_total"):
+                    # Monthly users counts posters while total users counts enabled accounts.
+                    active_month = users_total
+                elif quirks.get("trust_monthly_gt_total"):
+                    pass
+                else:
+                    print(
+                        f"# Skipping {path}: active_month ({active_month}) exceeds users_total ({users_total})",
+                        file=sys.stderr,
+                    )
+                    continue
+            if (
+                active_month is not None
+                and users_total is not None
+                and users_total > active_month
+                and quirks.get("cap_total_to_monthly")
+            ):
+                users_total = active_month
+
             writer.writerow([
                 hostname or "",
                 software_name or "",
@@ -116,6 +388,30 @@ def main() -> None:
                 active_month if active_month is not None else "",
                 protocols_str,
             ])
+
+    if unknown_software_report:
+        print("# Unknown software report (top 5):", file=sys.stderr)
+
+        def top_entries(key):
+            return sorted(
+                unknown_software_report.items(),
+                key=lambda item: item[1][key],
+                reverse=True,
+            )[:5]
+
+        for label, key in [
+            ("instances", "count"),
+            ("monthly", "active_month_total"),
+            ("total", "users_total_total"),
+        ]:
+            print(f"# - Top by {label}:", file=sys.stderr)
+            for software, entry in top_entries(key):
+                print(
+                    f"#   {software}: {entry['count']} "
+                    f"(active_month total {entry['active_month_total']}, "
+                    f"users_total total {entry['users_total_total']})",
+                    file=sys.stderr,
+                )
 
     print(f"# Wrote {len(selected_files)} rows to {output_csv}", file=sys.stderr)
 
