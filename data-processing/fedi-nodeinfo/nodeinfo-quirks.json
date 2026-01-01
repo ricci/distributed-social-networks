@@ -1,0 +1,137 @@
+{
+  "software": {
+    "ghost": [
+      "monthly_from_total",
+      "cms"
+    ],
+    "wordpress": [
+      "cap_monthly_to_total",
+      "cms"
+    ],
+    "mastodon": [
+      "zero_monthly_skip",
+      "trust_monthly_gt_total"
+    ],
+    "pixelfed": [
+      "zero_monthly_skip",
+      "trust_monthly_gt_total"
+    ],
+    "fedibird": [
+      "zero_monthly_skip",
+      "trust_monthly_gt_total"
+    ],
+    "kmyblue": [
+      "zero_monthly_skip",
+      "trust_monthly_gt_total"
+    ],
+    "ccworld-ap-bridge": [
+      "relay",
+      "no_monthly_users"
+    ]
+  },
+  "quirks": {
+    "no_monthly_users": [
+      "gnusocial",
+      "lipupini",
+      "gancio",
+      "mobilizon",
+      "tanukey",
+      "webfan",
+      "truefans",
+      "bonfire",
+      "wildebeest",
+      "forte",
+      "careercupid"
+    ],
+    "monthly_from_total": [
+      "writefreely"
+    ],
+    "zero_monthly_skip": [
+      "funkwhale",
+      "zer0"
+    ],
+    "trust_monthly_gt_total": [
+      "lemmy"
+    ],
+    "cap_monthly_to_total": [],
+    "cap_total_to_monthly": [
+      "yellbot"
+    ],
+    "use_metadata_non_activitypub_users": [
+      "bridgy-fed",
+      "mostr"
+    ],
+    "detect_activity_from_posts": [
+      "gotosocial",
+      "microblogpub",
+      "takahe"
+    ],
+    "detect_activity_from_posts_and_comments": [
+      "plume"
+    ],
+    "relay": [
+      "activity-relay",
+      "aoderelay",
+      "activityrelay"
+    ],
+    "cms": [
+      "sutty-distributed-press",
+      "drupal"
+    ],
+    "none": [
+      "nodebb",
+      "peertube",
+      "microdotblog",
+      "brighteon",
+      "bookwyrm",
+      "loops",
+      "neodb",
+      "friendica",
+      "hometown",
+      "mbin",
+      "kbin",
+      "wafrn",
+      "hubzilla",
+      "piefed",
+      "owncast",
+      "snac",
+      "mitra",
+      "hollo",
+      "flohmarkt",
+      "beulta",
+      "betula",
+      "ktistec",
+      "mammuthus",
+      "postmarks",
+      "forgejo",
+      "vernissage",
+      "gitea",
+      "bovine",
+      "killbait",
+      "wellesley",
+      "wxwclub",
+      "smithereen",
+      "pulsar",
+      "incise"
+    ]
+  },
+  "forks": {
+    "misskey": [
+      "misskey",
+      "sharkey",
+      "iceshark",
+      "cherrypick",
+      "foundkey",
+      "firefish",
+      "iceshrimp",
+      "iceshrimp.net",
+      "meisskey",
+      "calckey",
+      "yojo-art"
+    ],
+    "akkoma": [
+      "akkoma",
+      "pleroma"
+    ]
+  }
+}

@@ -3,7 +3,7 @@ import sys
 import os
 import json
 import csv
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple, Dict, Set
 
 def _coerce_int(value: object) -> Optional[int]:
     if value is None:
@@ -17,26 +17,7 @@ def _coerce_int(value: object) -> Optional[int]:
             return None
     return None
 
-AKKOMA_FORKS = {"akkoma", "pleroma"}
-MISSKEY_FORKS = {
-    "misskey",
-    "sharkey",
-    "iceshark",
-    "cherrypick",
-    "foundkey",
-    "firefish",
-    "iceshrimp",
-    "iceshrimp.net",
-    "meisskey",
-    "calckey",
-    "yojo-art",
-}
-
-def _is_akkoma_fork(software_name: Optional[str]) -> bool:
-    return (software_name or "").lower() in AKKOMA_FORKS
-
-def _is_misskey_fork(software_name: Optional[str]) -> bool:
-    return (software_name or "").lower() in MISSKEY_FORKS
+QUIRKS_CONFIG_PATH = os.path.join(os.path.dirname(__file__), "nodeinfo-quirks.json")
 
 def _extract_metadata_non_activitypub_users(nodeinfo_wrapper: dict) -> Optional[int]:
     ni = nodeinfo_wrapper.get("nodeinfo") or {}
@@ -79,110 +60,78 @@ def _extract_local_comments(nodeinfo_wrapper: dict) -> Optional[int]:
         return None
     return _coerce_int(usage.get("localComments"))
 
-SOFTWARE_QUIRKS = {
-    # Non-native or intentionally bogus nodeinfo.
-    "gnusocial": {"no_monthly_users": True},
-    "lipupini": {"no_monthly_users": True},
-    # Does not report monthly active users.
-    "gancio": {"no_monthly_users": True},
-    # Use total users when monthly is missing.
-    "ghost": {"monthly_from_total": True, "cms": True},
-    "writefreely": {"monthly_from_total": True},
-    # Zero monthly means inactive.
-    "mastodon": {"zero_monthly_skip": True, "trust_monthly_gt_total": True},
-    "pixelfed": {"zero_monthly_skip": True, "trust_monthly_gt_total": True},
-    "fedibird": {"zero_monthly_skip": True, "trust_monthly_gt_total": True},
-    "kmyblue": {"zero_monthly_skip": True, "trust_monthly_gt_total": True},
-    "funkwhale": {"zero_monthly_skip": True},
-    "zer0": {"zero_monthly_skip": True},
-    # Monthly can exceed total; trust monthly.
-    "lemmy": {"trust_monthly_gt_total": True},
-    # WordPress monthly counts posters; total counts ActivityPub-enabled accounts.
-    # Monthly can exceed total; cap monthly to total.
-    "wordpress": {"cap_monthly_to_total": True, "cms": True},
-    "sutty-distributed-press": {"cms": True},
-    "drupal": {"cms": True},
-    # Total can be inflated; cap total to monthly.
-    "yellbot": {"cap_total_to_monthly": True},
-    # Bridge: use non-activitypub metadata user counts.
-    "bridgy-fed": {"use_metadata_non_activitypub_users": True},
-    # Does not report monthly users.
-    "mobilizon": {"no_monthly_users": True},
-    # Does not report monthly users.
-    "tanukey": {"no_monthly_users": True},
-    # Does not report monthly users.
-    "webfan": {"no_monthly_users": True},
-    # Does not report monthly users.
-    "truefans": {"no_monthly_users": True},
-    # Does not report monthly users.
-    "bonfire": {"no_monthly_users": True},
-    # Does not report monthly users.
-    "wildebeest": {"no_monthly_users": True},
-    # Does not report monthly users.
-    "forte": {"no_monthly_users": True},
-    # Does not report monthly users.
-    "careercupid": {"no_monthly_users": True},
-    # Relay software; not counted as user nodes.
-    "activity-relay": {"relay": True},
-    "aoderelay": {"relay": True},
-    "activityrelay": {"relay": True},
-    "ccworld-ap-bridge": {"relay": True, "no_monthly_users": True},
-    # Bridge: use non-activitypub metadata user counts.
-    "mostr": {"use_metadata_non_activitypub_users": True},
-    # Detect activity via localPosts; if active, treat total users as monthly active.
-    "gotosocial": {"detect_activity_from_posts": True},
-    "microblogpub": {"detect_activity_from_posts": True},
-    "takahe": {"detect_activity_from_posts": True},
-    # Detect activity via localPosts/localComments; if active, treat total users as monthly active.
-    "plume": {"detect_activity_from_posts_and_comments": True},
-}
+def _load_quirks_config(path: str) -> Tuple[Dict[str, Set[str]], Set[str], Set[str], Set[str]]:
+    with open(path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+    if not isinstance(data, dict):
+        raise ValueError("quirks config must be a JSON object")
 
-KNOWN_SOFTWARE = {
-    # Included as known; activitypub already filtered globally.
-    "nodebb",
-    # Known; no special handling.
-    "peertube",
-    "microdotblog",
-    "brighteon",
-    "bookwyrm",
-    "loops",
-    "neodb",
-    "friendica",
-    "hometown",
-    "mbin",
-    "kbin",
-    "wafrn",
-    "hubzilla",
-    "piefed",
-    "owncast",
-    "snac",
-    "mitra",
-    "hollo",
-    "flohmarkt",
-    "beulta",
-    "betula",
-    "drupal",
-    "ktistec",
-    "mammuthus",
-    "postmarks",
-    "forgejo",
-    "vernissage",
-    "gitea",
-    "bovine",
-    "killbait",
-    "wellesley",
-    "wxwclub",
-    "smithereen",
-    "pulsar",
-    "incise",
-}
+    quirks_by_software: Dict[str, Set[str]] = {}
+    known_software: Set[str] = set()
 
-def _get_quirks(software_name: Optional[str]) -> Tuple[str, dict]:
+    def add_quirk(name: str, quirk: str) -> None:
+        key = str(name).lower()
+        qkey = str(quirk).lower()
+        quirks_by_software.setdefault(key, set()).add(qkey)
+
+    software_section = data.get("software", {})
+    if isinstance(software_section, dict):
+        for name, quirks in software_section.items():
+            if quirks is None:
+                quirks_list = []
+            elif isinstance(quirks, str):
+                quirks_list = [quirks]
+            elif isinstance(quirks, list):
+                quirks_list = quirks
+            else:
+                continue
+            if not quirks_list or "none" in [str(q).lower() for q in quirks_list]:
+                known_software.add(str(name).lower())
+            for quirk in quirks_list:
+                if str(quirk).lower() == "none":
+                    continue
+                add_quirk(name, quirk)
+
+    quirks_section = data.get("quirks", {})
+    if isinstance(quirks_section, dict):
+        for quirk, names in quirks_section.items():
+            if isinstance(names, str):
+                names_list = [names]
+            elif isinstance(names, list):
+                names_list = names
+            else:
+                continue
+            if str(quirk).lower() == "none":
+                for name in names_list:
+                    known_software.add(str(name).lower())
+                continue
+            for name in names_list:
+                add_quirk(name, quirk)
+
+    forks_section = data.get("forks", {})
+    misskey_forks: Set[str] = set()
+    akkoma_forks: Set[str] = set()
+    if isinstance(forks_section, dict):
+        misskey = forks_section.get("misskey", [])
+        if isinstance(misskey, list):
+            misskey_forks = {str(name).lower() for name in misskey}
+        akkoma = forks_section.get("akkoma", [])
+        if isinstance(akkoma, list):
+            akkoma_forks = {str(name).lower() for name in akkoma}
+
+    return quirks_by_software, known_software, misskey_forks, akkoma_forks
+
+def _get_quirks(
+    software_name: Optional[str],
+    quirks_by_software: Dict[str, Set[str]],
+    misskey_forks: Set[str],
+    akkoma_forks: Set[str],
+) -> Tuple[str, Dict[str, bool]]:
     software_key = (software_name or "").lower()
-    quirks = dict(SOFTWARE_QUIRKS.get(software_key, {}))
-    if _is_misskey_fork(software_name):
+    quirks = {q: True for q in quirks_by_software.get(software_key, set())}
+    if software_key in misskey_forks:
         quirks["no_monthly_users"] = True
-    if _is_akkoma_fork(software_name):
+    if software_key in akkoma_forks:
         quirks["trust_monthly_gt_total"] = True
     return software_key, quirks
 
@@ -278,6 +227,11 @@ def main() -> None:
 
     selected_files.sort(key=lambda item: item["newest"])
 
+    quirks_by_software, known_software, misskey_forks, akkoma_forks = _load_quirks_config(
+        QUIRKS_CONFIG_PATH
+    )
+    configured_software = set(known_software) | set(quirks_by_software.keys()) | set(misskey_forks) | set(akkoma_forks)
+
     unknown_software_report = {}
 
     with open(output_csv, "w", encoding="utf-8", newline="") as f:
@@ -298,7 +252,12 @@ def main() -> None:
             if not protocols or not any(str(p).lower() == "activitypub" for p in protocols):
                 continue
 
-            software_key, quirks = _get_quirks(software_name)
+            software_key, quirks = _get_quirks(
+                software_name,
+                quirks_by_software,
+                misskey_forks,
+                akkoma_forks,
+            )
 
             if quirks.get("no_monthly_users") or quirks.get("relay"):
                 continue
@@ -345,12 +304,7 @@ def main() -> None:
                 active_month = users_total
             if quirks.get("zero_monthly_skip") and active_month == 0:
                 continue
-            if (
-                software_key not in SOFTWARE_QUIRKS
-                and software_key not in KNOWN_SOFTWARE
-                and not _is_misskey_fork(software_name)
-                and not _is_akkoma_fork(software_name)
-            ):
+            if software_key not in configured_software:
                 report_entry = unknown_software_report.setdefault(
                     software_key or "(unknown)",
                     {"count": 0, "active_month_total": 0, "users_total_total": 0},
