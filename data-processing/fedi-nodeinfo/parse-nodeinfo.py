@@ -35,7 +35,7 @@ def extract_fields(nodeinfo_wrapper: dict):
 
     protocols_str = ";".join(protocols) if protocols else ""
 
-    return hostname, software_name, users_total, active_month, protocols_str
+    return hostname, software_name, users_total, active_month, protocols, protocols_str
 
 def main() -> None:
     import datetime
@@ -104,7 +104,10 @@ def main() -> None:
                 print(f"# Skipping {path}: {e}", file=sys.stderr)
                 continue
 
-            hostname, software_name, users_total, active_month, protocols_str = extract_fields(wrapper)
+            hostname, software_name, users_total, active_month, protocols, protocols_str = extract_fields(wrapper)
+
+            if not protocols or not any(str(p).lower() == "activitypub" for p in protocols):
+                continue
 
             writer.writerow([
                 hostname or "",
