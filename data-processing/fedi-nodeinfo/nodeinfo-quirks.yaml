@@ -1,13 +1,18 @@
-# YAML config; comments allowed.
+# Quirks config file
 {
+  # Keyed by software, list of quirks
   "software": {
-    "ghost": [
-      "monthly_from_total",
-      "cms"
+    # These should considered inactive if they have zero MAU.
+    # If the MAU reported is greater than the number of total users, this is
+    # acceptable, since deleted users may be included in MAU but are not counted
+    # in the total.
+    "fedibird": [ # masto fork
+      "zero_monthly_skip",
+      "trust_monthly_gt_total"
     ],
-    "wordpress": [
-      "cap_monthly_to_total",
-      "cms"
+    "kmyblue": [ # masto fork
+      "zero_monthly_skip",
+      "trust_monthly_gt_total"
     ],
     "mastodon": [
       "zero_monthly_skip",
@@ -17,120 +22,175 @@
       "zero_monthly_skip",
       "trust_monthly_gt_total"
     ],
-    "fedibird": [
-      "zero_monthly_skip",
-      "trust_monthly_gt_total"
+
+    # Ghost only reports a single user, and reports nothing about posts. So that
+    # we don't skip ghost entirely, we will go ahead and count that user
+    "ghost": [
+      "monthly_from_total",
+      "cms"
     ],
-    "kmyblue": [
-      "zero_monthly_skip",
-      "trust_monthly_gt_total"
+
+    # Wordpress is a little odd; recent versions of the activitypub plugin
+    # report the number of users who have activitypub turned on in the total
+    # field, and the number of active users in the the monthly field - regardless
+    # of whether their account has AP enabled or not. So, we go with the smaller
+    # of the two values.
+    "wordpress": [
+      "cap_monthly_to_total",
+      "cms"
     ],
+
+    # This is a bridge, but it doesn't report users
     "ccworld-ap-bridge": [
       "relay",
       "no_monthly_users"
     ]
   },
+
+  # Keyed by quirk, list of software
   "quirks": {
+    # These don't report monthly users, and I haven't figured out a way to
+    # make an educated guess
     "no_monthly_users": [
+      "bonfire",
+      "careercupid",
+      "forte",
+      "gancio",
       "gnusocial",
       "lipupini",
-      "gancio",
       "mobilizon",
       "tanukey",
-      "webfan",
       "truefans",
-      "bonfire",
-      "wildebeest",
-      "forte",
-      "careercupid"
+      "webfan",
+      "wildebeest"
     ],
-    "monthly_from_total": [
-      "writefreely"
-    ],
+
+    # These do report monthly users, but may give an empty report which should
+    # be treated as zero
     "zero_monthly_skip": [
       "funkwhale",
       "zer0"
     ],
+
+    # For these, we assume that the number of total users is a reasonably proxy
+    # for the number of monthly users
+    "monthly_from_total": [
+      "writefreely"
+    ],
+
+    # See comment above for mastodon, etc.
     "trust_monthly_gt_total": [
       "lemmy"
     ],
+
+    # See comment above for Wordpress
     "cap_monthly_to_total": [],
+
+    # This software reports an absurd number of total users, but seems to
+    # report reasonable monthly users
     "cap_total_to_monthly": [
       "yellbot"
     ],
+
+    # These are bridges; they report the number of users of various protocols.
+    # We add up all users that are *not* activitypub users, because this tells
+    # us how many accounts from other protocols are made available in
+    # activitypub by the bridge. It's not monthly, unforuntately, but we do
+    # count it as such.
     "use_metadata_non_activitypub_users": [
       "bridgy-fed",
       "mostr"
     ],
+
+    # These report total users, but not monthly active users. What we do for
+    # these is look back in the history that we keep to see if the number of
+    # local posts has gone up in the last month; if not, we consider the
+    # instance inactive, ie. 0 monthly users. If it is active, we consider all
+    # users active. This is not ideal, but: these are all used for small (often
+    # single-user) instances, making this an OK heuristic, and also, we are going
+    # to undercount re: instances where people read but don't post, so a bit of
+    # overcounting is probably not going to hurt
     "detect_activity_from_posts": [
       "gotosocial",
       "microblogpub",
       "takahe"
     ],
+    
+    # Same as above, but this software also reports comments in addition to posts
     "detect_activity_from_posts_and_comments": [
       "plume"
     ],
+
+    # We don't count users reported by relays; since they are relaying content
+    # produced on other intances, they don't add to the number of users in the 
+    # fediverse
     "relay": [
+      "activityrelay",
       "activity-relay",
-      "aoderelay",
-      "activityrelay"
+      "aoderelay"
     ],
+
+    # CMSes are not currently treated differently, but they are flagged just in 
+    # case it becomes useful to do so
     "cms": [
-      "sutty-distributed-press",
-      "drupal"
+      "drupal",
+      "sutty-distributed-press"
     ],
+
+    # Not known to have any reporting quirks
     "none": [
-      "nodebb",
-      "peertube",
-      "microdotblog",
-      "brighteon",
-      "bookwyrm",
-      "loops",
-      "neodb",
-      "friendica",
-      "hometown",
-      "mbin",
-      "kbin",
-      "wafrn",
-      "hubzilla",
-      "piefed",
-      "owncast",
-      "snac",
-      "mitra",
-      "hollo",
-      "flohmarkt",
       "beulta",
-      "betula",
-      "ktistec",
-      "mammuthus",
-      "postmarks",
-      "forgejo",
-      "vernissage",
-      "gitea",
+      "bookwyrm",
       "bovine",
+      "brighteon",
+      "flohmarkt",
+      "forgejo",
+      "friendica",
+      "gitea",
+      "hollo",
+      "hometown",
+      "hubzilla",
+      "incise",
+      "kbin",
       "killbait",
-      "wellesley",
-      "wxwclub",
-      "smithereen",
+      "ktistec",
+      "loops",
+      "mammuthus",
+      "mbin",
+      "microdotblog",
+      "mitra",
+      "neodb",
+      "nodebb", # Note: only gets counted if 'activitypub' is listed in protocols
+      "owncast",
+      "peertube",
+      "piefed",
+      "postmarks",
       "pulsar",
-      "incise"
+      "smithereen",
+      "snac",
+      "wafrn",
+      "vernissage",
+      "wellesley",
+      "wxwclub"
     ]
   },
+
+   # Lists of misskey and pleroma forks
   "forks": {
     "misskey": [
-      "misskey",
-      "sharkey",
-      "iceshark",
+      "calckey",
       "cherrypick",
-      "foundkey",
       "firefish",
+      "foundkey",
+      "iceshark",
       "iceshrimp",
       "iceshrimp.net",
       "meisskey",
-      "calckey",
+      "misskey",
+      "sharkey",
       "yojo-art"
     ],
-    "akkoma": [
+    "pleroma": [
       "akkoma",
       "pleroma"
     ]

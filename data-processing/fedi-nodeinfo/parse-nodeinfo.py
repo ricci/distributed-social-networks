@@ -111,28 +111,28 @@ def _load_quirks_config(path: str) -> Tuple[Dict[str, Set[str]], Set[str], Set[s
 
     forks_section = data.get("forks", {})
     misskey_forks: Set[str] = set()
-    akkoma_forks: Set[str] = set()
+    pleroma_forks: Set[str] = set()
     if isinstance(forks_section, dict):
         misskey = forks_section.get("misskey", [])
         if isinstance(misskey, list):
             misskey_forks = {str(name).lower() for name in misskey}
-        akkoma = forks_section.get("akkoma", [])
-        if isinstance(akkoma, list):
-            akkoma_forks = {str(name).lower() for name in akkoma}
+        pleroma = forks_section.get("pleroma", [])
+        if isinstance(pleroma, list):
+            pleroma_forks = {str(name).lower() for name in pleroma}
 
-    return quirks_by_software, known_software, misskey_forks, akkoma_forks
+    return quirks_by_software, known_software, misskey_forks, pleroma_forks
 
 def _get_quirks(
     software_name: Optional[str],
     quirks_by_software: Dict[str, Set[str]],
     misskey_forks: Set[str],
-    akkoma_forks: Set[str],
+    pleroma_forks: Set[str],
 ) -> Tuple[str, Dict[str, bool]]:
     software_key = (software_name or "").lower()
     quirks = {q: True for q in quirks_by_software.get(software_key, set())}
     if software_key in misskey_forks:
         quirks["no_monthly_users"] = True
-    if software_key in akkoma_forks:
+    if software_key in pleroma_forks:
         quirks["trust_monthly_gt_total"] = True
     return software_key, quirks
 
@@ -228,10 +228,10 @@ def main() -> None:
 
     selected_files.sort(key=lambda item: item["newest"])
 
-    quirks_by_software, known_software, misskey_forks, akkoma_forks = _load_quirks_config(
+    quirks_by_software, known_software, misskey_forks, pleroma_forks = _load_quirks_config(
         QUIRKS_CONFIG_PATH
     )
-    configured_software = set(known_software) | set(quirks_by_software.keys()) | set(misskey_forks) | set(akkoma_forks)
+    configured_software = set(known_software) | set(quirks_by_software.keys()) | set(misskey_forks) | set(pleroma_forks)
 
     unknown_software_report = {}
     quirk_report = {}
@@ -261,7 +261,7 @@ def main() -> None:
                 software_name,
                 quirks_by_software,
                 misskey_forks,
-                akkoma_forks,
+                pleroma_forks,
             )
 
             if quirks.get("no_monthly_users"):
