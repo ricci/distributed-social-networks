@@ -62,7 +62,8 @@
       "tanukey",
       "truefans",
       "webfan",
-      "wildebeest"
+      "wildebeest",
+      "wellesley" # Hard-coded totals/MAU; skip instead of counting.
     ],
 
     # These do report monthly users, but may give an empty report which should
@@ -176,7 +177,6 @@
       "snac",
       "wafrn",
       "vernissage",
-      "wellesley",
       "wxwclub"
     ]
   },
