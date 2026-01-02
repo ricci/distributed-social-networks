@@ -119,7 +119,9 @@
     # to undercount re: instances where people read but don't post, so a bit of
     # overcounting is probably not going to hurt
     "detect_activity_from_posts": [
-      "gotosocial",
+      "gotosocial",   # As of v 0.18, puts up a robots.txt that allows
+                      # fetchining nodeinfo if and only if real stats are being
+                      # reported
       "microblogpub", # Single-user software
       "takahe"
     ],
