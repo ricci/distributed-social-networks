@@ -1,3 +1,4 @@
+# YAML config; comments allowed.
 {
   "software": {
     "ghost": [

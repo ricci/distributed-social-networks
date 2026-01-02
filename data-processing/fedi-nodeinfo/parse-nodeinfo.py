@@ -5,6 +5,7 @@ import json
 import csv
 from typing import List, Optional, Tuple, Dict, Set
 
+import yaml
 def _coerce_int(value: object) -> Optional[int]:
     if value is None:
         return None
@@ -17,7 +18,7 @@ def _coerce_int(value: object) -> Optional[int]:
             return None
     return None
 
-QUIRKS_CONFIG_PATH = os.path.join(os.path.dirname(__file__), "nodeinfo-quirks.json")
+QUIRKS_CONFIG_PATH = os.path.join(os.path.dirname(__file__), "nodeinfo-quirks.yaml")
 
 def _extract_metadata_non_activitypub_users(nodeinfo_wrapper: dict) -> Optional[int]:
     ni = nodeinfo_wrapper.get("nodeinfo") or {}
@@ -62,9 +63,9 @@ def _extract_local_comments(nodeinfo_wrapper: dict) -> Optional[int]:
 
 def _load_quirks_config(path: str) -> Tuple[Dict[str, Set[str]], Set[str], Set[str], Set[str]]:
     with open(path, "r", encoding="utf-8") as f:
-        data = json.load(f)
+        data = yaml.safe_load(f)
     if not isinstance(data, dict):
-        raise ValueError("quirks config must be a JSON object")
+        raise ValueError("quirks config must be a YAML mapping")
 
     quirks_by_software: Dict[str, Set[str]] = {}
     known_software: Set[str] = set()
