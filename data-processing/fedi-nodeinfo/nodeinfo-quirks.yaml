@@ -75,6 +75,12 @@
     # For these, we assume that the number of total users is a reasonably proxy
     # for the number of monthly users
     "monthly_from_total": [
+    ],
+
+    # These may or may not report monthly users; if they don't, skip them;
+    # writefreely in partciular has a switch to enable public stats; if it's
+    # off, it reports total users but omits monthly users
+    "conditional_no_monthly_users": [
       "writefreely"
     ],
 

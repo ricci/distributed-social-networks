@@ -270,6 +270,9 @@ def main() -> None:
             if quirks.get("relay"):
                 bump_quirk("relay_skip")
                 continue
+            if quirks.get("conditional_no_monthly_users") and active_month is None:
+                bump_quirk("conditional_no_monthly_users_skip")
+                continue
             if quirks.get("use_metadata_non_activitypub_users"):
                 bridge_users = _extract_metadata_non_activitypub_users(wrapper)
                 users_total = bridge_users
