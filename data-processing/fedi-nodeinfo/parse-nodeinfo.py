@@ -233,6 +233,10 @@ def main() -> None:
     configured_software = set(known_software) | set(quirks_by_software.keys()) | set(misskey_forks) | set(akkoma_forks)
 
     unknown_software_report = {}
+    quirk_report = {}
+
+    def bump_quirk(quirk: str) -> None:
+        quirk_report[quirk] = quirk_report.get(quirk, 0) + 1
 
     with open(output_csv, "w", encoding="utf-8", newline="") as f:
         writer = csv.writer(f)
@@ -259,12 +263,17 @@ def main() -> None:
                 akkoma_forks,
             )
 
-            if quirks.get("no_monthly_users") or quirks.get("relay"):
+            if quirks.get("no_monthly_users"):
+                bump_quirk("no_monthly_users_skip")
+                continue
+            if quirks.get("relay"):
+                bump_quirk("relay_skip")
                 continue
             if quirks.get("use_metadata_non_activitypub_users"):
                 bridge_users = _extract_metadata_non_activitypub_users(wrapper)
                 users_total = bridge_users
                 active_month = bridge_users
+                bump_quirk("use_metadata_non_activitypub_users")
             if quirks.get("detect_activity_from_posts"):
                 try:
                     with open(item["oldest"], "r", encoding="utf-8") as jf:
@@ -277,7 +286,9 @@ def main() -> None:
                     continue
                 if newest_posts > oldest_posts:
                     active_month = users_total
+                    bump_quirk("detect_activity_from_posts_active")
                 else:
+                    bump_quirk("detect_activity_from_posts_inactive")
                     continue
             if quirks.get("detect_activity_from_posts_and_comments"):
                 try:
@@ -298,11 +309,24 @@ def main() -> None:
                     continue
                 if newest_posts > oldest_posts or newest_comments > oldest_comments:
                     active_month = users_total
+                    bump_quirk("detect_activity_from_posts_and_comments_active")
                 else:
+                    bump_quirk("detect_activity_from_posts_and_comments_inactive")
                     continue
             if quirks.get("monthly_from_total"):
                 active_month = users_total
+                bump_quirk("monthly_from_total")
             if quirks.get("zero_monthly_skip") and active_month == 0:
+                bump_quirk("zero_monthly_skip")
+                continue
+            if (
+                (users_total is not None and users_total < 0)
+                or (active_month is not None and active_month < 0)
+            ):
+                print(
+                    f"# Skipping {path}: negative users_total ({users_total}) or active_month ({active_month})",
+                    file=sys.stderr,
+                )
                 continue
             if software_key not in configured_software:
                 report_entry = unknown_software_report.setdefault(
@@ -319,7 +343,9 @@ def main() -> None:
                 if quirks.get("cap_monthly_to_total"):
                     # Monthly users counts posters while total users counts enabled accounts.
                     active_month = users_total
+                    bump_quirk("cap_monthly_to_total")
                 elif quirks.get("trust_monthly_gt_total"):
+                    bump_quirk("trust_monthly_gt_total")
                     pass
                 else:
                     print(
@@ -334,6 +360,7 @@ def main() -> None:
                 and quirks.get("cap_total_to_monthly")
             ):
                 users_total = active_month
+                bump_quirk("cap_total_to_monthly")
 
             writer.writerow([
                 hostname or "",
@@ -366,6 +393,11 @@ def main() -> None:
                     f"users_total total {entry['users_total_total']})",
                     file=sys.stderr,
                 )
+
+    if quirk_report:
+        print("# Known software quirk report:", file=sys.stderr)
+        for quirk in sorted(quirk_report):
+            print(f"# - {quirk}: {quirk_report[quirk]}", file=sys.stderr)
 
     print(f"# Wrote {len(selected_files)} rows to {output_csv}", file=sys.stderr)
 
