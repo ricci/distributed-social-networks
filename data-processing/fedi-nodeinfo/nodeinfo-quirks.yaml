@@ -59,6 +59,7 @@
       "gnusocial",
       "lipupini",
       "mobilizon",
+      "nodebb", # Reports activitypub support even when disabled.
       "tanukey",
       "truefans",
       "webfan",
@@ -119,7 +120,7 @@
     # overcounting is probably not going to hurt
     "detect_activity_from_posts": [
       "gotosocial",
-      "microblogpub",
+      "microblogpub", # Single-user software
       "takahe"
     ],
     
@@ -134,7 +135,8 @@
     "relay": [
       "activityrelay",
       "activity-relay",
-      "aoderelay"
+      "aoderelay",
+      "pub-relay"
     ],
 
     # CMSes are not currently treated differently, but they are flagged just in 
@@ -167,8 +169,7 @@
       "microdotblog",
       "mitra",
       "neodb",
-      "nodebb", # Note: only gets counted if 'activitypub' is listed in protocols
-      "owncast",
+      "owncast", # Hard-codes users to 1; acceptable for single-user software
       "peertube",
       "piefed",
       "postmarks",
