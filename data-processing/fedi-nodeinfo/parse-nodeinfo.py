@@ -3,6 +3,7 @@ import sys
 import os
 import json
 import csv
+import re
 from typing import List, Optional, Tuple, Dict, Set
 
 import yaml
@@ -17,6 +18,23 @@ def _coerce_int(value: object) -> Optional[int]:
         except ValueError:
             return None
     return None
+
+def _parse_version_prefix(value: object) -> Optional[Tuple[int, ...]]:
+    if not isinstance(value, str):
+        return None
+    match = re.match(r"^(\d+(?:\.\d+)*)", value.strip())
+    if not match:
+        return None
+    return tuple(int(part) for part in match.group(1).split("."))
+
+def _version_meets_min(actual: object, minimum: Tuple[int, ...]) -> bool:
+    actual_parsed = _parse_version_prefix(actual)
+    if actual_parsed is None:
+        return False
+    length = max(len(actual_parsed), len(minimum))
+    actual_padded = actual_parsed + (0,) * (length - len(actual_parsed))
+    minimum_padded = minimum + (0,) * (length - len(minimum))
+    return actual_padded >= minimum_padded
 
 QUIRKS_CONFIG_PATH = os.path.join(os.path.dirname(__file__), "nodeinfo-quirks.yaml")
 
@@ -61,7 +79,20 @@ def _extract_local_comments(nodeinfo_wrapper: dict) -> Optional[int]:
         return None
     return _coerce_int(usage.get("localComments"))
 
-def _load_quirks_config(path: str) -> Tuple[Dict[str, Set[str]], Set[str], Set[str], Set[str]]:
+def _metadata_federation_disabled(nodeinfo_wrapper: dict) -> bool:
+    ni = nodeinfo_wrapper.get("nodeinfo") or {}
+    metadata = ni.get("metadata") or {}
+    if not isinstance(metadata, dict):
+        return False
+    federation = metadata.get("federation")
+    if not isinstance(federation, dict):
+        return False
+    enabled = federation.get("enabled")
+    return enabled is False
+
+def _load_quirks_config(
+    path: str,
+) -> Tuple[Dict[str, Set[str]], Set[str], Set[str], Set[str], Dict[str, Tuple[int, ...]]]:
     with open(path, "r", encoding="utf-8") as f:
         data = yaml.safe_load(f)
     if not isinstance(data, dict):
@@ -120,7 +151,16 @@ def _load_quirks_config(path: str) -> Tuple[Dict[str, Set[str]], Set[str], Set[s
         if isinstance(pleroma, list):
             pleroma_forks = {str(name).lower() for name in pleroma}
 
-    return quirks_by_software, known_software, misskey_forks, pleroma_forks
+    minimum_versions: Dict[str, Tuple[int, ...]] = {}
+    minimum_versions_section = data.get("minimum_versions", {})
+    if isinstance(minimum_versions_section, dict):
+        for name, min_version in minimum_versions_section.items():
+            parsed = _parse_version_prefix(min_version)
+            if parsed is None:
+                continue
+            minimum_versions[str(name).lower()] = parsed
+
+    return quirks_by_software, known_software, misskey_forks, pleroma_forks, minimum_versions
 
 def _get_quirks(
     software_name: Optional[str],
@@ -142,6 +182,7 @@ def extract_fields(nodeinfo_wrapper: dict):
     ni = nodeinfo_wrapper.get("nodeinfo") or {}
 
     software_name: Optional[str] = None
+    software_version: Optional[str] = None
     users_total: Optional[int] = None
     active_month: Optional[int] = None
     protocols: Optional[List[str]] = None
@@ -149,6 +190,7 @@ def extract_fields(nodeinfo_wrapper: dict):
     software = ni.get("software") or {}
     if isinstance(software, dict):
         software_name = software.get("name")
+        software_version = software.get("version")
 
     usage = ni.get("usage") or {}
     if isinstance(usage, dict):
@@ -166,7 +208,7 @@ def extract_fields(nodeinfo_wrapper: dict):
 
     protocols_str = ";".join(protocols) if protocols else ""
 
-    return hostname, software_name, users_total, active_month, protocols, protocols_str
+    return hostname, software_name, software_version, users_total, active_month, protocols, protocols_str
 
 def main() -> None:
     import datetime
@@ -228,13 +270,25 @@ def main() -> None:
 
     selected_files.sort(key=lambda item: item["newest"])
 
-    quirks_by_software, known_software, misskey_forks, pleroma_forks = _load_quirks_config(
-        QUIRKS_CONFIG_PATH
+    (
+        quirks_by_software,
+        known_software,
+        misskey_forks,
+        pleroma_forks,
+        minimum_versions,
+    ) = _load_quirks_config(QUIRKS_CONFIG_PATH)
+    configured_software = (
+        set(known_software)
+        | set(quirks_by_software.keys())
+        | set(misskey_forks)
+        | set(pleroma_forks)
+        | set(minimum_versions.keys())
     )
-    configured_software = set(known_software) | set(quirks_by_software.keys()) | set(misskey_forks) | set(pleroma_forks)
 
     unknown_software_report = {}
     quirk_report = {}
+    federation_disabled_count = 0
+    minimum_version_skip_count = 0
 
     def bump_quirk(quirk: str) -> None:
         quirk_report[quirk] = quirk_report.get(quirk, 0) + 1
@@ -252,9 +306,26 @@ def main() -> None:
                 print(f"# Skipping {path}: {e}", file=sys.stderr)
                 continue
 
-            hostname, software_name, users_total, active_month, protocols, protocols_str = extract_fields(wrapper)
+            (
+                hostname,
+                software_name,
+                software_version,
+                users_total,
+                active_month,
+                protocols,
+                protocols_str,
+            ) = extract_fields(wrapper)
+
+            if _metadata_federation_disabled(wrapper):
+                federation_disabled_count += 1
+                continue
 
             if not protocols or not any(str(p).lower() == "activitypub" for p in protocols):
+                continue
+            software_key = (software_name or "").lower()
+            minimum_version = minimum_versions.get(software_key)
+            if minimum_version and not _version_meets_min(software_version, minimum_version):
+                minimum_version_skip_count += 1
                 continue
 
             software_key, quirks = _get_quirks(
@@ -404,6 +475,18 @@ def main() -> None:
             print(f"# - {quirk}: {quirk_report[quirk]}", file=sys.stderr)
 
     print(f"# Wrote {len(selected_files)} rows to {output_csv}", file=sys.stderr)
+    if federation_disabled_count or minimum_version_skip_count:
+        print("# Additional report:", file=sys.stderr)
+        if federation_disabled_count:
+            print(
+                f"# - metadata_federation_disabled_skip: {federation_disabled_count}",
+                file=sys.stderr,
+            )
+        if minimum_version_skip_count:
+            print(
+                f"# - minimum_version_skip: {minimum_version_skip_count}",
+                file=sys.stderr,
+            )
 
 if __name__ == "__main__":
     main()

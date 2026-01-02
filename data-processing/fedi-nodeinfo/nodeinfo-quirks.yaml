@@ -184,6 +184,11 @@
     ]
   },
 
+  # Minimum versions for software (based on software.version)
+  "minimum_versions": {
+    "gotosocial": "0.18.0"
+  },
+
    # Lists of misskey and pleroma forks
   "forks": {
     "misskey": [
