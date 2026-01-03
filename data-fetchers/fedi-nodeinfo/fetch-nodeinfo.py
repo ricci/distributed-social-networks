@@ -22,6 +22,7 @@ USER_AGENT_CURL = "User-Agent: curl/8.17.0"
 REQUEST_TIMEOUT = 10  # seconds
 MAX_CONCURRENT = 30   # concurrent host checks
 DNS_CACHE_TTL_SECS = 10 * 60
+MAX_429_RETRIES = 3
 
 # Globals for config & state
 ROBOTS_TTL_SECS: float = 24 * 3600
@@ -671,6 +672,7 @@ async def main_async(
     per_key_next: Dict[str, float] = {}
     per_key_active: Dict[str, int] = {}
     per_key_interval: Dict[str, float] = {}
+    per_key_429_remaining: Dict[str, int] = {}
     queue_cond = asyncio.Condition()
     max_rate = max(1.0, ratelimit)
     min_rate = 1.0
@@ -810,15 +812,24 @@ async def main_async(
                         per_key_active.pop(key, None)
                     attempts += 1
                     if error_str == "HTTP 429":
-                        interval = min(key_max_interval(), per_key_interval.get(key, key_min_interval(key)) * 2.0)
-                        per_key_interval[key] = interval
-                        per_key_next[key] = max(time.monotonic(), per_key_next.get(key, 0.0)) + interval
-                        per_key_queues.setdefault(key, deque()).append(host)
+                        remaining = per_key_429_remaining.get(key, MAX_429_RETRIES)
+                        if remaining > 0:
+                            per_key_429_remaining[key] = remaining - 1
+                            interval = min(
+                                key_max_interval(),
+                                per_key_interval.get(key, key_min_interval(key)) * 2.0,
+                            )
+                            per_key_interval[key] = interval
+                            per_key_next[key] = max(time.monotonic(), per_key_next.get(key, 0.0)) + interval
+                            per_key_queues.setdefault(key, deque()).append(host)
+                        else:
+                            progress["done"] += 1
                     else:
                         progress["done"] += 1
                         if status == "ok":
                             interval = per_key_interval.get(key, key_min_interval(key))
                             per_key_interval[key] = max(key_min_interval(key), interval * 0.9)
+                            per_key_429_remaining[key] = MAX_429_RETRIES
                     timing["sum_durations"] += duration
                     queue_cond.notify()
 
