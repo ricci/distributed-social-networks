@@ -1,7 +1,6 @@
 #!/usr/bin/env /usr/local/bin/python3
 import argparse
 import asyncio
-import copy
 import json
 import os
 import signal
@@ -106,7 +105,7 @@ async def async_save_snapshot(path: str, verbose: bool = True) -> None:
     then write it to disk in a thread.
     """
     async with accounts_lock:
-        snapshot_copy = copy.deepcopy(accounts)
+        snapshot_copy = {did: entry.copy() for did, entry in accounts.items()}
 
     await asyncio.to_thread(_write_snapshot_file, path, snapshot_copy, verbose)
 
@@ -328,9 +327,33 @@ async def resolution_worker(
 
 
 # -----------------------------
+# Account update worker
+# -----------------------------
+async def account_update_worker(
+    update_queue: "asyncio.Queue[Tuple[str, bool]]",
+    resolve_queue: "asyncio.Queue[Tuple[str, bool]]",
+) -> None:
+    """
+    Background worker that applies firehose updates to `accounts`.
+    This keeps the firehose handler lightweight and lets the queue absorb bursts.
+    """
+    while True:
+        did, force = await update_queue.get()
+        try:
+            await update_account_and_maybe_queue(
+                did,
+                force_resolve=force,
+                resolve_queue=resolve_queue,
+            )
+        finally:
+            update_queue.task_done()
+
+
+# -----------------------------
 # Firehose callback
 # -----------------------------
 def make_on_message_handler(
+    update_queue: "asyncio.Queue[Tuple[str, bool]]",
     resolve_queue: "asyncio.Queue[Tuple[str, bool]]",
 ):
     async def on_message_handler(message) -> None:
@@ -355,12 +378,8 @@ def make_on_message_handler(
         if did is None:
             return
 
-        # Fast path: update last_seen, TTL-check, enqueue resolution if needed.
-        await update_account_and_maybe_queue(
-            did,
-            force_resolve=force_resolve,
-            resolve_queue=resolve_queue,
-        )
+        # Fast path: enqueue update; worker applies it under the lock.
+        update_queue.put_nowait((did, force_resolve))
 
     return on_message_handler
 
@@ -434,6 +453,7 @@ async def run(args: argparse.Namespace) -> None:
     resolve_queue: "asyncio.Queue[Tuple[str, bool]]" = asyncio.Queue(
         maxsize=RESOLUTION_QUEUE_SIZE
     )
+    update_queue: "asyncio.Queue[Tuple[str, bool]]" = asyncio.Queue()
 
     async with aiohttp.ClientSession() as session:
         if args.relay:
@@ -447,7 +467,9 @@ async def run(args: argparse.Namespace) -> None:
         for i in range(args.resolve_workers):
             asyncio.create_task(resolution_worker(resolve_queue, session, i))
 
-        on_message = make_on_message_handler(resolve_queue)
+        asyncio.create_task(account_update_worker(update_queue, resolve_queue))
+
+        on_message = make_on_message_handler(update_queue, resolve_queue)
 
         # Background task: periodic snapshot (no stdout prints)
         asyncio.create_task(periodic_snapshot(snapshot_path, snapshot_interval))
