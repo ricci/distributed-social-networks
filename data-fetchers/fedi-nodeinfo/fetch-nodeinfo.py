@@ -858,16 +858,30 @@ async def main_async(
         if status_interval > 0:
             status_task = asyncio.create_task(status_reporter(session))
 
+        dispatchers = [
+            asyncio.create_task(dispatch_loop(session))
+            for _ in range(MAX_CONCURRENT)
+        ]
         try:
-            dispatchers = [
-                asyncio.create_task(dispatch_loop(session))
-                for _ in range(MAX_CONCURRENT)
-            ]
             if resolve_tasks:
                 await asyncio.gather(*resolve_tasks)
                 async with queue_cond:
                     queue_cond.notify_all()
             await asyncio.gather(*dispatchers)
+        except asyncio.CancelledError:
+            # Ensure child tasks are cancelled and awaited to avoid pending-task warnings.
+            for task in resolve_tasks:
+                task.cancel()
+            for task in dispatchers:
+                task.cancel()
+            if status_task is not None:
+                status_task.cancel()
+            if resolve_tasks:
+                await asyncio.gather(*resolve_tasks, return_exceptions=True)
+            await asyncio.gather(*dispatchers, return_exceptions=True)
+            if status_task is not None:
+                await asyncio.gather(status_task, return_exceptions=True)
+            raise
         finally:
             if status_task is not None:
                 status_task.cancel()
