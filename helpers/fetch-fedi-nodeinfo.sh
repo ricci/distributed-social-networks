@@ -15,4 +15,4 @@ if [ ! -f ${NODESFILE} ]; then
 fi
 
 echo "Fetching nodeinfo"
-python3 ./data-fetchers/fedi-nodeinfo/fetch-nodeinfo.py --ratelimit 10 --ratelimit-key subnet --N 1500 ${NODESFILE} data/nodeinfo data/nodeinfo/state.json
+python3 ./data-fetchers/fedi-nodeinfo/fetch-nodeinfo.py --ratelimit 10 --ratelimit-key subnet --N 2000 ${NODESFILE} data/nodeinfo data/nodeinfo/state.json
