@@ -1,5 +1,6 @@
 data-fetchers/sets.pickle
 data/
 doitall.sh
+private/
 __pycache__/
 *.py[cod]
