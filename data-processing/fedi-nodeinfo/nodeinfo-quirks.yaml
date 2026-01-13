@@ -150,22 +150,26 @@
 
     # Not known to have any reporting quirks
     "none": [
-      "beulta",
+      "betula", # Hard-codes users to 1; acceptable for single-user software
       "bookwyrm",
       "bovine",
       "brighteon",
+      "elektrine",
       "flohmarkt",
       "forgejo",
       "friendica",
       "gitea",
+      "hackerspub",
       "hollo",
       "hometown",
       "hubzilla",
+      "iceshrimp.net",
       "incise",
       "kbin",
       "killbait",
       "ktistec",
       "loops",
+      "maanyfold",
       "mammuthus",
       "mbin",
       "microdotblog",
