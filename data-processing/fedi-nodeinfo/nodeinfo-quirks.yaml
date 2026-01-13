@@ -186,7 +186,12 @@
 
   # Minimum versions for software (based on software.version)
   "minimum_versions": {
-    "gotosocial": "0.18.0"
+    "gotosocial": "0.18.0", # Some earlier versions might lie about user counts
+                            # without signaling this via robots.txt
+                            
+    "nodebbb": "4.8.0"      # This version started reporting federation state in
+                            # the metadata; earlier versions, we can't tell if it's
+                            # federating or not.
   },
 
    # Lists of misskey and pleroma forks
