@@ -104,47 +104,58 @@ def combine_rows(rows):
         newrows.append({"domain": k, "count": sum([r["count"] for r in v])})
     return newrows
 
-def main(filename, json_out = False):
-    with open(filename, newline="") as f:
-        reader = csv.DictReader(f)
-        rows = list(reader)
-
+def stats_from_rows(rows):
     rows = filter_rows(rows)
 
     extracted = [extract_domain_counts(row) for  row in rows]
     combined = combine_rows(extracted)
 
-    user_counts = sorted([r["count"]  for r in combined], reverse=True)
+    user_counts = sorted([r["count"] for r in combined], reverse=True)
 
     hhi = calc_hhi(user_counts)
     shannon = calc_shannon(user_counts)
     simpson = calc_simpson(user_counts)
-    bs = [(b, calc_B(user_counts,b)) for b in [25,50,75,90,99,99.5] ]
+    bs = [(b, calc_B(user_counts, b)) for b in [25, 50, 75, 90, 99, 99.5]]
     servers = len(user_counts)
     biggest_abs = user_counts[0]
-    biggest_pct = 100*user_counts[0]/sum(user_counts)
+    biggest_pct = 100 * user_counts[0] / sum(user_counts)
     rest_abs = sum(user_counts[1:])
-    rest_pct = 100*rest_abs/sum(user_counts)
+    rest_pct = 100 * rest_abs / sum(user_counts)
+
+    return {
+        "HHI": int(hhi * 10000),
+        "shannon": round(shannon, 4),
+        "simpson": round(simpson, 4),
+        "servers": servers,
+        "biggest_abs": biggest_abs,
+        "biggest_pct": round(biggest_pct, 2),
+        "rest_abs": rest_abs,
+        "rest_pct": round(rest_pct, 2),
+        "b_vals": bs,
+    }
+
+
+def stats_from_csv(filename):
+    with open(filename, newline="") as f:
+        reader = csv.DictReader(f)
+        rows = list(reader)
+    return stats_from_rows(rows)
+
+
+def main(filename, json_out=False):
+    stats = stats_from_csv(filename)
 
     if json_out:
-        print(json.dumps({"HHI": int(hhi*10000),
-                          "shannon": round(shannon,4),
-                          "simpson": round(simpson,4),
-                          "servers": servers,
-                          "biggest_abs": biggest_abs,
-                          "biggest_pct": round(biggest_pct,2),
-                          "rest_abs": rest_abs,
-                          "rest_pct": round(rest_pct,2),
-                          "b_vals": bs}))
+        print(json.dumps(stats))
     else:
-        print(f"HHI for user_count: {hhi:.4f}")
-        print(f"Shannon Diversity for user_count: {shannon:.4f}")
-        print(f"Simpson Diversity for user_count: {simpson:.4f}")
-        print(f"Total servers: {servers}")
-        print(f"Biggest server: {biggest_abs} ({biggest_pct:.2f}%)")
-        print(f"Rest of the servers: {rest_abs} ({rest_pct:.2f}%)")
-        print(f"Total users: {biggest_abs + rest_abs}")
-        print(f"B values are {bs}")
+        print(f"HHI for user_count: {stats['HHI'] / 10000:.4f}")
+        print(f"Shannon Diversity for user_count: {stats['shannon']:.4f}")
+        print(f"Simpson Diversity for user_count: {stats['simpson']:.4f}")
+        print(f"Total servers: {stats['servers']}")
+        print(f"Biggest server: {stats['biggest_abs']} ({stats['biggest_pct']:.2f}%)")
+        print(f"Rest of the servers: {stats['rest_abs']} ({stats['rest_pct']:.2f}%)")
+        print(f"Total users: {stats['biggest_abs'] + stats['rest_abs']}")
+        print(f"B values are {stats['b_vals']}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
@@ -155,4 +166,3 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     main(args.csvfile, args.json)
-
