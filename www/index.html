@@ -229,7 +229,7 @@
             <tr><th>Rest</th><td><span id="emailRestAbs"></span></td><td>(<span id="emailRestPct"></span>%)</td></tr>
         </table>
         <div class="data">
-            Data: <a href="https://github.com/ucsdsysnet/mx_inference">Liu&nbsp;et&nbsp;al.</a> (06-2021)
+            Data: <a href="https://github.com/ucsdsysnet/mx_inference">Liu&nbsp;et&nbsp;al.</a> (<span id="emailUpdated"></span>)
         </div>
       </div>
 
@@ -267,7 +267,7 @@
             <tr><th>Rest</th><td><span id="dnsRestAbs"></span></td><td>(<span id="dnsRestPct"></span>%)</td></tr>
         </table>
         <div class="data">
-            Data: <a href="https://zenodo.org/records/15733582">Habib&nbsp;et&nbsp;al.</a> (05-2023)
+            Data: <a href="https://zenodo.org/records/15733582">Habib&nbsp;et&nbsp;al.</a> (<span id="dnsUpdated"></span>)
         </div>
       </div>
       <div class="rating">
@@ -283,7 +283,7 @@
             <tr><th>Rest</th><td><span id="certRestAbs"></span></td><td>(<span id="certRestPct"></span>%)</td></tr>
         </table>
         <div class="data">
-            Data: <a href="https://zenodo.org/records/15733582">Habib&nbsp;et&nbsp;al.</a> (05-2023)
+            Data: <a href="https://zenodo.org/records/15733582">Habib&nbsp;et&nbsp;al.</a> (<span id="certUpdated"></span>)
         </div>
       </div>
 
@@ -462,12 +462,13 @@
         }
     }
 
-    document.getElementById("fediUpdated").textContent = data.lastUpdate; 
-    document.getElementById("atUpdated").textContent = data.lastUpdate; 
-    document.getElementById("gitUpdated").textContent = data.lastUpdate; 
-
-    // Should come from file
-    document.getElementById("hostingUpdated").textContent = "10-31-2025";
+    document.getElementById("fediUpdated").textContent = data.fedi.lastUpdate; 
+    document.getElementById("atUpdated").textContent = data.at.lastUpdate; 
+    document.getElementById("gitUpdated").textContent = data.git.lastUpdate; 
+    document.getElementById("hostingUpdated").textContent = data.hosting.lastUpdate;
+    document.getElementById("emailUpdated").textContent = data.email.lastUpdate;
+    document.getElementById("dnsUpdated").textContent = data.dns.lastUpdate;
+    document.getElementById("certUpdated").textContent = data.cert.lastUpdate;
 
     document.getElementById("fediServers").textContent = addCommas(data.fedi.servers);
     document.getElementById("atServers").textContent = addCommas(data.at.servers);
