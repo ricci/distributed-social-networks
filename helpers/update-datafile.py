@@ -12,6 +12,7 @@ sys.path.insert(0, str(REPO_ROOT))
 from centralization_stats import stats_from_csv
 
 DATA_JS_PATH = REPO_ROOT / "www" / "data.js"
+DATA_HISTORY_DIR = REPO_ROOT / "data" / "historical"
 
 TIMESTAMP_RE = re.compile(
     r"(?P<ts>\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})(?P<tz>Z|[+-]\d{2}:?\d{2})?"
@@ -84,6 +85,13 @@ def write_data_js(path, data):
     path.write_text(f"var data = {payload}\n")
 
 
+def write_history_json(directory, data):
+    directory.mkdir(parents=True, exist_ok=True)
+    stamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    payload = json.dumps(data, indent=2, ensure_ascii=True)
+    (directory / f"{stamp}.json").write_text(payload + "\n")
+
+
 def update_network(data, key, csv_path, last_update, data_file=None):
     stats = stats_from_csv(csv_path)
     entry = data.get(key, {})
@@ -135,6 +143,7 @@ def main():
         "git",
         git_csv,
         git_dt.strftime("%m-%d-%Y"),
+        data_file=str(git_csv.relative_to(REPO_ROOT)),
     )
 
     week_target = datetime.now(timezone.utc) - timedelta(days=7)
@@ -158,6 +167,7 @@ def main():
     )
 
     write_data_js(DATA_JS_PATH, data)
+    write_history_json(DATA_HISTORY_DIR, data)
 
 
 if __name__ == "__main__":
