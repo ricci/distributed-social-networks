@@ -1,15 +1,15 @@
 var data = {
   "fedi": {
-    "lastUpdate": "01-13-2026",
-    "dataFile": "data/fedi-mau/2026-01-13T20:19:37Z.csv",
-    "HHI": 840,
-    "shannon": 4.6843,
-    "simpson": 0.9159,
-    "servers": 28186,
+    "lastUpdate": "01-14-2026",
+    "dataFile": "data/fedi-mau/2026-01-14T05:46:35Z.csv",
+    "HHI": 837,
+    "shannon": 4.6858,
+    "simpson": 0.9162,
+    "servers": 28231,
     "biggest_abs": 292183,
-    "biggest_pct": 26.23,
-    "rest_abs": 821903,
-    "rest_pct": 73.77,
+    "biggest_pct": 26.14,
+    "rest_abs": 825662,
+    "rest_pct": 73.86,
     "b_vals": [
       [
         25,
@@ -21,32 +21,32 @@ var data = {
       ],
       [
         75,
-        77
+        78
       ],
       [
         90,
-        446
+        447
       ],
       [
         99,
-        17046
+        17053
       ],
       [
         99.5,
-        22616
+        22642
       ]
     ]
   },
   "at": {
-    "lastUpdate": "01-13-2026",
-    "dataFile": "data/at-mau/2026-01-13T20:19:02Z.csv",
+    "lastUpdate": "01-14-2026",
+    "dataFile": "data/at-mau/2026-01-14T05:46:00Z.csv",
     "HHI": 9800,
     "shannon": 0.0775,
     "simpson": 0.02,
-    "servers": 1630,
-    "biggest_abs": 5683065,
+    "servers": 1635,
+    "biggest_abs": 5694928,
     "biggest_pct": 99.0,
-    "rest_abs": 57660,
+    "rest_abs": 57759,
     "rest_pct": 1.0,
     "b_vals": [
       [
@@ -77,13 +77,13 @@ var data = {
   },
   "git": {
     "lastUpdate": "01-13-2026",
-    "HHI": 9365,
+    "HHI": 9366,
     "shannon": 0.1961,
     "simpson": 0.0634,
     "servers": 1578,
-    "biggest_abs": 301629418,
+    "biggest_abs": 301701384,
     "biggest_pct": 96.76,
-    "rest_abs": 10108471,
+    "rest_abs": 10108799,
     "rest_pct": 3.24,
     "b_vals": [
       [
@@ -111,7 +111,7 @@ var data = {
         4
       ]
     ],
-    "dataFile": "data/git/2026-01-13T13:18:25__sh-fromhtml.csv"
+    "dataFile": "data/git/2026-01-13T22:45:28__sh-fromhtml.csv"
   },
   "hosting": {
     "lastUpdate": "10-31-2025",
@@ -263,7 +263,7 @@ var data = {
   },
   "trends": {
     "fedi": {
-      "weekly_shannon": 0.0
+      "weekly_shannon": 0.0015
     },
     "at": {
       "weekly_shannon": 0.0
