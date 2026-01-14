@@ -141,3 +141,8 @@ details summary {
   color: #909296;
   margin-bottom: 5px;
 }
+
+.important {
+    font-weight: bold;
+    color: #cc5555
+}

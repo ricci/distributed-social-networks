@@ -31,6 +31,32 @@
     <div class="container">
       <h2>Accounts On Decentralized Social Networks</h2>
 
+    <details class="help" id="update-details">
+        <summary class="important">🚨 Important Update: New Data Sources</summary>
+        <div>
+            <p>
+                On January 13, 2026, I switched data sources for the decentralized social networks. This means
+                that old numbers from this site should not be compared to more recent ones.
+            </p>
+            <p>
+                Previously, Fediverse user numbers came from another site that was scraping Fediverse servers; now, I am
+                running my own scraper. This gives me more flexibility to retain historical information and to deal
+                with many of the quirks that individual Fediverse software has in reporting user numbers.
+            </p>
+            <p>
+                Atmosphere numbers used to come from the Bluesky relay; <a href="https://github.com/ricci/distributed-social-networks/issues/2">it's complicated</a>, but
+                what was getting reported was basically the number of users active since late 2023. Now, I'm
+                listening to multiple relays and tracking account activity, allowing me to directly count monthly
+                active users. This is more directly comparable to the way Fediverse users are counted.
+            </p>
+            <p>
+                 Overall, these changes do not make huge differences to the indices, which is a good thing: it means
+                 these measures are fairly stable under a variety of assumptions. But it does mean that I will need to
+                 build up history again before the trend data can return.
+            </p>
+        </div>
+    </details>
+
       <details class="help" id="social-details">
         <summary>What does this measure?</summary>
         <div>
@@ -48,11 +74,13 @@
                 same company.
             </p>
             <p>
-                At the present, Fediverse servers count Monthly Active Users, as reported
-                by the server. Atmosphere uses the count for each PDS provided by the Bluesky relays:
-                this account is roughly the number of active users since November 2023, when
-                <a href="https://github.com/bluesky-social/atproto/discussions/1832">Bluesky rearranged
-                its PDSes</a>.
+                These indices are computed using Monthly Active Users. For the Fediverse, this data
+                is reported by many (but not all) servers, and is scraped daily from servers that 
+                report it. We use <a href="https://nodes.fediverse.party">nodes.fediverse.party</a> for our
+                server list. On the Atmosphere, we monitor all events on multiple relays, and keep
+                track of the last time we saw each account take any action. This includes not only posting,
+                but liking, following, blocking, and many other activities. We consider all accounts that
+                have been active in the last month (30 days).
             </p>
         </div>
       </details>
@@ -63,8 +91,10 @@
         <div id="gageFedi" class="gage"></div>
         <div class="shannon">
           <div class="index">Shannon Index: <span id="fediShannon"></span></div>
+          <div style="display:none">
           <div class="trend">One-week trend: <span id="fediShannonTrend"></span> (<span id="fediShannonTrendPct"></span>%)</div>
           <div class="icon"><img id="fediShannonIcon"> <span id="fediShannonText"></span></div>
+          </div>
         </div>
         <table>
             <tr><th>Servers</th><td><span id="fediServers"></span></td></tr>
@@ -72,18 +102,20 @@
             <tr><th>Rest</th><td><span id="fediRestAbs"></span></td><td>(<span id="fediRestPct"></span>%)</td></tr>
         </table>
         <div class="data">
-            Data: <a href="https://fedilist.com/">Fedilist</a> (<span id="fediUpdated"></span>)
+           <a id="fediData">raw data</a> (<span id="fediUpdated"></span>)
         </div>
       </div>
 
       <div class="rating" id="atmosphere">
         <h3>The Atmosphere</h3>
-        <h5>Bluesky, WhiteWind, etc.</h5>
+        <h5>Bluesky, Leaflet, etc.</h5>
         <div id="gageAtmosphere" class="gage"></div>
         <div class="shannon">
           <div class="index">Shannon Index: <span id="atShannon"></span></div>
+          <div style="display:none">
           <div class="trend">One-week trend: <span id="atShannonTrend"></span> (<span id="atShannonTrendPct"></span>%)</div>
           <div class="icon"><img id="atShannonIcon"> <span id="atShannonText"></span></div>
+          </div>
         </div>
         <table>
             <tr><th>PDSes</th><td><span id="atServers"></span></td></tr>
@@ -91,7 +123,7 @@
             <tr><th>Rest</th><td><span id="atRestAbs"></span></td><td>(<span id="atRestPct"></span>%)</td></tr>
         </table>
         <div class="data">
-            Data: <a href="https://relay1.us-east.bsky.network/">Bluesky</a> (<span id="atUpdated"></span>)
+            <a id="atData">raw data</a> (<span id="atUpdated"></span>)
         </div>
       </div> 
 
@@ -197,7 +229,7 @@
             <tr><th>Rest</th><td><span id="emailRestAbs"></span></td><td>(<span id="emailRestPct"></span>%)</td></tr>
         </table>
         <div class="data">
-            Data: <a href="https://github.com/ucsdsysnet/mx_inference">Liu&nbsp;et&nbsp;al.</a> (06-2021)
+            Data: <a href="https://github.com/ucsdsysnet/mx_inference">Liu&nbsp;et&nbsp;al.</a> (<span id="emailUpdated"></span>)
         </div>
       </div>
 
@@ -235,7 +267,7 @@
             <tr><th>Rest</th><td><span id="dnsRestAbs"></span></td><td>(<span id="dnsRestPct"></span>%)</td></tr>
         </table>
         <div class="data">
-            Data: <a href="https://zenodo.org/records/15733582">Habib&nbsp;et&nbsp;al.</a> (05-2023)
+            Data: <a href="https://zenodo.org/records/15733582">Habib&nbsp;et&nbsp;al.</a> (<span id="dnsUpdated"></span>)
         </div>
       </div>
       <div class="rating">
@@ -251,7 +283,7 @@
             <tr><th>Rest</th><td><span id="certRestAbs"></span></td><td>(<span id="certRestPct"></span>%)</td></tr>
         </table>
         <div class="data">
-            Data: <a href="https://zenodo.org/records/15733582">Habib&nbsp;et&nbsp;al.</a> (05-2023)
+            Data: <a href="https://zenodo.org/records/15733582">Habib&nbsp;et&nbsp;al.</a> (<span id="certUpdated"></span>)
         </div>
       </div>
 
@@ -430,12 +462,16 @@
         }
     }
 
-    document.getElementById("fediUpdated").textContent = data.lastUpdate; 
-    document.getElementById("atUpdated").textContent = data.lastUpdate; 
-    document.getElementById("gitUpdated").textContent = data.lastUpdate; 
+    document.getElementById("fediUpdated").textContent = data.fedi.lastUpdate; 
+    document.getElementById("atUpdated").textContent = data.at.lastUpdate; 
+    document.getElementById("gitUpdated").textContent = data.git.lastUpdate; 
+    document.getElementById("hostingUpdated").textContent = data.hosting.lastUpdate;
+    document.getElementById("emailUpdated").textContent = data.email.lastUpdate;
+    document.getElementById("dnsUpdated").textContent = data.dns.lastUpdate;
+    document.getElementById("certUpdated").textContent = data.cert.lastUpdate;
 
-    // Should come from file
-    document.getElementById("hostingUpdated").textContent = "10-31-2025";
+    document.getElementById("fediData").href = data.fedi.dataFile;
+    document.getElementById("atData").href = data.at.dataFile;
 
     document.getElementById("fediServers").textContent = addCommas(data.fedi.servers);
     document.getElementById("atServers").textContent = addCommas(data.at.servers);
