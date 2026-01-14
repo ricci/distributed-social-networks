@@ -74,11 +74,13 @@
                 same company.
             </p>
             <p>
-                At the present, Fediverse servers count Monthly Active Users, as reported
-                by the server. Atmosphere uses the count for each PDS provided by the Bluesky relays:
-                this account is roughly the number of active users since November 2023, when
-                <a href="https://github.com/bluesky-social/atproto/discussions/1832">Bluesky rearranged
-                its PDSes</a>.
+                These indices are computed using Monthly Active Users. For the Fediverse, this data
+                is reported by many (but not all) servers, and is scraped daily from servers that 
+                report it. We use <a href="https://nodes.fediverse.party">nodes.fediverse.party</a> for our
+                server list. On the Atmosphere, we monitor all events on multiple relays, and keep
+                track of the last time we saw each account take any action. This includes not only posting,
+                but liking, following, blocking, and many other activities. We consider all accounts that
+                have been active in the last month (30 days).
             </p>
         </div>
       </details>
