@@ -31,6 +31,32 @@
     <div class="container">
       <h2>Accounts On Decentralized Social Networks</h2>
 
+    <details class="help" id="update-details">
+        <summary class="important">🚨 Important Update: New Data Sources</summary>
+        <div>
+            <p>
+                On January 13, 2026, I switched data sources for the decentralized social networks. This means
+                that old numbers from this site should not be compared to more recent ones.
+            </p>
+            <p>
+                Previously, Fediverse user numbers came from another site that was scraping Fediverse servers; now, I am
+                running my own scraper. This gives me more flexibility to retain historical information and to deal
+                with many of the quirks that individual Fediverse software has in reporting user numbers.
+            </p>
+            <p>
+                Atmosphere numbers used to come from the Bluesky relay; <a href="https://github.com/ricci/distributed-social-networks/issues/2">it's complicated</a>, but
+                what was getting reported was basically the number of users active since late 2023. Now, I'm
+                listening to multiple relays and tracking account activity, allowing me to directly count monthly
+                active users. This is more directly comparable to the way Fediverse users are counted.
+            </p>
+            <p>
+                 Overall, these changes do not make huge differences to the indices, which is a good thing: it means
+                 these measures are fairly stable under a variety of assumptions. But it does mean that I will need to
+                 build up history again before the trend data can return.
+            </p>
+        </div>
+    </details>
+
       <details class="help" id="social-details">
         <summary>What does this measure?</summary>
         <div>
