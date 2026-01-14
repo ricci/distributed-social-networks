@@ -1,6 +1,7 @@
 var data = {
   "fedi": {
     "lastUpdate": "11-18-2025",
+    "dataFile": "data/fedi-mau/foo.csv",
     "HHI": 762,
     "shannon": 4.9586,
     "simpson": 0.9237,
@@ -38,6 +39,7 @@ var data = {
   },
   "at": {
     "lastUpdate": "11-18-2025",
+    "dataFile": "data/at-mau/bar.csv",
     "HHI": 9880,
     "shannon": 0.0516,
     "simpson": 0.0119,

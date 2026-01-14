@@ -102,7 +102,7 @@
             <tr><th>Rest</th><td><span id="fediRestAbs"></span></td><td>(<span id="fediRestPct"></span>%)</td></tr>
         </table>
         <div class="data">
-            Data: <a href="https://fedilist.com/">Fedilist</a> (<span id="fediUpdated"></span>)
+           <a id="fediData">raw data</a> (<span id="fediUpdated"></span>)
         </div>
       </div>
 
@@ -123,7 +123,7 @@
             <tr><th>Rest</th><td><span id="atRestAbs"></span></td><td>(<span id="atRestPct"></span>%)</td></tr>
         </table>
         <div class="data">
-            Data: <a href="https://relay1.us-east.bsky.network/">Bluesky</a> (<span id="atUpdated"></span>)
+            <a id="atData">raw data</a> (<span id="atUpdated"></span>)
         </div>
       </div> 
 
@@ -469,6 +469,9 @@
     document.getElementById("emailUpdated").textContent = data.email.lastUpdate;
     document.getElementById("dnsUpdated").textContent = data.dns.lastUpdate;
     document.getElementById("certUpdated").textContent = data.cert.lastUpdate;
+
+    document.getElementById("fediData").href = data.fedi.dataFile;
+    document.getElementById("atData").href = data.at.dataFile;
 
     document.getElementById("fediServers").textContent = addCommas(data.fedi.servers);
     document.getElementById("atServers").textContent = addCommas(data.at.servers);
