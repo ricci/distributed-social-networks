@@ -49,13 +49,6 @@ def combine_key(row):
             return suffix
     return domain
 
-# Software known to misreport user accounts
-SKIPPED_SOFTWARE = ["nodebb", "gotosocial", "yellbot","misskey", "sharkey"]
-def f_software(row):
-    if "software" not in row:
-        return True
-    else:
-        return all([s not in row["software"].lower() for s in SKIPPED_SOFTWARE]) 
 def f_count(row):
     return get_usercount(row) > 0
         
@@ -89,7 +82,6 @@ def get_domain(row):
 def filter_rows(rows):
     rows = [normalize_keys(r) for r in rows]
     rows = [r for r in rows if f_count(r)]
-    rows = [r for r in rows if f_software(r)]
 
     return rows
 
