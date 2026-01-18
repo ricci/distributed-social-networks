@@ -1,0 +1,43 @@
+{
+  "rules": [
+    {
+      "name": "absolute_jump",
+      "type": "absolute_jump",
+      "lookback_days": 7,
+      "min_delta": 500,
+      "min_current_mau": 50,
+      "min_delta_pct": 10
+    },
+    {
+      "name": "rank_jump",
+      "type": "rank_jump",
+      "lookback_days": 30,
+      "min_rank_jump": 10,
+      "min_current_rank": 20
+    },
+    {
+      "name": "new_host",
+      "type": "new_host",
+      "lookback_days": 30,
+      "min_current_mau": 10,
+      "max_results": 5
+    },
+    {
+      "name": "biggest_rank_jump",
+      "type": "biggest_rank_jump",
+      "lookback_days": 30,
+      "min_current_rank": 20
+    },
+    {
+      "name": "biggest_mau_percent_jump",
+      "type": "biggest_mau_percent_jump",
+      "lookback_days": 30,
+      "min_previous_mau": 10
+    },
+    {
+      "name": "biggest_abs_mau_percent_jump",
+      "type": "biggest_abs_mau_jump",
+      "lookback_days": 30
+    }
+  ]
+}
