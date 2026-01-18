@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta name="description" content="A site with statistics regarding how concentrated user data is on various web services" />
+    <meta charset="utf-8">
+    <title>Are We Decentralized Yet?</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Robert Ricci">
+
+    <link rel="stylesheet" href="css/index.css">
+</head>
+
+<body>
+
+    <h1>Are We Decentralized Yet?</h1>
+
+    <div class="wrapper">
+      <div class="container">
+        <h2><code>at-mau-watcher</code></h2>
+        <p>
+            <code>at-mau-watcher</code> connects to the firehose of  <a href="https://atproto.com/">AT Protocol</a> <a href="https://atproto.com/guides/relay">relays</a> in order to get
+            a count of estimated active users in <a href="https://atproto.com/">the atmosphere</a>. 
+        </p>
+        <h3>Operation</h3>
+        <p>
+            This service watches for records created by accounts - these records includes posts, "likes", following or
+            unfollowing other accounts, blocking other accounts, etc. It only records the most recent time each account
+            was seen, its handle, and which <a href="https://atproto.com/guides/glossary#pds-personal-data-server">PDS</a> the account resides on. It does not record contents of posts,
+            which posts were liked, etc.
+        </p>
+        <h3>Data Use</h3>
+        <p>
+            Data gathered by this service is used to create <a href="https://arewedecentralizedyet.online/">arewedecentralizedyet.online</a>, a website that tracks
+            the state of decentralization in practice across various networks. It is used to track statistics such as
+            Monthly Active Users, are not directly made available in atproto. Some historical data obtained from this
+            service is also available in the Data section of the website. 
+        </p>
+        <p>
+             If you don't want this service connecting to a relay you operate, contact the author.
+        </p>
+        <h3>Author and Code</h3>
+        <p>
+            This service is written and operated by <a href="https://ricci.io">Robert Ricci</a>, who can be reached at rob [at] ricci
+[dot] io . The source code for this bot is on <a href="https://codeberg.org/ricci/are-we-decentralized-yet/src/branch/main/data-fetchers/at-mau-watcher">Codeberg</a> .
+        </p>
+        <p>
+            <a href="index.html">Back to the main page</a>
+        </p>
+      </div>
+    </div>
+
+</body>
+</html>
