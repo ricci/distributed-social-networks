@@ -17,7 +17,6 @@ from typing import Optional, Dict, Tuple, List
 from contextlib import asynccontextmanager
 
 USER_AGENT = "fetch-nodeinfo-bot (+https://arewedecentralizedyet.online/)"
-USER_AGENT_CURL = "User-Agent: curl/8.17.0"
 
 REQUEST_TIMEOUT = 10  # seconds
 MAX_CONCURRENT = 30   # concurrent host checks
@@ -35,12 +34,6 @@ stats_hosts: Dict[str, Dict] = {}
 # ---------------------------------------------------------------------
 # Helpers: filenames, host list, state
 # ---------------------------------------------------------------------
-def headers_for_url(url: str) -> Optional[dict]:
-    host = urllib.parse.urlparse(url).hostname
-    #if host == "public-api.wordpress.com":
-    #    return {"User-Agent": USER_AGENT_CURL}
-    return None
-
 def sanitize_filename(host: str) -> str:
     """Make sure hostname is safe for filenames."""
     return re.sub(r"[^A-Za-z0-9._-]", "_", host)
@@ -374,7 +367,7 @@ async def is_allowed(session: aiohttp.ClientSession, url: str, now: datetime) ->
     error_str: Optional[str] = None
 
     try:
-        async with session.get(robots_url, headers=headers_for_url(robots_url)) as resp:
+        async with session.get(robots_url) as resp:
             if resp.status >= 400:
                 # Treat missing/forbidden robots as "no robots" => allowed
                 error_str = f"HTTP {resp.status}"
@@ -411,7 +404,7 @@ async def fetch_json(session: aiohttp.ClientSession, url: str, now: datetime) ->
         return None, err
 
     try:
-        async with session.get(url, headers=headers_for_url(url)) as resp:
+        async with session.get(url) as resp:
             host = host_for_url(url)
             record_http_status(host, resp.status)
             if resp.status != 200:
