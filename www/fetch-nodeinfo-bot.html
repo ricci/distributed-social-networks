@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta name="description" content="A site with statistics regarding how concentrated user data is on various web services" />
+    <meta charset="utf-8">
+    <title>Are We Decentralized Yet?</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Robert Ricci">
+
+    <link rel="stylesheet" href="css/index.css">
+</head>
+
+<body>
+
+    <h1>Are We Decentralized Yet?</h1>
+
+    <div class="wrapper">
+      <div class="container">
+        <h2><code>fetch-nodeinfo-bot</code></h2>
+        <p>
+            <code>fetch-nodeinfo-bot</code> crawls data reported via the <a href="https://nodeinfo.diaspora.software/">nodeinfo</a> standard by
+            a variety of federated services. This data commonly includes the type and version of 
+            software in use, the number of users, the number of posts created locally on that site,
+            and information about which federation protocols the site supports.
+        </p>
+        <p>
+            It presents <code>User-Agent: fetch-nodeinfo-bot (+https://arewedecentralizedyet.online/)</code> and
+            can be blocked via <code>robots.txt</code>.
+        </p>
+        <h3>Crawling Practices</h3>
+        <p>
+            <code>fetch-nodeinfo-bot</code> gets the lists of hosts to crawl from <a href="https://nodes.fediverse.party/">nodes.fediverse.party</a>. The
+            methodology for node discovery and listing is described on that site, and this extensive documentation is
+            a large part of why I chose this as my node list. <code>fetch-nodeinfo-bot</code> does not discover other
+            nodes itself.
+        </p>
+        <p>
+            <code>fetch-nodeinfo-bot</code> respects <code>robots.txt</code>, and will not fetch nodeinfo on sites that
+            restrict crawlers in general, or its User-Agent specifically, from <code>/.well-known/nodeinfo</code>.
+            Thus, if you do not want your side to be included, <a href="https://www.robotstxt.org/robotstxt.html">setting up a robots.txt file</a> will block this
+            bot. 
+        </p>
+        <p>
+            <code>fetch-nodeinfo-bot</code> is currently set to fetch each server's nodeinfo approximately once per
+            day, with separate TTLs for re-fetching <code>robots.txt</code> and re-trying in case of failures. It uses
+            a rate-limit per IP address block to avoid overloading shared infrastructure (such as multiple sites on the
+            same physical or virtual server), and lowers this limit in response to receiving HTTP 429 (rate limit exceeded)
+            responses.
+        </p>
+        <h3>Data Use</h3>
+        <p>
+            Data gathered by this bot is used to create the website <a href="https://arewedecentralizedyet.online/">arewedecentralizedyet.online</a>, which compares how
+            centralized or decentralized social networks and other Web services are in practice. Historical data and raw nodeinfo
+            snapshots are available in the Data section of the site.
+        </p>
+        <p>
+            If you would like data about your site to be removed from this dataset, contact the author.
+        </p>
+        <h3>Author and Code</h3>
+        <p>
+            This bot is written and operated by <a href="https://ricci.io">Robert Ricci</a>, who can be reached at rob [at] ricci
+[dot] io . The source code for this bot is on <a href="https://codeberg.org/ricci/are-we-decentralized-yet/src/branch/main/data-fetchers/fedi-nodeinfo">Codeberg</a> .
+        </p>
+        <p>
+            <a href="index.html">Back to the main page</a>
+        </p>
+      </div>
+    </div>
+
+</body>
+</html>
