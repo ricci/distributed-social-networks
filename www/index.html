@@ -471,8 +471,8 @@
     document.getElementById("dnsUpdated").textContent = data.dns.lastUpdate;
     document.getElementById("certUpdated").textContent = data.cert.lastUpdate;
 
-    document.getElementById("fediData").href = data.fedi.dataFile;
-    document.getElementById("atData").href = data.at.dataFile;
+    document.getElementById("fediData").href = "csv-viewer.html?csv=" + data.fedi.dataFile;
+    document.getElementById("atData").href = "csv-viewer.html?csv=" + data.at.dataFile;
 
     document.getElementById("fediServers").textContent = addCommas(data.fedi.servers);
     document.getElementById("atServers").textContent = addCommas(data.at.servers);

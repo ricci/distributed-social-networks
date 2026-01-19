@@ -88,9 +88,10 @@ function renderTable(rows) {
   }
 
   const [header, ...data] = rows;
-  const activeMonthIndex = header.findIndex(
-    (name) => name.trim().toLowerCase() === "active_month"
-  );
+  const activeMonthIndex = header.findIndex((name) => {
+    const normalized = name.trim().toLowerCase();
+    return normalized === "active_month" || normalized === "mau";
+  });
   if (activeMonthIndex !== -1) {
     const isActiveMonthInteger = columnIsInteger(activeMonthIndex, data);
     data.sort((left, right) => {
