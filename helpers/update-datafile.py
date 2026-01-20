@@ -103,11 +103,11 @@ def update_network(data, key, csv_path, last_update, data_file=None):
     data[key] = entry
 
 
-def update_weekly_trend(data, key, current_csv, previous_csv):
+def update_period_trend(data, key, period, current_csv, previous_csv):
     current = stats_from_csv(current_csv)
     previous = stats_from_csv(previous_csv)
     diff = round(current["shannon"] - previous["shannon"], 4)
-    data.setdefault("trends", {}).setdefault(key, {})["weekly_shannon"] = diff
+    data.setdefault("trends", {}).setdefault(key, {}).setdefault(period, {})["shannon"] = diff
 
     current_terms = shannon_terms_by_host(current_csv)
     previous_terms = shannon_terms_by_host(previous_csv)
@@ -124,7 +124,7 @@ def update_weekly_trend(data, key, current_csv, previous_csv):
         if term_diff < 0 and (best_neg_host is None or term_diff < best_neg_diff):
             best_neg_host = host
             best_neg_diff = term_diff
-    data.setdefault("trends", {}).setdefault(key, {})["weekly_shannon_contrib"] = {
+    data.setdefault("trends", {}).setdefault(key, {}).setdefault(period, {})["shannon_contrib"] = {
         "increase": {
             "host": best_pos_host,
             "change": round(best_pos_diff, 6),
@@ -194,23 +194,48 @@ def main():
     )
 
     week_target = datetime.now(timezone.utc) - timedelta(days=7)
-    update_weekly_trend(
+    month_target = datetime.now(timezone.utc) - timedelta(days=30)
+    update_period_trend(
         data,
         "fedi",
+        "weekly",
         fedi_csv,
         find_closest_to(REPO_ROOT / "data" / "fedi-mau", week_target),
     )
-    update_weekly_trend(
+    update_period_trend(
         data,
         "at",
+        "weekly",
         at_csv,
         find_closest_to(REPO_ROOT / "data" / "at-mau", week_target),
     )
-    update_weekly_trend(
+    update_period_trend(
         data,
         "git",
+        "weekly",
         git_csv,
         find_closest_to(REPO_ROOT / "data" / "git", week_target),
+    )
+    update_period_trend(
+        data,
+        "fedi",
+        "monthly",
+        fedi_csv,
+        find_closest_to(REPO_ROOT / "data" / "fedi-mau", month_target),
+    )
+    update_period_trend(
+        data,
+        "at",
+        "monthly",
+        at_csv,
+        find_closest_to(REPO_ROOT / "data" / "at-mau", month_target),
+    )
+    update_period_trend(
+        data,
+        "git",
+        "monthly",
+        git_csv,
+        find_closest_to(REPO_ROOT / "data" / "git", month_target),
     )
 
     write_data_js(DATA_JS_PATH, data)

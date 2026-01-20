@@ -263,13 +263,88 @@ var data = {
   },
   "trends": {
     "fedi": {
-      "weekly_shannon": -0.0107
+      "weekly": {
+        "shannon": -0.0107,
+        "shannon_contrib": {
+          "increase": {
+            "host": "theforkiverse.com",
+            "change": 0.013765
+          },
+          "decrease": {
+            "host": "gram.social",
+            "change": -0.003856
+          }
+        }
+      },
+      "monthly": {
+        "shannon": -0.0107,
+        "shannon_contrib": {
+          "increase": {
+            "host": "theforkiverse.com",
+            "change": 0.013765
+          },
+          "decrease": {
+            "host": "gram.social",
+            "change": -0.003856
+          }
+        }
+      }
     },
     "at": {
-      "weekly_shannon": -0.0011
+      "weekly": {
+        "shannon": -0.0011,
+        "shannon_contrib": {
+          "increase": {
+            "host": "skystack.xyz",
+            "change": 6.3e-05
+          },
+          "decrease": {
+            "host": "randomly-generated.ngrok-free.app",
+            "change": -0.000262
+          }
+        }
+      },
+      "monthly": {
+        "shannon": -0.0009,
+        "shannon_contrib": {
+          "increase": {
+            "host": "x.mt.social",
+            "change": 0.00022
+          },
+          "decrease": {
+            "host": "randomly-generated.ngrok-free.app",
+            "change": -0.000399
+          }
+        }
+      }
     },
     "git": {
-      "weekly_shannon": -0.0004
+      "weekly": {
+        "shannon": -0.0004,
+        "shannon_contrib": {
+          "increase": {
+            "host": "gitlabext.wsl.ch",
+            "change": 1e-06
+          },
+          "decrease": {
+            "host": "gitlab.com",
+            "change": -0.000147
+          }
+        }
+      },
+      "monthly": {
+        "shannon": -0.0019,
+        "shannon_contrib": {
+          "increase": {
+            "host": "git.fossgalaxy.com",
+            "change": 7e-06
+          },
+          "decrease": {
+            "host": "gitlab.com",
+            "change": -0.000676
+          }
+        }
+      }
     }
   }
 }

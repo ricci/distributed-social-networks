@@ -480,7 +480,12 @@
     document.querySelectorAll('[data-trend]').forEach(el => {
       const section = getSection(el);
       const trendKey = el.dataset.trend;
-      const trendValue = data?.trends?.[section]?.[trendKey];
+      let period = "weekly";
+      let metric = trendKey;
+      if (trendKey.includes("_")) {
+        [period, metric] = trendKey.split("_", 2);
+      }
+      const trendValue = data?.trends?.[section]?.[period]?.[metric];
       if (trendValue === undefined || trendValue === null) {
         return;
       }
