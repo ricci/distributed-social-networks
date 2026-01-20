@@ -1,15 +1,15 @@
 var data = {
   "fedi": {
-    "lastUpdate": "01-14-2026",
-    "dataFile": "data/fedi-mau/2026-01-14T05:46:35Z.csv",
-    "HHI": 837,
-    "shannon": 4.6858,
-    "simpson": 0.9162,
-    "servers": 28231,
-    "biggest_abs": 292183,
-    "biggest_pct": 26.14,
-    "rest_abs": 825662,
-    "rest_pct": 73.86,
+    "lastUpdate": "01-19-2026",
+    "dataFile": "data/fedi-mau/2026-01-19T07:01:01Z.csv",
+    "HHI": 841,
+    "shannon": 4.6757,
+    "simpson": 0.9159,
+    "servers": 28119,
+    "biggest_abs": 297593,
+    "biggest_pct": 26.2,
+    "rest_abs": 838071,
+    "rest_pct": 73.8,
     "b_vals": [
       [
         25,
@@ -21,33 +21,33 @@ var data = {
       ],
       [
         75,
-        78
+        77
       ],
       [
         90,
-        447
+        439
       ],
       [
         99,
-        17053
+        16763
       ],
       [
         99.5,
-        22642
+        22441
       ]
     ]
   },
   "at": {
-    "lastUpdate": "01-14-2026",
-    "dataFile": "data/at-mau/2026-01-14T05:46:00Z.csv",
-    "HHI": 9800,
-    "shannon": 0.0775,
-    "simpson": 0.02,
-    "servers": 1635,
-    "biggest_abs": 5694928,
-    "biggest_pct": 99.0,
-    "rest_abs": 57759,
-    "rest_pct": 1.0,
+    "lastUpdate": "01-19-2026",
+    "dataFile": "data/at-mau/2026-01-19T07:00:28Z.csv",
+    "HHI": 9802,
+    "shannon": 0.0766,
+    "simpson": 0.0197,
+    "servers": 1640,
+    "biggest_abs": 5753464,
+    "biggest_pct": 99.01,
+    "rest_abs": 57666,
+    "rest_pct": 0.99,
     "b_vals": [
       [
         25,
@@ -67,7 +67,7 @@ var data = {
       ],
       [
         99,
-        2
+        1
       ],
       [
         99.5,
@@ -76,15 +76,15 @@ var data = {
     ]
   },
   "git": {
-    "lastUpdate": "01-13-2026",
-    "HHI": 9366,
-    "shannon": 0.1961,
-    "simpson": 0.0634,
+    "lastUpdate": "01-19-2026",
+    "HHI": 9367,
+    "shannon": 0.1957,
+    "simpson": 0.0633,
     "servers": 1578,
-    "biggest_abs": 301701384,
-    "biggest_pct": 96.76,
-    "rest_abs": 10108799,
-    "rest_pct": 3.24,
+    "biggest_abs": 302489652,
+    "biggest_pct": 96.77,
+    "rest_abs": 10112135,
+    "rest_pct": 3.23,
     "b_vals": [
       [
         25,
@@ -111,7 +111,7 @@ var data = {
         4
       ]
     ],
-    "dataFile": "data/git/2026-01-13T22:45:28__sh-fromhtml.csv"
+    "dataFile": "data/git/2026-01-19T00:00:00__sh-fromhtml.csv"
   },
   "hosting": {
     "lastUpdate": "10-31-2025",
@@ -263,13 +263,13 @@ var data = {
   },
   "trends": {
     "fedi": {
-      "weekly_shannon": 0.0015
+      "weekly_shannon": -0.0107
     },
     "at": {
-      "weekly_shannon": 0.0
+      "weekly_shannon": -0.0009
     },
     "git": {
-      "weekly_shannon": -0.0004
+      "weekly_shannon": -0.0005
     }
   }
 }

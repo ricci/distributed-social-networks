@@ -51,8 +51,7 @@
             </p>
             <p>
                  Overall, these changes do not make huge differences to the indices, which is a good thing: it means
-                 these measures are fairly stable under a variety of assumptions. But it does mean that I will need to
-                 build up history again before the trend data can return.
+                 these measures are fairly stable under a variety of assumptions.
             </p>
         </div>
     </details>
@@ -91,10 +90,8 @@
         <div id="gageFedi" class="gage"></div>
         <div class="shannon">
           <div class="index">Shannon Index: <span data-field="shannon"></span></div>
-          <div style="display:none">
           <div class="trend" data-trend="weekly_shannon">One-week trend: <span data-trend-value></span> (<span data-trend-pct></span>%)</div>
           <div class="icon"><img data-trend-icon> <span data-trend-text></span></div>
-          </div>
         </div>
         <table>
             <tr><th>Servers</th><td><span data-field="servers" data-format="commas"></span></td></tr>
@@ -102,7 +99,7 @@
             <tr><th>Rest</th><td><span data-field="rest_abs" data-format="commas"></span></td><td>(<span data-field="rest_pct"></span>%)</td></tr>
         </table>
         <div class="data">
-           <a data-link="dataFile">raw data</a> (<span data-field="lastUpdate"></span>)
+           <a data-link="dataFile" data-link-template="csv-viewer.html?csv={value}">raw data</a> (<span data-field="lastUpdate"></span>)
         </div>
       </div>
 
@@ -112,10 +109,8 @@
         <div id="gageAtmosphere" class="gage"></div>
         <div class="shannon">
           <div class="index">Shannon Index: <span data-field="shannon"></span></div>
-          <div style="display:none">
           <div class="trend" data-trend="weekly_shannon">One-week trend: <span data-trend-value></span> (<span data-trend-pct></span>%)</div>
           <div class="icon"><img data-trend-icon> <span data-trend-text></span></div>
-          </div>
         </div>
         <table>
             <tr><th>PDSes</th><td><span data-field="servers" data-format="commas"></span></td></tr>
@@ -123,7 +118,7 @@
             <tr><th>Rest</th><td><span data-field="rest_abs" data-format="commas"></span></td><td>(<span data-field="rest_pct"></span>%)</td></tr>
         </table>
         <div class="data">
-            <a data-link="dataFile">raw data</a> (<span data-field="lastUpdate"></span>)
+            <a data-link="dataFile" data-link-template="csv-viewer.html?csv={value}">raw data</a> (<span data-field="lastUpdate"></span>)
         </div>
       </div> 
 
@@ -478,7 +473,8 @@
       if (value === undefined || value === null) {
         return;
       }
-      el.href = value;
+      const template = el.dataset.linkTemplate;
+      el.href = template ? template.replace("{value}", value) : value;
     });
 
     document.querySelectorAll('[data-trend]').forEach(el => {
@@ -508,7 +504,7 @@
     });
 
     document.querySelectorAll('.details-tabs').forEach(group => {
-        group.addEventListener('toggle', e => {
+group.addEventListener('toggle', e => {
             if (e.target.tagName === 'DETAILS' && e.target.open) {
                 group.querySelectorAll('details[open]').forEach(d => { if (d !== e.target) d.open = false; });
             }

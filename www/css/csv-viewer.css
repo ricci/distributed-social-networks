@@ -1,0 +1,57 @@
+.panel {
+  margin: 0;
+  padding: 20px 24px 28px;
+}
+
+.panel,
+.panel * {
+  box-sizing: border-box;
+}
+
+.csv-title {
+  margin: 0 0 6px;
+  font-size: 24px;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin: 6px 0 10px;
+  font-size: 13px;
+}
+
+.controls select {
+  font-family: inherit;
+  padding: 4px 8px;
+  border-radius: 8px;
+  border: 1px solid #dfd1c0;
+  background: #fff7ee;
+}
+
+.status {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #d7d9de;
+}
+
+.status.error {
+  color: #8e2d20;
+}
+
+#table {
+  margin-top: 10px;
+  background: white;
+  border-radius: 16px;
+  padding: 10px;
+  border: 1px solid #eee0cf;
+  color: black;
+}
+
+.gridjs-container,
+.gridjs-container table,
+.gridjs-container th,
+.gridjs-container td {
+  color: black;
+}
