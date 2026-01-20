@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import argparse
 import sys
 import os
 import json
@@ -210,20 +211,45 @@ def extract_fields(nodeinfo_wrapper: dict):
 
     return hostname, software_name, software_version, users_total, active_month, protocols, protocols_str
 
+def _parse_now(value: Optional[str]) -> "datetime.datetime":
+    import datetime
+
+    if value is None:
+        return datetime.datetime.now(datetime.timezone.utc)
+    iso_value = value.strip()
+    if iso_value.endswith("Z"):
+        iso_value = iso_value[:-1] + "+00:00"
+    try:
+        parsed = datetime.datetime.fromisoformat(iso_value)
+    except ValueError as exc:
+        raise argparse.ArgumentTypeError(f"Invalid --now value: {value}") from exc
+    if parsed.tzinfo is None:
+        return parsed.replace(tzinfo=datetime.timezone.utc)
+    return parsed.astimezone(datetime.timezone.utc)
+
+
 def main() -> None:
     import datetime
 
-    if len(sys.argv) < 3 or len(sys.argv) > 4:
-        print(f"Usage: {sys.argv[0]} nodeinfo_dir output.csv [max_age_days=30]", file=sys.stderr)
-        sys.exit(1)
+    parser = argparse.ArgumentParser(
+        description="Parse nodeinfo JSON into a CSV snapshot.",
+    )
+    parser.add_argument("nodeinfo_dir")
+    parser.add_argument("output_csv")
+    parser.add_argument("max_age_days", nargs="?", type=int, default=30)
+    parser.add_argument(
+        "--now",
+        type=_parse_now,
+        help="ISO-8601 datetime to use as the current time (UTC if naive).",
+    )
+    args = parser.parse_args()
 
-    nodeinfo_dir = sys.argv[1]
-    output_csv = sys.argv[2]
-    max_age_days = int(sys.argv[3]) if len(sys.argv) == 4 else 30
+    nodeinfo_dir = args.nodeinfo_dir
+    output_csv = args.output_csv
+    max_age_days = args.max_age_days
 
     cutoff = datetime.timedelta(days=max_age_days)
-    # Make 'now' timezone-aware (UTC)
-    now = datetime.datetime.now(datetime.timezone.utc)
+    now = args.now or datetime.datetime.now(datetime.timezone.utc)
 
     hostname_dirs = [
         os.path.join(nodeinfo_dir, d)
@@ -256,7 +282,9 @@ def main() -> None:
         if not candidates:
             continue
 
-        candidates_recent = [c for c in candidates if now - c[0] <= cutoff]
+        candidates_recent = [
+            c for c in candidates if c[0] <= now and now - c[0] <= cutoff
+        ]
         if not candidates_recent:
             continue
 
