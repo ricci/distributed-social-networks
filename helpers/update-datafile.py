@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import csv
 import json
 import re
 import sys
@@ -9,7 +10,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT))
 
-from centralization_stats import stats_from_csv
+from centralization_stats import combine_rows, extract_domain_counts, filter_rows, stats_from_csv, _shannon
 
 DATA_JS_PATH = REPO_ROOT / "www" / "data.js"
 DATA_HISTORY_DIR = REPO_ROOT / "data" / "historical"
@@ -107,6 +108,52 @@ def update_weekly_trend(data, key, current_csv, previous_csv):
     previous = stats_from_csv(previous_csv)
     diff = round(current["shannon"] - previous["shannon"], 4)
     data.setdefault("trends", {}).setdefault(key, {})["weekly_shannon"] = diff
+
+    current_terms = shannon_terms_by_host(current_csv)
+    previous_terms = shannon_terms_by_host(previous_csv)
+    all_hosts = set(current_terms) | set(previous_terms)
+    best_pos_host = None
+    best_pos_diff = 0.0
+    best_neg_host = None
+    best_neg_diff = 0.0
+    for host in sorted(all_hosts):
+        term_diff = current_terms.get(host, 0.0) - previous_terms.get(host, 0.0)
+        if term_diff > 0 and (best_pos_host is None or term_diff > best_pos_diff):
+            best_pos_host = host
+            best_pos_diff = term_diff
+        if term_diff < 0 and (best_neg_host is None or term_diff < best_neg_diff):
+            best_neg_host = host
+            best_neg_diff = term_diff
+    data.setdefault("trends", {}).setdefault(key, {})["weekly_shannon_contrib"] = {
+        "increase": {
+            "host": best_pos_host,
+            "change": round(best_pos_diff, 6),
+        },
+        "decrease": {
+            "host": best_neg_host,
+            "change": round(best_neg_diff, 6),
+        },
+    }
+
+
+def shannon_terms_by_host(csv_path):
+    rows = load_csv_rows(csv_path)
+    rows = filter_rows(rows)
+    extracted = [extract_domain_counts(row) for row in rows]
+    combined = combine_rows(extracted)
+    if not combined:
+        return {}
+    total = sum(item["count"] for item in combined)
+    if total == 0:
+        return {}
+    counts = [item["count"] for item in combined]
+    terms = _shannon(counts, return_terms=True)
+    return {item["domain"]: term for item, term in zip(combined, terms)}
+
+
+def load_csv_rows(csv_path):
+    with open(csv_path, newline="") as handle:
+        return list(csv.DictReader(handle))
 
 
 
