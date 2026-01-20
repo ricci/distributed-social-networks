@@ -90,19 +90,17 @@
         <div id="gageFedi" class="gage"></div>
         <div class="shannon" data-trend="weekly_shannon">
           <div class="index">Shannon Index: <span data-field="shannon"></span></div>
-          <div class="trend">Trend (week): <span data-trend-value></span> (<span data-trend-pct></span>%)</div>
           <div class="icon"><img data-trend-icon> <span data-trend-text></span></div>
           <details class="contributors-mini">
-            <summary>Top contributors to trend</summary>
-            <div class="contributors-row">
-              <span class="contributors-value" data-trend-biggest-d></span>
-              <span class="contributors-delta" data-trend-biggest-delta-d></span>
-              <img class="contributors-icon" src="img/increase.svg" alt="Decentralizer">
-            </div>
-            <div class="contributors-row">
-              <span class="contributors-value" data-trend-biggest-c></span>
-              <span class="contributors-delta" data-trend-biggest-delta-c></span>
-              <img class="contributors-icon" src="img/decrease.svg" alt="Centralizer">
+            <summary>Details</summary>
+            <div class="trend">Trend (week): <span data-trend-value></span> (<span data-trend-pct></span>%)</div>
+            <div class="contributors-lists">
+              <div class="contributors-list">
+                <div class="contributors-subtitle">Top decentralizers</div>
+                <table class="contributors-table" data-trend-list="increase">
+                  <tbody></tbody>
+                </table>
+              </div>
             </div>
           </details>
         </div>
@@ -122,19 +120,17 @@
         <div id="gageAtmosphere" class="gage"></div>
         <div class="shannon" data-trend="weekly_shannon">
           <div class="index">Shannon Index: <span data-field="shannon"></span></div>
-          <div class="trend">Trend (week): <span data-trend-value></span> (<span data-trend-pct></span>%)</div>
           <div class="icon"><img data-trend-icon> <span data-trend-text></span></div>
           <details class="contributors-mini">
-            <summary>Top contributors to trend</summary>
-            <div class="contributors-row">
-              <span class="contributors-value" data-trend-biggest-d></span>
-              <span class="contributors-delta" data-trend-biggest-delta-d></span>
-              <img class="contributors-icon" src="img/increase.svg" alt="Decentralizer">
-            </div>
-            <div class="contributors-row">
-              <span class="contributors-value" data-trend-biggest-c></span>
-              <span class="contributors-delta" data-trend-biggest-delta-c></span>
-              <img class="contributors-icon" src="img/decrease.svg" alt="Centralizer">
+            <summary>Details</summary>
+            <div class="trend">Trend (week): <span data-trend-value></span> (<span data-trend-pct></span>%)</div>
+            <div class="contributors-lists">
+              <div class="contributors-list">
+                <div class="contributors-subtitle">Top decentralizers</div>
+                <table class="contributors-table" data-trend-list="increase">
+                  <tbody></tbody>
+                </table>
+              </div>
             </div>
           </details>
         </div>
@@ -203,19 +199,17 @@
         <div id="gageGit" class="gage"></div>
         <div class="shannon" data-trend="weekly_shannon">
           <div class="index">Shannon Index: <span data-field="shannon"></span></div>
-          <div class="trend">Trend (week): <span data-trend-value></span> (<span data-trend-pct></span>%)</div>
           <div class="icon"><img data-trend-icon> <span data-trend-text></span></div>
           <details class="contributors-mini">
-            <summary>Top contributors to trend</summary>
-            <div class="contributors-row">
-              <span class="contributors-value" data-trend-biggest-d></span>
-              <span class="contributors-delta" data-trend-biggest-delta-d></span>
-              <img class="contributors-icon" src="img/increase.svg" alt="Decentralizer">
-            </div>
-            <div class="contributors-row">
-              <span class="contributors-value" data-trend-biggest-c></span>
-              <span class="contributors-delta" data-trend-biggest-delta-c></span>
-              <img class="contributors-icon" src="img/decrease.svg" alt="Centralizer">
+            <summary>Details</summary>
+            <div class="trend">Trend (week): <span data-trend-value></span> (<span data-trend-pct></span>%)</div>
+            <div class="contributors-lists">
+              <div class="contributors-list">
+                <div class="contributors-subtitle">Top decentralizers</div>
+                <table class="contributors-table" data-trend-list="increase">
+                  <tbody></tbody>
+                </table>
+              </div>
             </div>
           </details>
         </div>
@@ -463,6 +457,12 @@
       return (value >= 0 ? "+" : "") + fixed;
     }
 
+    function formatSignedInt(value) {
+      const rounded = Math.round(Math.abs(value));
+      const formatted = addCommas(rounded);
+      return (value >= 0 ? "+" : "-") + formatted;
+    }
+
     const shannon_trend_threshold = 1.0;
     function trend_icon(value) {
         if (value  >= shannon_trend_threshold) {
@@ -530,10 +530,7 @@
       const trendPct = trendValue * 100 / data[section].shannon;
       const valueEl = el.querySelector('[data-trend-value]');
       const pctEl = el.querySelector('[data-trend-pct]');
-      const dEl = el.querySelector('[data-trend-biggest-d]');
-      const cEl = el.querySelector('[data-trend-biggest-c]');
-      const dDeltaEl = el.querySelector('[data-trend-biggest-delta-d]');
-      const cDeltaEl = el.querySelector('[data-trend-biggest-delta-c]');
+      const increaseListEl = el.querySelector('[data-trend-list="increase"]');
       const iconEl = el.querySelector('[data-trend-icon]');
       const textEl = el.querySelector('[data-trend-text]');
       if (valueEl) {
@@ -548,25 +545,49 @@
       if (textEl) {
         textEl.textContent = trend_text(trendPct);
       }
-      console.log(dEl);
-      if (dEl) {
-        dEl.textContent = data?.trends?.[section]?.[period]?.shannon_contrib?.increase?.host;
-      }
-      if (cEl) {
-        cEl.textContent = data?.trends?.[section]?.[period]?.shannon_contrib?.decrease?.host;
-      }
-      if (dDeltaEl) {
-        const dChange = data?.trends?.[section]?.[period]?.shannon_contrib?.increase?.change;
-        if (dChange !== undefined && dChange !== null) {
-          dDeltaEl.textContent = formatSignedFloat(dChange, 4);
+      const shannonContrib = data?.trends?.[section]?.[period]?.shannon_contrib;
+      const increaseItems = Array.isArray(shannonContrib?.increase)
+        ? shannonContrib.increase
+        : shannonContrib?.increase ? [shannonContrib.increase] : [];
+      const renderContribList = (listEl, items) => {
+        if (!listEl) {
+          return;
         }
-      }
-      if (cDeltaEl) {
-        const cChange = data?.trends?.[section]?.[period]?.shannon_contrib?.decrease?.change;
-        if (cChange !== undefined && cChange !== null) {
-          cDeltaEl.textContent = formatSignedFloat(cChange, 4);
+        const tbody = listEl.tagName === "TABLE" ? listEl.querySelector("tbody") : listEl;
+        if (!tbody) {
+          return;
         }
-      }
+        tbody.innerHTML = "";
+        items.forEach(item => {
+          if (!item || !item.host) {
+            return;
+          }
+          const row = document.createElement("tr");
+          row.className = "contributors-row";
+
+          const hostCell = document.createElement("td");
+          hostCell.className = "contributors-host";
+          hostCell.textContent = item.host;
+          hostCell.title = item.host;
+
+          const deltaCell = document.createElement("td");
+          deltaCell.className = "contributors-delta";
+          if (item.change !== undefined && item.change !== null) {
+            deltaCell.textContent = formatSignedFloat(item.change, 4);
+          }
+
+          const usersCell = document.createElement("td");
+          usersCell.className = "contributors-users";
+          if (item.user_change !== undefined && item.user_change !== null) {
+            usersCell.textContent = `${formatSignedInt(item.user_change)} users`;
+          }
+
+          row.append(hostCell, deltaCell, usersCell);
+          tbody.appendChild(row);
+        });
+      };
+
+      renderContribList(increaseListEl, increaseItems);
     });
 
     document.querySelectorAll('.details-tabs').forEach(group => {

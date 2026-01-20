@@ -73,20 +73,29 @@ h5 {
   margin-bottom: 4px;
 }
 
-.contributors-row {
-  display: grid;
-  grid-template-columns: 1fr auto 18px;
-  align-items: center;
-  gap: 8px;
-  padding: 2px 0;
-}
-
 .contributors-icon {
   width: 14px;
   height: 14px;
 }
 
-.contributors-value {
+.contributors-lists {
+  display: grid;
+  gap: 8px;
+}
+
+.contributors-subtitle {
+  text-align: left;
+  font-size: 0.9em;
+  margin: 4px 0 2px;
+}
+
+.contributors-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.contributors-host {
   text-align: left;
   color: #f7f9fb;
   white-space: nowrap;
@@ -95,10 +104,28 @@ h5 {
 }
 
 .contributors-delta {
-  color: #909296;
+  color: #b0b2b6;
   font-size: 0.9em;
   text-align: right;
+  padding-left: 8px;
   white-space: nowrap;
+}
+
+.contributors-users {
+  color: #b0b2b6;
+  font-size: 0.9em;
+  text-align: right;
+  padding-left: 8px;
+  white-space: nowrap;
+}
+
+.contributors-table td.contributors-host {
+  text-align: left;
+}
+
+.contributors-table td.contributors-delta,
+.contributors-table td.contributors-users {
+  text-align: right;
 }
 
 div.rating {
