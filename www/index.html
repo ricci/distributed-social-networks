@@ -88,10 +88,12 @@
         <h3>The Fediverse</h3>
         <h5>Mastodon, Pixelfed, etc.</h5>
         <div id="gageFedi" class="gage"></div>
-        <div class="shannon">
+        <div class="shannon" data-trend="weekly_shannon">
           <div class="index">Shannon Index: <span data-field="shannon"></span></div>
-          <div class="trend" data-trend="weekly_shannon">One-week trend: <span data-trend-value></span> (<span data-trend-pct></span>%)</div>
+          <div class="trend">One-week trend: <span data-trend-value></span> (<span data-trend-pct></span>%)</div>
           <div class="icon"><img data-trend-icon> <span data-trend-text></span></div>
+          <div class="contributors">Biggest decentralizer: <span data-trend-biggest-d></span></div>
+          <div class="contributors">Biggest centralizer: <span data-trend-biggest-c></span></div>
         </div>
         <table>
             <tr><th>Servers</th><td><span data-field="servers" data-format="commas"></span></td></tr>
@@ -107,10 +109,12 @@
         <h3>The Atmosphere</h3>
         <h5>Bluesky, Leaflet, etc.</h5>
         <div id="gageAtmosphere" class="gage"></div>
-        <div class="shannon">
+        <div class="shannon" data-trend="weekly_shannon">
           <div class="index">Shannon Index: <span data-field="shannon"></span></div>
-          <div class="trend" data-trend="weekly_shannon">One-week trend: <span data-trend-value></span> (<span data-trend-pct></span>%)</div>
+          <div class="trend">One-week trend: <span data-trend-value></span> (<span data-trend-pct></span>%)</div>
           <div class="icon"><img data-trend-icon> <span data-trend-text></span></div>
+          <div class="contributors">Biggest decentralizer: <span data-trend-biggest-d></span></div>
+          <div class="contributors">Biggest centralizer: <span data-trend-biggest-c></span></div>
         </div>
         <table>
             <tr><th>PDSes</th><td><span data-field="servers" data-format="commas"></span></td></tr>
@@ -175,10 +179,12 @@
         <h3>Public Git Forges</h3>
         <h5>Github, Gitlab, etc.</h5>
         <div id="gageGit" class="gage"></div>
-        <div class="shannon">
+        <div class="shannon" data-trend="weekly_shannon">
           <div class="index">Shannon Index: <span data-field="shannon"></span></div>
-          <div class="trend" data-trend="weekly_shannon">One-week trend: <span data-trend-value></span> (<span data-trend-pct></span>%)</div>
+          <div class="trend">One-week trend: <span data-trend-value></span> (<span data-trend-pct></span>%)</div>
           <div class="icon"><img data-trend-icon> <span data-trend-text></span></div>
+          <div class="contributors">Biggest decentralizer: <span data-trend-biggest-d></span></div>
+          <div class="contributors">Biggest centralizer: <span data-trend-biggest-c></span></div>
         </div>
         <table>
             <tr><th>Forges</th><td><span data-field="servers" data-format="commas"></span></td></tr>
@@ -482,9 +488,8 @@
       const trendKey = el.dataset.trend;
       let period = "weekly";
       let metric = trendKey;
-      if (trendKey.includes("_")) {
-        [period, metric] = trendKey.split("_", 2);
-      }
+      [period, metric] = trendKey.split("_", 2);
+
       const trendValue = data?.trends?.[section]?.[period]?.[metric];
       if (trendValue === undefined || trendValue === null) {
         return;
@@ -492,8 +497,10 @@
       const trendPct = trendValue * 100 / data[section].shannon;
       const valueEl = el.querySelector('[data-trend-value]');
       const pctEl = el.querySelector('[data-trend-pct]');
-      const iconEl = el.closest('.shannon')?.querySelector('[data-trend-icon]');
-      const textEl = el.closest('.shannon')?.querySelector('[data-trend-text]');
+      const dEl = el.querySelector('[data-trend-biggest-d]');
+      const cEl = el.querySelector('[data-trend-biggest-c]');
+      const iconEl = el.querySelector('[data-trend-icon]');
+      const textEl = el.querySelector('[data-trend-text]');
       if (valueEl) {
         valueEl.textContent = trendValue.toFixed(4);
       }
@@ -505,6 +512,13 @@
       }
       if (textEl) {
         textEl.textContent = trend_text(trendPct);
+      }
+      console.log(dEl);
+      if (dEl) {
+        dEl.textContent = data?.trends?.[section]?.[period]?.shannon_contrib?.increase?.host;
+      }
+      if (cEl) {
+        cEl.textContent = data?.trends?.[section]?.[period]?.shannon_contrib?.decrease?.host;
       }
     });
 
