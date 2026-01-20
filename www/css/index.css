@@ -60,72 +60,63 @@ h5 {
 }
 
 .contributors-mini {
-  width: 230px;
-  margin: 0 auto;
+  margin-left: 8px;
+  margin-right: 8px;
   margin-top: 6px;
-  font-size: 0.82em;
-  color: #a7a9ab;
 }
 
 .contributors-mini summary {
   text-align: center;
-  font-size: 0.9em;
   margin-bottom: 4px;
 }
 
-.contributors-icon {
-  width: 14px;
-  height: 14px;
+.contributors-table caption {
+    text-align: center;
+    font-weight: bold;
 }
 
-.contributors-lists {
-  display: grid;
-  gap: 8px;
+.contributors-table th.host, td.host {
+    text-align: left;
+    padding-left: 0px;
+    padding-right: 0px;
 }
 
-.contributors-subtitle {
-  text-align: left;
-  font-size: 0.9em;
-  margin: 4px 0 2px;
+.contributors-table th.users, td.users, th.shannon, td.users {
+    text-align: right;
+    padding-left: 0px;
+    padding-right: 0px;
 }
+
 
 .contributors-table {
   width: 100%;
+  max-width: 100%;
   border-collapse: collapse;
   table-layout: fixed;
 }
 
-.contributors-host {
+.contributors-table col.fill {
+    width: 50%;
+}
+
+.contributors-table col.fit {
+    width: 25%;
+}
+
+.contributors-table td.host {
   text-align: left;
-  color: #f7f9fb;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.contributors-delta {
-  color: #b0b2b6;
-  font-size: 0.9em;
-  text-align: right;
-  padding-left: 8px;
-  white-space: nowrap;
+th {
+    text-align: left;
+    padding-right: 8px;
 }
 
-.contributors-users {
-  color: #b0b2b6;
-  font-size: 0.9em;
-  text-align: right;
-  padding-left: 8px;
-  white-space: nowrap;
-}
-
-.contributors-table td.contributors-host {
-  text-align: left;
-}
-
-.contributors-table td.contributors-delta,
-.contributors-table td.contributors-users {
-  text-align: right;
+td {
+    text-align: right;
 }
 
 div.rating {
@@ -182,15 +173,6 @@ p {
   display: block;
   margin-left: auto;
   margin-right: auto;
-}
-
-th {
-  text-align: left;
-  padding-right: 10px;
-}
-
-td {
-  text-align: right;
 }
 
 table {

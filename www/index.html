@@ -93,14 +93,20 @@
           <div class="icon"><img data-trend-icon> <span data-trend-text></span></div>
           <details class="contributors-mini">
             <summary>Details</summary>
-            <div class="trend">Trend (week): <span data-trend-value></span> (<span data-trend-pct></span>%)</div>
-            <div class="contributors-lists">
-              <div class="contributors-list">
-                <div class="contributors-subtitle">Top decentralizers</div>
-                <table class="contributors-table" data-trend-list="increase">
-                  <tbody></tbody>
-                </table>
-              </div>
+            <div class="trend">One-Week Trend: <span data-trend-value></span> (<span data-trend-pct></span>%)</div>
+            <div class="contributors-list">
+              <table class="contributors-table" data-trend-list="increase">
+                <caption>Top decentralizers</caption>
+                <colgroup>
+                  <col class="fill">
+                  <col class="fit">
+                  <col class="fit">
+                </colgroup>
+                <thead>
+                    <tr><th class="host">Host</th><th class="shannon">Change</th><th class="users">Users</th></td></tr>
+                </thead>
+                <tbody></tbody>
+              </table>
             </div>
           </details>
         </div>
@@ -123,14 +129,20 @@
           <div class="icon"><img data-trend-icon> <span data-trend-text></span></div>
           <details class="contributors-mini">
             <summary>Details</summary>
-            <div class="trend">Trend (week): <span data-trend-value></span> (<span data-trend-pct></span>%)</div>
-            <div class="contributors-lists">
-              <div class="contributors-list">
-                <div class="contributors-subtitle">Top decentralizers</div>
-                <table class="contributors-table" data-trend-list="increase">
-                  <tbody></tbody>
-                </table>
-              </div>
+            <div class="trend">One-week Trend: <span data-trend-value></span> (<span data-trend-pct></span>%)</div>
+            <div class="contributors-list">
+              <table class="contributors-table" data-trend-list="increase">
+                <caption>Top decentralizers</caption>
+                <colgroup>
+                  <col class="fill">
+                  <col class="fit">
+                  <col class="fit">
+                </colgroup>
+                <thead>
+                    <tr><th class="host">Host</th><th class="shannon">Change</th><th class="users">Users</th></td></tr>
+                </thead>
+                <tbody></tbody>
+              </table>
             </div>
           </details>
         </div>
@@ -202,14 +214,20 @@
           <div class="icon"><img data-trend-icon> <span data-trend-text></span></div>
           <details class="contributors-mini">
             <summary>Details</summary>
-            <div class="trend">Trend (week): <span data-trend-value></span> (<span data-trend-pct></span>%)</div>
-            <div class="contributors-lists">
-              <div class="contributors-list">
-                <div class="contributors-subtitle">Top decentralizers</div>
-                <table class="contributors-table" data-trend-list="increase">
-                  <tbody></tbody>
-                </table>
-              </div>
+            <div class="trend">One-Week Trend: <span data-trend-value></span> (<span data-trend-pct></span>%)</div>
+            <div class="contributors-list">
+              <table class="contributors-table" data-trend-list="increase">
+                <caption>Top decentralizers</caption>
+                <colgroup>
+                  <col class="fill">
+                  <col class="fit">
+                  <col class="fit">
+                </colgroup>
+                <thead>
+                    <tr><th class="host">Host</th><th class="shannon">Change</th><th class="users">Repos</th></td></tr>
+                </thead>
+                <tbody></tbody>
+              </table>
             </div>
           </details>
         </div>
@@ -250,7 +268,6 @@
         <div class="shannon">
           <div class="index">Shannon Index: <span data-field="shannon"></span></div>
         </div>
-        <div class="spacer"></div>
         <table>
             <tr><th>Services</th><td><span data-field="servers" data-format="commas"></span></td></tr>
             <tr><th>Biggest</th><td><span data-field="biggest_abs" data-format="commas"></span></td><td>(<span data-field="biggest_pct"></span>%)</td></tr>
@@ -566,20 +583,20 @@
           row.className = "contributors-row";
 
           const hostCell = document.createElement("td");
-          hostCell.className = "contributors-host";
+          hostCell.className = "host";
           hostCell.textContent = item.host;
           hostCell.title = item.host;
 
           const deltaCell = document.createElement("td");
-          deltaCell.className = "contributors-delta";
+          deltaCell.className = "shannon";
           if (item.change !== undefined && item.change !== null) {
             deltaCell.textContent = formatSignedFloat(item.change, 4);
           }
 
           const usersCell = document.createElement("td");
-          usersCell.className = "contributors-users";
+          usersCell.className = "users";
           if (item.user_change !== undefined && item.user_change !== null) {
-            usersCell.textContent = `${formatSignedInt(item.user_change)} users`;
+            usersCell.textContent = `${formatSignedInt(item.user_change)}`;
           }
 
           row.append(hostCell, deltaCell, usersCell);
