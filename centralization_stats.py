@@ -6,22 +6,32 @@ import json
 import math
 import sys
 
+def _sum_or_terms(terms, return_terms):
+    return terms if return_terms else sum(terms)
+
 # https://en.wikipedia.org/wiki/Herfindahl%E2%80%93Hirschman_index
-def calc_hhi(x):
+def calc_hhi(x, return_terms=False):
     total = sum(x)
-    hhi = sum([(a/total)**2 for a in x])
-    return hhi
+    terms = [(a / total) ** 2 for a in x]
+    return _sum_or_terms(terms, return_terms)
 
 # https://www.statology.org/shannon-diversity-index/
-def calc_shannon(x):
+def _shannon(x, return_terms=False):
     total = sum(x)
-    shannon = -sum([((a/total)*math.log(a/total,math.e)) for a in x])
-    return shannon
+    terms = [-(a / total) * math.log(a / total, math.e) for a in x]
+    return _sum_or_terms(terms, return_terms)
+
+def calc_shannon(x, return_terms=False):
+    return _shannon(x, return_terms=return_terms)
 
 #  https://statologos.com/indice-de-diversidad-de-los-simpson/
+def _simpson(x, return_terms=False):
+    terms = [a * (a - 1) for a in x]
+    return _sum_or_terms(terms, return_terms)
+
 def calc_simpson(x):
     total = sum(x)
-    simpson = 1 - sum([a*(a-1) for a in x]) / (total*(total-1))
+    simpson = 1 - _simpson(x) / (total * (total - 1))
     return simpson
 
 def calc_B(x,n):
