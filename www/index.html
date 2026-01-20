@@ -402,40 +402,22 @@
         },
     };
 
-    var gFedi = new JustGage({
-      id: "gageFedi",
-      value: data["fedi"]["HHI"],
-      defaults
-    });
-    var gAtmpsphere = new JustGage({
-      id: "gageAtmosphere",
-      value: data["at"]["HHI"],
-      defaults
-    });
-    var gGit = new JustGage({
-      id: "gageGit",
-      value: data["git"]["HHI"],
-      defaults
-    });
-    var gHosting = new JustGage({
-      id: "gageHosting",
-      value: data["hosting"]["HHI"],
-      defaults
-    });
-    var gEmail = new JustGage({
-      id: "gageEmail",
-      value: data["email"]["HHI"],
-      defaults
-    });
-    var gDNS = new JustGage({
-      id: "gageDNS",
-      value: data["dns"]["HHI"],
-      defaults
-    });
-    var gCert = new JustGage({
-      id: "gageCert",
-      value: data["cert"]["HHI"],
-      defaults
+    const gauges = [
+      { id: "gageFedi", section: "fedi" },
+      { id: "gageAtmosphere", section: "at" },
+      { id: "gageGit", section: "git" },
+      { id: "gageHosting", section: "hosting" },
+      { id: "gageEmail", section: "email" },
+      { id: "gageDNS", section: "dns" },
+      { id: "gageCert", section: "cert" }
+    ];
+
+    gauges.forEach(({ id, section }) => {
+      new JustGage({
+        id,
+        value: data[section].HHI,
+        defaults
+      });
     });
 
     function addCommas(num) {
