@@ -59,6 +59,48 @@ h5 {
   color: #a7a9ab;
 }
 
+.contributors-mini {
+  width: 230px;
+  margin: 0 auto;
+  margin-top: 6px;
+  font-size: 0.82em;
+  color: #a7a9ab;
+}
+
+.contributors-mini summary {
+  text-align: center;
+  font-size: 0.9em;
+  margin-bottom: 4px;
+}
+
+.contributors-row {
+  display: grid;
+  grid-template-columns: 1fr auto 18px;
+  align-items: center;
+  gap: 8px;
+  padding: 2px 0;
+}
+
+.contributors-icon {
+  width: 14px;
+  height: 14px;
+}
+
+.contributors-value {
+  text-align: left;
+  color: #f7f9fb;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.contributors-delta {
+  color: #909296;
+  font-size: 0.9em;
+  text-align: right;
+  white-space: nowrap;
+}
+
 div.rating {
   display: inline-block;
   text-align: center;
