@@ -59,7 +59,6 @@
       "gnusocial",
       "lipupini",
       "mobilizon",
-      "nodebb", # Reports activitypub support even when disabled.
       "tanukey",
       "truefans",
       "webfan",
