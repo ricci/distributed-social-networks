@@ -85,45 +85,45 @@
         </div>
       </details>
 
-      <div class="rating" id="fedi">
+      <div class="rating" id="fedi" data-section="fedi">
         <h3>The Fediverse</h3>
         <h5>Mastodon, Pixelfed, etc.</h5>
         <div id="gageFedi" class="gage"></div>
         <div class="shannon">
-          <div class="index">Shannon Index: <span id="fediShannon"></span></div>
+          <div class="index">Shannon Index: <span data-field="shannon"></span></div>
           <div style="display:none">
-          <div class="trend">One-week trend: <span id="fediShannonTrend"></span> (<span id="fediShannonTrendPct"></span>%)</div>
-          <div class="icon"><img id="fediShannonIcon"> <span id="fediShannonText"></span></div>
+          <div class="trend" data-trend="weekly_shannon">One-week trend: <span data-trend-value></span> (<span data-trend-pct></span>%)</div>
+          <div class="icon"><img data-trend-icon> <span data-trend-text></span></div>
           </div>
         </div>
         <table>
-            <tr><th>Servers</th><td><span id="fediServers"></span></td></tr>
-            <tr><th>Biggest</th><td><span id="fediBiggestAbs"></span></td><td>(<span id="fediBiggestPct"></span>%)</td></tr>
-            <tr><th>Rest</th><td><span id="fediRestAbs"></span></td><td>(<span id="fediRestPct"></span>%)</td></tr>
+            <tr><th>Servers</th><td><span data-field="servers" data-format="commas"></span></td></tr>
+            <tr><th>Biggest</th><td><span data-field="biggest_abs" data-format="commas"></span></td><td>(<span data-field="biggest_pct"></span>%)</td></tr>
+            <tr><th>Rest</th><td><span data-field="rest_abs" data-format="commas"></span></td><td>(<span data-field="rest_pct"></span>%)</td></tr>
         </table>
         <div class="data">
-           <a id="fediData">raw data</a> (<span id="fediUpdated"></span>)
+           <a data-link="dataFile">raw data</a> (<span data-field="lastUpdate"></span>)
         </div>
       </div>
 
-      <div class="rating" id="atmosphere">
+      <div class="rating" id="atmosphere" data-section="at">
         <h3>The Atmosphere</h3>
         <h5>Bluesky, Leaflet, etc.</h5>
         <div id="gageAtmosphere" class="gage"></div>
         <div class="shannon">
-          <div class="index">Shannon Index: <span id="atShannon"></span></div>
+          <div class="index">Shannon Index: <span data-field="shannon"></span></div>
           <div style="display:none">
-          <div class="trend">One-week trend: <span id="atShannonTrend"></span> (<span id="atShannonTrendPct"></span>%)</div>
-          <div class="icon"><img id="atShannonIcon"> <span id="atShannonText"></span></div>
+          <div class="trend" data-trend="weekly_shannon">One-week trend: <span data-trend-value></span> (<span data-trend-pct></span>%)</div>
+          <div class="icon"><img data-trend-icon> <span data-trend-text></span></div>
           </div>
         </div>
         <table>
-            <tr><th>PDSes</th><td><span id="atServers"></span></td></tr>
-            <tr><th>Biggest</th><td><span id="atBiggestAbs"></span></td><td>(<span id="atBiggestPct"></span>%)</td></tr>
-            <tr><th>Rest</th><td><span id="atRestAbs"></span></td><td>(<span id="atRestPct"></span>%)</td></tr>
+            <tr><th>PDSes</th><td><span data-field="servers" data-format="commas"></span></td></tr>
+            <tr><th>Biggest</th><td><span data-field="biggest_abs" data-format="commas"></span></td><td>(<span data-field="biggest_pct"></span>%)</td></tr>
+            <tr><th>Rest</th><td><span data-field="rest_abs" data-format="commas"></span></td><td>(<span data-field="rest_pct"></span>%)</td></tr>
         </table>
         <div class="data">
-            <a id="atData">raw data</a> (<span id="atUpdated"></span>)
+            <a data-link="dataFile">raw data</a> (<span data-field="lastUpdate"></span>)
         </div>
       </div> 
 
@@ -158,40 +158,40 @@
         </div>
       </details>
 
-      <div class="rating">
+      <div class="rating" data-section="hosting">
         <h3>Web Serving</h3>
         <h5>Cloudflare, AWS, etc.</h5>
         <div id="gageHosting" class="gage"></div>
         <div class="shannon">
-          <div class="index">Shannon Index: <span id="hostingShannon"></span></div>
+          <div class="index">Shannon Index: <span data-field="shannon"></span></div>
         </div>
         <div class="spacer"></div>
         <table>
-            <tr><th>Hosts</th><td><span id="hostingServers"></span></td></tr>
-            <tr><th>Biggest</th><td><span id="hostingBiggestAbs"></span></td><td>(<span id="hostingBiggestPct"></span>%)</td></tr>
-            <tr><th>Rest</th><td><span id="hostingRestAbs"></span></td><td>(<span id="hostingRestPct"></span>%)</td></tr>
+            <tr><th>Hosts</th><td><span data-field="servers" data-format="commas"></span></td></tr>
+            <tr><th>Biggest</th><td><span data-field="biggest_abs" data-format="commas"></span></td><td>(<span data-field="biggest_pct"></span>%)</td></tr>
+            <tr><th>Rest</th><td><span data-field="rest_abs" data-format="commas"></span></td><td>(<span data-field="rest_pct"></span>%)</td></tr>
         </table>
         <div class="data">
-            Data: <a href="https://iyp.iijlab.net/">IYP</a> (<span id="hostingUpdated"></span>)
+            Data: <a href="https://iyp.iijlab.net/">IYP</a> (<span data-field="lastUpdate"></span>)
         </div>
       </div>
 
-      <div class="rating">
+      <div class="rating" data-section="git">
         <h3>Public Git Forges</h3>
         <h5>Github, Gitlab, etc.</h5>
         <div id="gageGit" class="gage"></div>
         <div class="shannon">
-          <div class="index">Shannon Index: <span id="gitShannon"></span></div>
-          <div class="trend">One-week trend: <span id="gitShannonTrend"></span> (<span id="gitShannonTrendPct"></span>%)</div>
-          <div class="icon"><img id="gitShannonIcon"> <span id="gitShannonText"></span></div>
+          <div class="index">Shannon Index: <span data-field="shannon"></span></div>
+          <div class="trend" data-trend="weekly_shannon">One-week trend: <span data-trend-value></span> (<span data-trend-pct></span>%)</div>
+          <div class="icon"><img data-trend-icon> <span data-trend-text></span></div>
         </div>
         <table>
-            <tr><th>Forges</th><td><span id="gitServers"></span></td></tr>
-            <tr><th>Biggest</th><td><span id="gitBiggestAbs"></span></td><td>(<span id="gitBiggestPct"></span>%)</td></tr>
-            <tr><th>Rest</th><td><span id="gitRestAbs"></span></td><td>(<span id="gitRestPct"></span>%)</td></tr>
+            <tr><th>Forges</th><td><span data-field="servers" data-format="commas"></span></td></tr>
+            <tr><th>Biggest</th><td><span data-field="biggest_abs" data-format="commas"></span></td><td>(<span data-field="biggest_pct"></span>%)</td></tr>
+            <tr><th>Rest</th><td><span data-field="rest_abs" data-format="commas"></span></td><td>(<span data-field="rest_pct"></span>%)</td></tr>
         </table>
         <div class="data">
-            Data: <a href="https://archive.softwareheritage.org/">Software&nbsp;Heritage</a> (<span id="gitUpdated"></span>)
+            Data: <a href="https://archive.softwareheritage.org/">Software&nbsp;Heritage</a> (<span data-field="lastUpdate"></span>)
         </div>
       </div>
 
@@ -215,21 +215,21 @@
         </div>
       </details>
 
-      <div class="rating">
+      <div class="rating" data-section="email">
         <h3>Email Services</h3>
         <h5>Gmail, Outlook, etc.</h5>
         <div id="gageEmail" class="gage"></div>
         <div class="shannon">
-          <div class="index">Shannon Index: <span id="emailShannon"></span></div>
+          <div class="index">Shannon Index: <span data-field="shannon"></span></div>
         </div>
         <div class="spacer"></div>
         <table>
-            <tr><th>Services</th><td><span id="emailServers"></span></td></tr>
-            <tr><th>Biggest</th><td><span id="emailBiggestAbs"></span></td><td>(<span id="emailBiggestPct"></span>%)</td></tr>
-            <tr><th>Rest</th><td><span id="emailRestAbs"></span></td><td>(<span id="emailRestPct"></span>%)</td></tr>
+            <tr><th>Services</th><td><span data-field="servers" data-format="commas"></span></td></tr>
+            <tr><th>Biggest</th><td><span data-field="biggest_abs" data-format="commas"></span></td><td>(<span data-field="biggest_pct"></span>%)</td></tr>
+            <tr><th>Rest</th><td><span data-field="rest_abs" data-format="commas"></span></td><td>(<span data-field="rest_pct"></span>%)</td></tr>
         </table>
         <div class="data">
-            Data: <a href="https://github.com/ucsdsysnet/mx_inference">Liu&nbsp;et&nbsp;al.</a> (<span id="emailUpdated"></span>)
+            Data: <a href="https://github.com/ucsdsysnet/mx_inference">Liu&nbsp;et&nbsp;al.</a> (<span data-field="lastUpdate"></span>)
         </div>
       </div>
 
@@ -254,36 +254,36 @@
             </p>
         </div>
       </details>
-      <div class="rating">
+      <div class="rating" data-section="dns">
         <h3>DNS Hosting</h3>
         <h5>Cloudflare DNS, Amazon Route 53, etc.</h5>
         <div id="gageDNS" class="gage"></div>
         <div class="shannon">
-          <div class="index">Shannon Index: <span id="dnsShannon"></span></div>
+          <div class="index">Shannon Index: <span data-field="shannon"></span></div>
         </div>
         <table>
-            <tr><th>DNS Hosts</th><td><span id="dnsServers"></span></td></tr>
-            <tr><th>Biggest</th><td><span id="dnsBiggestAbs"></span></td><td>(<span id="dnsBiggestPct"></span>%)</td></tr>
-            <tr><th>Rest</th><td><span id="dnsRestAbs"></span></td><td>(<span id="dnsRestPct"></span>%)</td></tr>
+            <tr><th>DNS Hosts</th><td><span data-field="servers" data-format="commas"></span></td></tr>
+            <tr><th>Biggest</th><td><span data-field="biggest_abs" data-format="commas"></span></td><td>(<span data-field="biggest_pct"></span>%)</td></tr>
+            <tr><th>Rest</th><td><span data-field="rest_abs" data-format="commas"></span></td><td>(<span data-field="rest_pct"></span>%)</td></tr>
         </table>
         <div class="data">
-            Data: <a href="https://zenodo.org/records/15733582">Habib&nbsp;et&nbsp;al.</a> (<span id="dnsUpdated"></span>)
+            Data: <a href="https://zenodo.org/records/15733582">Habib&nbsp;et&nbsp;al.</a> (<span data-field="lastUpdate"></span>)
         </div>
       </div>
-      <div class="rating">
+      <div class="rating" data-section="cert">
         <h3>TLS Certificates</h3>
         <h5>Let's Encrypt, Digicert, etc.</h5>
         <div id="gageCert" class="gage"></div>
         <div class="shannon">
-          <div class="index">Shannon Index: <span id="certShannon"></span></div>
+          <div class="index">Shannon Index: <span data-field="shannon"></span></div>
         </div>
         <table>
-            <tr><th>CAs</th><td><span id="certServers"></span></td></tr>
-            <tr><th>Biggest</th><td><span id="certBiggestAbs"></span></td><td>(<span id="certBiggestPct"></span>%)</td></tr>
-            <tr><th>Rest</th><td><span id="certRestAbs"></span></td><td>(<span id="certRestPct"></span>%)</td></tr>
+            <tr><th>CAs</th><td><span data-field="servers" data-format="commas"></span></td></tr>
+            <tr><th>Biggest</th><td><span data-field="biggest_abs" data-format="commas"></span></td><td>(<span data-field="biggest_pct"></span>%)</td></tr>
+            <tr><th>Rest</th><td><span data-field="rest_abs" data-format="commas"></span></td><td>(<span data-field="rest_pct"></span>%)</td></tr>
         </table>
         <div class="data">
-            Data: <a href="https://zenodo.org/records/15733582">Habib&nbsp;et&nbsp;al.</a> (<span id="certUpdated"></span>)
+            Data: <a href="https://zenodo.org/records/15733582">Habib&nbsp;et&nbsp;al.</a> (<span data-field="lastUpdate"></span>)
         </div>
       </div>
 
@@ -468,84 +468,62 @@
         }
     }
 
-    document.getElementById("fediUpdated").textContent = data.fedi.lastUpdate; 
-    document.getElementById("atUpdated").textContent = data.at.lastUpdate; 
-    document.getElementById("gitUpdated").textContent = data.git.lastUpdate; 
-    document.getElementById("hostingUpdated").textContent = data.hosting.lastUpdate;
-    document.getElementById("emailUpdated").textContent = data.email.lastUpdate;
-    document.getElementById("dnsUpdated").textContent = data.dns.lastUpdate;
-    document.getElementById("certUpdated").textContent = data.cert.lastUpdate;
+    const formatters = {
+      commas: addCommas,
+      none: value => value
+    };
 
-    document.getElementById("fediData").href = data.fedi.dataFile;
-    document.getElementById("atData").href = data.at.dataFile;
+    function getSection(el) {
+      return el.dataset.section || el.closest('[data-section]')?.dataset.section;
+    }
 
-    document.getElementById("fediServers").textContent = addCommas(data.fedi.servers);
-    document.getElementById("atServers").textContent = addCommas(data.at.servers);
-    document.getElementById("gitServers").textContent = addCommas(data.git.servers);
-    document.getElementById("hostingServers").textContent = addCommas(data.hosting.servers);
-    document.getElementById("emailServers").textContent = addCommas(data.email.servers);
-    document.getElementById("dnsServers").textContent = addCommas(data.dns.servers);
-    document.getElementById("certServers").textContent = addCommas(data.cert.servers);
+    document.querySelectorAll('[data-field]').forEach(el => {
+      const section = getSection(el);
+      const field = el.dataset.field;
+      const format = el.dataset.format || "none";
+      const value = data?.[section]?.[field];
+      if (value === undefined || value === null) {
+        return;
+      }
+      const formatter = formatters[format] || formatters.none;
+      el.textContent = formatter(value);
+    });
 
-    document.getElementById("fediBiggestAbs").textContent = addCommas(data.fedi.biggest_abs);
-    document.getElementById("fediBiggestPct").textContent = data.fedi.biggest_pct;
-    document.getElementById("fediShannon").textContent = data.fedi.shannon;
-    document.getElementById("fediRestAbs").textContent = addCommas(data.fedi.rest_abs);
-    document.getElementById("fediRestPct").textContent = data.fedi.rest_pct;
+    document.querySelectorAll('[data-link]').forEach(el => {
+      const section = getSection(el);
+      const link = el.dataset.link;
+      const value = data?.[section]?.[link];
+      if (value === undefined || value === null) {
+        return;
+      }
+      el.href = value;
+    });
 
-    document.getElementById("atBiggestAbs").textContent = addCommas(data.at.biggest_abs);
-    document.getElementById("atBiggestPct").textContent = data.at.biggest_pct;
-    document.getElementById("atRestAbs").textContent = addCommas(data.at.rest_abs);
-    document.getElementById("atRestPct").textContent = data.at.rest_pct;
-    document.getElementById("atShannon").textContent = data.at.shannon;
-
-    document.getElementById("gitBiggestAbs").textContent = addCommas(data.git.biggest_abs);
-    document.getElementById("gitBiggestPct").textContent = data.git.biggest_pct;
-    document.getElementById("gitRestAbs").textContent = addCommas(data.git.rest_abs);
-    document.getElementById("gitRestPct").textContent = data.git.rest_pct;
-    document.getElementById("gitShannon").textContent = data.git.shannon;
-
-    document.getElementById("hostingBiggestAbs").textContent = addCommas(data.hosting.biggest_abs);
-    document.getElementById("hostingBiggestPct").textContent = data.hosting.biggest_pct;
-    document.getElementById("hostingRestAbs").textContent = addCommas(data.hosting.rest_abs);
-    document.getElementById("hostingRestPct").textContent = data.hosting.rest_pct;
-    document.getElementById("hostingShannon").textContent = data.hosting.shannon;
-
-    document.getElementById("emailBiggestAbs").textContent = addCommas(data.email.biggest_abs);
-    document.getElementById("emailBiggestPct").textContent = data.email.biggest_pct;
-    document.getElementById("emailRestAbs").textContent = addCommas(data.email.rest_abs);
-    document.getElementById("emailRestPct").textContent = data.email.rest_pct;
-    document.getElementById("emailShannon").textContent = data.email.shannon;
-
-    document.getElementById("dnsBiggestAbs").textContent = addCommas(data.dns.biggest_abs);
-    document.getElementById("dnsBiggestPct").textContent = data.dns.biggest_pct;
-    document.getElementById("dnsRestAbs").textContent = addCommas(data.dns.rest_abs);
-    document.getElementById("dnsRestPct").textContent = data.dns.rest_pct;
-    document.getElementById("dnsShannon").textContent = data.dns.shannon;
-
-    document.getElementById("certBiggestAbs").textContent = addCommas(data.cert.biggest_abs);
-    document.getElementById("certBiggestPct").textContent = data.cert.biggest_pct;
-    document.getElementById("certRestAbs").textContent = addCommas(data.cert.rest_abs);
-    document.getElementById("certRestPct").textContent = data.cert.rest_pct;
-    document.getElementById("certShannon").textContent = data.cert.shannon;
-
-    document.getElementById("fediShannonTrend").textContent = data.trends.fedi.weekly_shannon.toFixed(4);
-    const fediShannonTrendPct = data.trends.fedi.weekly_shannon * 100 / data.fedi.shannon;
-    document.getElementById("fediShannonTrendPct").textContent = formatSignedFloat(fediShannonTrendPct);
-    document.getElementById("fediShannonIcon").src = trend_icon(fediShannonTrendPct);
-    document.getElementById("fediShannonText").textContent = trend_text(fediShannonTrendPct);
-
-    document.getElementById("atShannonTrend").textContent = data.trends.at.weekly_shannon.toFixed(4);
-    const atShannonTrendPct = data.trends.at.weekly_shannon * 100 / data.at.shannon;
-    document.getElementById("atShannonTrendPct").textContent = formatSignedFloat(atShannonTrendPct);
-    document.getElementById("atShannonIcon").src = trend_icon(atShannonTrendPct);
-    document.getElementById("atShannonText").textContent = trend_text(atShannonTrendPct);
-
-    document.getElementById("gitShannonTrend").textContent = data.trends.git.weekly_shannon.toFixed(4);
-    const gitShannonTrendPct = data.trends.git.weekly_shannon * 100 / data.git.shannon;
-    document.getElementById("gitShannonTrendPct").textContent = formatSignedFloat(gitShannonTrendPct);
-    document.getElementById("gitShannonIcon").src = trend_icon(gitShannonTrendPct);
-    document.getElementById("gitShannonText").textContent = trend_text(gitShannonTrendPct);
+    document.querySelectorAll('[data-trend]').forEach(el => {
+      const section = getSection(el);
+      const trendKey = el.dataset.trend;
+      const trendValue = data?.trends?.[section]?.[trendKey];
+      if (trendValue === undefined || trendValue === null) {
+        return;
+      }
+      const trendPct = trendValue * 100 / data[section].shannon;
+      const valueEl = el.querySelector('[data-trend-value]');
+      const pctEl = el.querySelector('[data-trend-pct]');
+      const iconEl = el.closest('.shannon')?.querySelector('[data-trend-icon]');
+      const textEl = el.closest('.shannon')?.querySelector('[data-trend-text]');
+      if (valueEl) {
+        valueEl.textContent = trendValue.toFixed(4);
+      }
+      if (pctEl) {
+        pctEl.textContent = formatSignedFloat(trendPct);
+      }
+      if (iconEl) {
+        iconEl.src = trend_icon(trendPct);
+      }
+      if (textEl) {
+        textEl.textContent = trend_text(trendPct);
+      }
+    });
 
     document.querySelectorAll('.details-tabs').forEach(group => {
         group.addEventListener('toggle', e => {
