@@ -266,10 +266,10 @@ var data = {
       "weekly_shannon": -0.0107
     },
     "at": {
-      "weekly_shannon": -0.0009
+      "weekly_shannon": -0.0011
     },
     "git": {
-      "weekly_shannon": -0.0005
+      "weekly_shannon": -0.0004
     }
   }
 }
