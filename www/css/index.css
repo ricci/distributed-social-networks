@@ -81,7 +81,7 @@ h5 {
     padding-right: 0px;
 }
 
-.contributors-table th.users, td.users, th.shannon, td.users {
+.contributors-table th.users, .contributors-table td.users, .contributors-table th.shannon, .contributors-table td.shannon {
     text-align: right;
     padding-left: 0px;
     padding-right: 0px;
