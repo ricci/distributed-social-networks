@@ -111,36 +111,40 @@ def update_period_trend(data, key, period, current_csv, previous_csv):
 
     current_terms = shannon_terms_by_host(current_csv)
     previous_terms = shannon_terms_by_host(previous_csv)
+    current_counts = user_counts_by_host(current_csv)
+    previous_counts = user_counts_by_host(previous_csv)
     all_hosts = set(current_terms) | set(previous_terms)
-    best_pos_host = None
-    best_pos_diff = 0.0
-    best_neg_host = None
-    best_neg_diff = 0.0
+    diffs = []
     for host in sorted(all_hosts):
         term_diff = current_terms.get(host, 0.0) - previous_terms.get(host, 0.0)
-        if term_diff > 0 and (best_pos_host is None or term_diff > best_pos_diff):
-            best_pos_host = host
-            best_pos_diff = term_diff
-        if term_diff < 0 and (best_neg_host is None or term_diff < best_neg_diff):
-            best_neg_host = host
-            best_neg_diff = term_diff
+        user_diff = current_counts.get(host, 0) - previous_counts.get(host, 0)
+        diffs.append((host, term_diff, user_diff))
+    top_increase = [
+        {
+            "host": host,
+            "change": round(term_diff, 6),
+            "user_change": user_diff,
+        }
+        for host, term_diff, user_diff in sorted(diffs, key=lambda item: item[1], reverse=True)
+        if term_diff > 0
+    ][:10]
+    top_decrease = [
+        {
+            "host": host,
+            "change": round(term_diff, 6),
+            "user_change": user_diff,
+        }
+        for host, term_diff, user_diff in sorted(diffs, key=lambda item: item[1])
+        if term_diff < 0
+    ][:10]
     data.setdefault("trends", {}).setdefault(key, {}).setdefault(period, {})["shannon_contrib"] = {
-        "increase": {
-            "host": best_pos_host,
-            "change": round(best_pos_diff, 6),
-        },
-        "decrease": {
-            "host": best_neg_host,
-            "change": round(best_neg_diff, 6),
-        },
+        "increase": top_increase,
+        "decrease": top_decrease,
     }
 
 
 def shannon_terms_by_host(csv_path):
-    rows = load_csv_rows(csv_path)
-    rows = filter_rows(rows)
-    extracted = [extract_domain_counts(row) for row in rows]
-    combined = combine_rows(extracted)
+    combined = combined_counts(csv_path)
     if not combined:
         return {}
     total = sum(item["count"] for item in combined)
@@ -149,6 +153,18 @@ def shannon_terms_by_host(csv_path):
     counts = [item["count"] for item in combined]
     terms = _shannon(counts, return_terms=True)
     return {item["domain"]: term for item, term in zip(combined, terms)}
+
+
+def user_counts_by_host(csv_path):
+    combined = combined_counts(csv_path)
+    return {item["domain"]: item["count"] for item in combined}
+
+
+def combined_counts(csv_path):
+    rows = load_csv_rows(csv_path)
+    rows = filter_rows(rows)
+    extracted = [extract_domain_counts(row) for row in rows]
+    return combine_rows(extracted)
 
 
 def load_csv_rows(csv_path):
