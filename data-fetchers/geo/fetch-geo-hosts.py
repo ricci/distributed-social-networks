@@ -341,6 +341,7 @@ def main() -> int:
     args = parser.parse_args()
 
     csv_path, hosts = load_hosts(args.source)
+    updated_timestamp = csv_path.stem
     if args.limit is not None:
         hosts = hosts[: max(args.limit, 0)]
 
@@ -500,6 +501,7 @@ def main() -> int:
             "color": style.get("color"),
             "icon": style.get("icon"),
             "type": style.get("type"),
+            "updated": updated_timestamp,
         }
 
         if args.source == "fedi-mau":
