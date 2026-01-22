@@ -4,3 +4,4 @@ doitall.sh
 private/
 __pycache__/
 *.py[cod]
+www/map
