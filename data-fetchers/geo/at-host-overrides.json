@@ -1,0 +1,32 @@
+{
+  "blacksky.app": {
+    "name": "Blacksky",
+    "color": "#000000",
+    "icon": "data-static/icons/blacksky.png",
+    "type": "Blacksky"
+  },
+  "northsky.social": {
+    "name": "Northsky",
+    "color": "#3FFFA8",
+    "icon": "data-static/icons/northsky.png",
+    "type": "northsky"
+  },
+  "tngl.sh": {
+    "name": "Tangled",
+    "color": "#FFFFFF",
+    "icon": "data-static/icons/tangled.png",
+    "type": "tangled"
+  },
+  "atproto.brid.gy": {
+    "name": "Bridgy",
+    "color": "#FFFFFF",
+    "icon": "data-static/icons/bridgy.png",
+    "type": "bridgy-fed"
+  },
+  "at.app.wafrn.net": {
+    "name": "Wafrn",
+    "color": "#28B8F8",
+    "icon": "data-static/icons/wafrn.png",
+    "type": "wafrn"
+  }
+}

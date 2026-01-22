@@ -1,0 +1,20 @@
+{
+  "mastodon.social": {
+    "city": "Falkenstein",
+    "country": "DE",
+    "lat": 50.4777,
+    "lon": 12.3649,
+    "network": "Hetzner Online GmbH",
+    "cdn": false,
+    "anycast": false
+  },
+  "mastodon.online": {
+    "city": "Falkenstein",
+    "country": "DE",
+    "lat": 50.4777,
+    "lon": 12.3649,
+    "network": "Hetzner Online GmbH",
+    "cdn": false,
+    "anycast": false
+  }
+}
