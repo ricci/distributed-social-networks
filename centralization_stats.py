@@ -84,7 +84,7 @@ def get_usercount(row):
 
 # Different CSVs use different columns for the hostname
 def get_domain(row):
-    for key in ("domain", "hostname","instance","name","org_id","e.id","o.name","a.asn","asn", "provider"):
+    for key in ("domain", "hostname","instance","name","org_id","e.id","o.name","a.asn","asn", "provider", "verifier"):
         if key in row:
             return row.get(key, "")
     return None

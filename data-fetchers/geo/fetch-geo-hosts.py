@@ -3,10 +3,12 @@
 import argparse
 import asyncio
 import csv
+import ipaddress
 import json
 import os
 import socket
 import tarfile
+import urllib.request
 from pathlib import Path
 
 try:
@@ -19,6 +21,7 @@ except ImportError as exc:
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 DATA_DIR = REPO_ROOT / "data"
+GEO_DIR = DATA_DIR / "geo"
 ICON_DIR = Path("data-static") / "icons"
 
 AT_BSKY_STYLE = {
@@ -202,7 +205,150 @@ def extract_lat_lon(details) -> tuple[float | None, float | None]:
         return None, None
 
 
-def is_cdn(details) -> bool:
+ALL_CDN_ORG_MARKERS = [
+    "akamai",
+    "akamaiedge",
+    "akamaitechnologies",
+    "cloudflare",
+    "edgesuite",
+    "fastly",
+]
+
+
+def fetch_url_text(url: str) -> str:
+    request = urllib.request.Request(
+        url,
+        headers={"User-Agent": "are-we-decentralized-yet/1.0"},
+    )
+    with urllib.request.urlopen(request, timeout=30) as response:
+        return response.read().decode("utf-8")
+
+
+def fetch_url_json(url: str) -> dict:
+    return json.loads(fetch_url_text(url))
+
+
+def ensure_cdn_ip_files(refresh: bool) -> dict[str, Path]:
+    cdn_files = {
+        "cloudflare": GEO_DIR / "cloudflare-ips.txt",
+        "aws": GEO_DIR / "aws-ip-ranges.json",
+        "gcp": GEO_DIR / "gcp-ip-ranges.json",
+        "fastly": GEO_DIR / "fastly-ip-list.json",
+    }
+    if not refresh and all(path.exists() for path in cdn_files.values()):
+        return cdn_files
+
+    GEO_DIR.mkdir(parents=True, exist_ok=True)
+
+    if refresh or not cdn_files["cloudflare"].exists():
+        ipv4 = fetch_url_text("https://www.cloudflare.com/ips-v4/")
+        ipv6 = fetch_url_text("https://www.cloudflare.com/ips-v6/")
+        combined = "\n".join(
+            line.strip()
+            for line in (ipv4 + "\n" + ipv6).splitlines()
+            if line.strip()
+        )
+        cdn_files["cloudflare"].write_text(combined + "\n", encoding="utf-8")
+
+    if refresh or not cdn_files["aws"].exists():
+        aws_data = fetch_url_json(
+            "https://ip-ranges.amazonaws.com/ip-ranges.json"
+        )
+        cdn_files["aws"].write_text(
+            json.dumps(aws_data, ensure_ascii=True, indent=2), encoding="utf-8"
+        )
+
+    if refresh or not cdn_files["gcp"].exists():
+        gcp_data = fetch_url_json(
+            "https://www.gstatic.com/ipranges/cloud.json"
+        )
+        cdn_files["gcp"].write_text(
+            json.dumps(gcp_data, ensure_ascii=True, indent=2), encoding="utf-8"
+        )
+
+    if refresh or not cdn_files["fastly"].exists():
+        fastly_data = fetch_url_json("https://api.fastly.com/public-ip-list")
+        cdn_files["fastly"].write_text(
+            json.dumps(fastly_data, ensure_ascii=True, indent=2), encoding="utf-8"
+        )
+
+    return cdn_files
+
+
+def load_cloudflare_prefixes(path: Path) -> list[str]:
+    if not path.exists():
+        return []
+    prefixes = []
+    for line in path.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if line:
+            prefixes.append(line)
+    return prefixes
+
+
+def load_aws_cloudfront_prefixes(path: Path) -> list[str]:
+    if not path.exists():
+        return []
+    data = json.loads(path.read_text(encoding="utf-8"))
+    prefixes = []
+    for entry in data.get("prefixes", []):
+        if entry.get("service") == "CLOUDFRONT":
+            prefix = entry.get("ip_prefix")
+            if prefix:
+                prefixes.append(prefix)
+    for entry in data.get("ipv6_prefixes", []):
+        if entry.get("service") == "CLOUDFRONT":
+            prefix = entry.get("ipv6_prefix")
+            if prefix:
+                prefixes.append(prefix)
+    return prefixes
+
+
+def load_gcp_cdn_prefixes(path: Path) -> list[str]:
+    if not path.exists():
+        return []
+    data = json.loads(path.read_text(encoding="utf-8"))
+    prefixes = []
+    for entry in data.get("prefixes", []):
+        if entry.get("service") != "Google Cloud CDN":
+            continue
+        prefix = entry.get("ipv4Prefix") or entry.get("ipv6Prefix")
+        if prefix:
+            prefixes.append(prefix)
+    return prefixes
+
+
+def load_fastly_prefixes(path: Path) -> list[str]:
+    if not path.exists():
+        return []
+    data = json.loads(path.read_text(encoding="utf-8"))
+    prefixes = []
+    for key in ("addresses", "ipv6_addresses"):
+        for entry in data.get(key, []):
+            if entry:
+                prefixes.append(entry)
+    return prefixes
+
+
+def build_cdn_networks(refresh: bool) -> list[ipaddress._BaseNetwork]:
+    cdn_files = ensure_cdn_ip_files(refresh)
+    prefix_lists = [
+        load_cloudflare_prefixes(cdn_files["cloudflare"]),
+        load_aws_cloudfront_prefixes(cdn_files["aws"]),
+        load_gcp_cdn_prefixes(cdn_files["gcp"]),
+        load_fastly_prefixes(cdn_files["fastly"]),
+    ]
+    networks = []
+    for prefixes in prefix_lists:
+        for prefix in prefixes:
+            try:
+                networks.append(ipaddress.ip_network(prefix, strict=False))
+            except ValueError:
+                continue
+    return networks
+
+
+def is_cdn(details, ip: str | None, cdn_networks: list[ipaddress._BaseNetwork]) -> bool:
     org = get_detail_field(details, "org")
     asn = get_detail_field(details, "asn")
     asn_domain = None
@@ -221,23 +367,18 @@ def is_cdn(details) -> bool:
         ]
         if s
     ]
-    cdn_markers = [
-        "akamai",
-        "akamaiedge",
-        "akamaitechnologies",
-        "amazonaws",
-        "cdn",
-        "cloudflare",
-        "cloudfront",
-        "edgesuite",
-        "fastly",
-        "gcore",
-        "googleusercontent",
-        "google",
-        "stackpath",
-        "stackpathdns",
-    ]
-    return any(any(marker in s for marker in cdn_markers) for s in haystacks)
+    if any(
+        any(marker in s for marker in ALL_CDN_ORG_MARKERS) for s in haystacks
+    ):
+        return True
+
+    if not ip:
+        return False
+    try:
+        ip_value = ipaddress.ip_address(ip)
+    except ValueError:
+        return False
+    return any(ip_value in network for network in cdn_networks)
 
 
 async def resolve_hostnames(
@@ -338,6 +479,11 @@ def main() -> int:
         default=str(DATA_DIR / "cache/dns-cache.json"),
         help="Path to DNS cache JSON (default: data/cache/dns-cache.json)",
     )
+    parser.add_argument(
+        "--refresh-cdn-ips",
+        action="store_true",
+        help="Refetch CDN IP range data even if cached files exist",
+    )
     args = parser.parse_args()
 
     csv_path, hosts = load_hosts(args.source)
@@ -370,6 +516,7 @@ def main() -> int:
     cache = load_cache(cache_path)
     dns_cache_path = Path(args.dns_cache)
     dns_cache = load_cache(dns_cache_path)
+    cdn_networks = build_cdn_networks(args.refresh_cdn_ips)
 
     hostnames = [entry["hostname"] for entry in hosts]
     details_by_ip: dict[str, object] = {}
@@ -496,7 +643,7 @@ def main() -> int:
             "lat": lat,
             "lon": lon,
             "network": extract_network(details),
-            "cdn": is_cdn(details),
+            "cdn": is_cdn(details, ip, cdn_networks),
             "anycast": bool(get_detail_field(details, "anycast")),
             "color": style.get("color"),
             "icon": style.get("icon"),

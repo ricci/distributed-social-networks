@@ -180,11 +180,13 @@ def main():
     fedi_csv = find_newest_file(REPO_ROOT / "data" / "fedi-mau")
     at_csv = find_newest_file(REPO_ROOT / "data" / "at-mau")
     git_csv = find_newest_file(REPO_ROOT / "data" / "git")
+    bsky_verifiers_csv = find_newest_file(REPO_ROOT / "data" / "bsky-verifiers")
 
     fedi_dt = parse_timestamp_from_name(fedi_csv.name)
     at_dt = parse_timestamp_from_name(at_csv.name)
     git_dt = parse_timestamp_from_name(git_csv.name)
-    if fedi_dt is None or at_dt is None or git_dt is None:
+    bsky_verifiers_dt = parse_timestamp_from_name(bsky_verifiers_csv.name)
+    if fedi_dt is None or at_dt is None or git_dt is None or bsky_verifiers_dt is None:
         raise RuntimeError("Unable to parse timestamps for latest files")
 
     update_network(
@@ -207,6 +209,13 @@ def main():
         git_csv,
         git_dt.strftime("%m-%d-%Y"),
         data_file=str(git_csv.relative_to(REPO_ROOT)),
+    )
+    update_network(
+        data,
+        "bsky_verifiers",
+        bsky_verifiers_csv,
+        bsky_verifiers_dt.strftime("%m-%d-%Y"),
+        data_file=str(bsky_verifiers_csv.relative_to(REPO_ROOT)),
     )
 
     week_target = datetime.now(timezone.utc) - timedelta(days=7)
