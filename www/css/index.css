@@ -188,6 +188,11 @@ div.data {
   color: #909296;
 }
 
+div.map-link {
+  margin: 3px;
+  text-align: center;
+}
+
 details summary {
   color: #909296;
   margin-bottom: 5px;
