@@ -160,6 +160,80 @@
  
     </div>
 
+    <div class="container">
+      <h2>Fediverse Software</h2>
+
+      <details class="help" id="fedi-software-details">
+        <summary>What does this measure?</summary>
+        <div>
+            <p>
+                Fediverse servers interact using the <a href="https://www.w3.org/TR/activitypub/">ActivityPub</a> protocol,
+                meaning that many different types of software can coexist and interact on the network. Popular examples
+                include <a href="https://joinmastodon.org/">Mastodon</a>, <a href="https://pixelfed.org/">Pixelfed</a>,
+                <a href="https://misskey-hub.net/">Misskey</a>, <a href="https://pleroma.social/">Pleroma</a>,
+                <a href="https://join-lemmy.org/">Lemmy</a>, <a href="https://gotosocial.org/">GoToSocial</a>, and many more.
+            </p>
+            <p>
+                This section measures how active users are distributed across servers running various software suites.
+            </p>
+        </div>
+      </details>
+
+      <div class="rating" data-section="fedi_software">
+        <h3>Fediverse Software</h3>
+        <h5>Mastodon, Misskey, etc.</h5>
+        <div id="gageFediSoftware" class="gage"></div>
+        <div class="shannon" data-trend="weekly_shannon">
+          <div class="index">Shannon Index: <span data-field="shannon"></span></div>
+        </div>
+        <table>
+            <tr><th>Software</th><td><span data-field="servers" data-format="commas"></span></td></tr>
+            <tr><th>Biggest</th><td><span data-field="biggest_abs" data-format="commas"></span></td><td>(<span data-field="biggest_pct"></span>%)</td></tr>
+            <tr><th>Rest</th><td><span data-field="rest_abs" data-format="commas"></span></td><td>(<span data-field="rest_pct"></span>%)</td></tr>
+        </table>
+        <div class="data">
+           <a data-link="dataFile" data-link-template="csv-viewer.html?csv={value}">raw data</a> (<span data-field="lastUpdate"></span>)
+        </div>
+      </div>
+
+      <div class="insert-metrics-help"></div>
+    </div>
+
+    <div class="container">
+      <h2>Bluesky Trusted Verifiers</h2>
+
+      <details class="help" id="bsky-verifiers-details">
+        <summary>What does this measure?</summary>
+        <div>
+            <p>
+                Bluesky has a <a href="https://bsky.social/about/blog/04-21-2025-verification">Trusted Verifier program</a> in which
+                parties other than Bluesky itself are able to verify accounts (give them a "blue checkmark"). This section
+                measures the distribution of accounts verified by each verifier.
+            </p>
+        </div>
+      </details>
+
+      <div class="rating" data-section="bsky_verifiers">
+        <h3>Trusted Verifiers</h3>
+        <h5><a href="https://bsky.app/profile/bsky.app">@bsky.app</a>,
+            <a href="https://bsky.app/profile/theathletic.com">@theathletic.com</a>, etc.</h5>
+        <div id="gageBskyVerifiers" class="gage"></div>
+        <div class="shannon">
+          <div class="index">Shannon Index: <span data-field="shannon"></span></div>
+        </div>
+        <table>
+            <tr><th>Verifiers</th><td><span data-field="servers" data-format="commas"></span></td></tr>
+            <tr><th>Biggest</th><td><span data-field="biggest_abs" data-format="commas"></span></td><td>(<span data-field="biggest_pct"></span>%)</td></tr>
+            <tr><th>Rest</th><td><span data-field="rest_abs" data-format="commas"></span></td><td>(<span data-field="rest_pct"></span>%)</td></tr>
+        </table>
+        <div class="data">
+           Data: <a href="https://bskycheck.com/stats.php">bskycheck</a> (<span data-field="lastUpdate"></span>)
+        </div>
+      </div>
+
+      <div class="insert-metrics-help"></div>
+    </div>
+
 
     <div class="container">
       <h2>Hosting Services</h2>
@@ -450,6 +524,8 @@
     const gauges = [
       { id: "gageFedi", section: "fedi" },
       { id: "gageAtmosphere", section: "at" },
+      { id: "gageBskyVerifiers", section: "bsky_verifiers" },
+      { id: "gageFediSoftware", section: "fedi_software" },
       { id: "gageGit", section: "git" },
       { id: "gageHosting", section: "hosting" },
       { id: "gageEmail", section: "email" },

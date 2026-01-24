@@ -193,6 +193,10 @@ details summary {
   margin-bottom: 5px;
 }
 
+.insert-metrics-help details:first-child {
+  margin-top: 15px;
+}
+
 .important {
     font-weight: bold;
     color: #cc5555
