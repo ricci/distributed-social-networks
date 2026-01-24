@@ -178,15 +178,23 @@ def main():
     data = load_data_js(DATA_JS_PATH)
 
     fedi_csv = find_newest_file(REPO_ROOT / "data" / "fedi-mau")
+    fedi_software_csv = find_newest_file(REPO_ROOT / "data" / "fedi-software")
     at_csv = find_newest_file(REPO_ROOT / "data" / "at-mau")
     git_csv = find_newest_file(REPO_ROOT / "data" / "git")
     bsky_verifiers_csv = find_newest_file(REPO_ROOT / "data" / "bsky-verifiers")
 
     fedi_dt = parse_timestamp_from_name(fedi_csv.name)
+    fedi_software_dt = parse_timestamp_from_name(fedi_software_csv.name)
     at_dt = parse_timestamp_from_name(at_csv.name)
     git_dt = parse_timestamp_from_name(git_csv.name)
     bsky_verifiers_dt = parse_timestamp_from_name(bsky_verifiers_csv.name)
-    if fedi_dt is None or at_dt is None or git_dt is None or bsky_verifiers_dt is None:
+    if (
+        fedi_dt is None
+        or fedi_software_dt is None
+        or at_dt is None
+        or git_dt is None
+        or bsky_verifiers_dt is None
+    ):
         raise RuntimeError("Unable to parse timestamps for latest files")
 
     update_network(
@@ -195,6 +203,13 @@ def main():
         fedi_csv,
         fedi_dt.strftime("%m-%d-%Y"),
         data_file=str(fedi_csv.relative_to(REPO_ROOT)),
+    )
+    update_network(
+        data,
+        "fedi_software",
+        fedi_software_csv,
+        fedi_software_dt.strftime("%m-%d-%Y"),
+        data_file=str(fedi_software_csv.relative_to(REPO_ROOT)),
     )
     update_network(
         data,
@@ -229,6 +244,13 @@ def main():
     )
     update_period_trend(
         data,
+        "fedi_software",
+        "weekly",
+        fedi_software_csv,
+        find_closest_to(REPO_ROOT / "data" / "fedi-software", week_target),
+    )
+    update_period_trend(
+        data,
         "at",
         "weekly",
         at_csv,
@@ -247,6 +269,13 @@ def main():
         "monthly",
         fedi_csv,
         find_closest_to(REPO_ROOT / "data" / "fedi-mau", month_target),
+    )
+    update_period_trend(
+        data,
+        "fedi_software",
+        "monthly",
+        fedi_software_csv,
+        find_closest_to(REPO_ROOT / "data" / "fedi-software", month_target),
     )
     update_period_trend(
         data,
