@@ -4,9 +4,9 @@ set -e
 
 out_dir="data/at-mau"
 
-set -- data/*-relay.json
-if [ "$1" = "data/*-relay.json" ]; then
-  echo "No *-relay.json files found in data/." >&2
+set -- data/at-mau-watcher-snapshots/*.json
+if [ "$1" = "data/at-mau-watcher-snapshots/*.json" ]; then
+  echo "No .json files found in data/at-mau-watcher-snapshots/." >&2
   exit 1
 fi
 
