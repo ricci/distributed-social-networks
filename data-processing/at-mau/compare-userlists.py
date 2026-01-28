@@ -17,7 +17,7 @@ def parse_args():
     parser.add_argument("file_b", help="Second snapshot JSON file")
     parser.add_argument(
         "--days",
-        type=int,
+        type=float,
         default=30,
         help="Lookback window in days for 'active' accounts (default: 30)",
     )
@@ -87,6 +87,17 @@ gaps_by_file = {}
 for label, path, times in (("A", file_a, A_times), ("B", file_b, B_times)):
     gaps = find_gaps(times, min_gap)
     gaps_by_file[path] = gaps
+
+if A_times and B_times:
+    A_end = A_times[-1]
+    B_end = B_times[-1]
+    if A_end < B_end:
+        gaps_by_file[file_a].append((A_end, B_end, B_end - A_end))
+    elif B_end < A_end:
+        gaps_by_file[file_b].append((B_end, A_end, A_end - B_end))
+
+for path in (file_a, file_b):
+    gaps = gaps_by_file.get(path, [])
     print(f"GAPS in {path}")
     if not gaps:
         print("  (none)")
