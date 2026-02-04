@@ -265,6 +265,13 @@ def main():
     )
     update_period_trend(
         data,
+        "bsky_verifiers",
+        "weekly",
+        bsky_verifiers_csv,
+        find_closest_to(REPO_ROOT / "data" / "bsky-verifiers", week_target),
+    )
+    update_period_trend(
+        data,
         "fedi",
         "monthly",
         fedi_csv,
@@ -290,6 +297,13 @@ def main():
         "monthly",
         git_csv,
         find_closest_to(REPO_ROOT / "data" / "git", month_target),
+    )
+    update_period_trend(
+        data,
+        "bsky_verifiers",
+        "monthly",
+        bsky_verifiers_csv,
+        find_closest_to(REPO_ROOT / "data" / "bsky-verifiers", month_target),
     )
 
     write_data_js(DATA_JS_PATH, data)

@@ -1,15 +1,15 @@
 var data = {
   "fedi": {
-    "lastUpdate": "01-24-2026",
-    "dataFile": "data/fedi-mau/2026-01-24T05:54:41Z.csv",
-    "HHI": 863,
-    "shannon": 4.6557,
-    "simpson": 0.9136,
-    "servers": 28375,
-    "biggest_abs": 307669,
-    "biggest_pct": 26.59,
-    "rest_abs": 849203,
-    "rest_pct": 73.41,
+    "lastUpdate": "02-04-2026",
+    "dataFile": "data/fedi-mau/2026-02-04T07:01:26Z.csv",
+    "HHI": 871,
+    "shannon": 4.6772,
+    "simpson": 0.9128,
+    "servers": 28248,
+    "biggest_abs": 321904,
+    "biggest_pct": 27.21,
+    "rest_abs": 861295,
+    "rest_pct": 72.79,
     "b_vals": [
       [
         25,
@@ -17,37 +17,37 @@ var data = {
       ],
       [
         50,
-        8
+        9
       ],
       [
         75,
-        77
+        78
       ],
       [
         90,
-        440
+        428
       ],
       [
         99,
-        16807
+        16417
       ],
       [
         99.5,
-        22591
+        22333
       ]
     ]
   },
   "at": {
-    "lastUpdate": "01-24-2026",
-    "dataFile": "data/at-mau/2026-01-24T05:54:02Z.csv",
-    "HHI": 9803,
-    "shannon": 0.0764,
-    "simpson": 0.0196,
-    "servers": 1658,
-    "biggest_abs": 5837593,
-    "biggest_pct": 99.01,
-    "rest_abs": 58202,
-    "rest_pct": 0.99,
+    "lastUpdate": "02-04-2026",
+    "dataFile": "data/at-mau/2026-02-04T07:00:27Z.csv",
+    "HHI": 9794,
+    "shannon": 0.0787,
+    "simpson": 0.0206,
+    "servers": 1771,
+    "biggest_abs": 5767305,
+    "biggest_pct": 98.97,
+    "rest_abs": 60296,
+    "rest_pct": 1.03,
     "b_vals": [
       [
         25,
@@ -67,7 +67,7 @@ var data = {
       ],
       [
         99,
-        1
+        2
       ],
       [
         99.5,
@@ -76,15 +76,15 @@ var data = {
     ]
   },
   "git": {
-    "lastUpdate": "01-23-2026",
-    "HHI": 9368,
-    "shannon": 0.1954,
-    "simpson": 0.0631,
-    "servers": 1578,
-    "biggest_abs": 303214156,
-    "biggest_pct": 96.77,
-    "rest_abs": 10115096,
-    "rest_pct": 3.23,
+    "lastUpdate": "02-04-2026",
+    "HHI": 9371,
+    "shannon": 0.1947,
+    "simpson": 0.0629,
+    "servers": 1579,
+    "biggest_abs": 304742802,
+    "biggest_pct": 96.79,
+    "rest_abs": 10121700,
+    "rest_pct": 3.21,
     "b_vals": [
       [
         25,
@@ -111,7 +111,7 @@ var data = {
         4
       ]
     ],
-    "dataFile": "data/git/2026-01-23T22:53:35__sh-fromhtml.csv"
+    "dataFile": "data/git/2026-02-04T00:00:00__sh-fromhtml.csv"
   },
   "hosting": {
     "lastUpdate": "10-31-2025",
@@ -264,219 +264,219 @@ var data = {
   "trends": {
     "fedi": {
       "weekly": {
-        "shannon": -0.0264,
+        "shannon": 0.0403,
         "shannon_contrib": {
           "increase": [
             {
-              "host": "theforkiverse.com",
-              "change": 0.009682,
-              "user_change": 2916
+              "host": "theden.network",
+              "change": 0.03834,
+              "user_change": 9377
             },
             {
-              "host": "pixelfed.au",
-              "change": 0.006282,
-              "user_change": 1255
+              "host": "ak.z.org",
+              "change": 0.012805,
+              "user_change": 2452
             },
             {
-              "host": "pixelfed.social",
-              "change": 0.004089,
-              "user_change": 5037
+              "host": "pf.z.org",
+              "change": 0.012801,
+              "user_change": 2451
             },
             {
-              "host": "pixelfed.tokyo",
-              "change": 0.001983,
-              "user_change": 410
+              "host": "loops.video",
+              "change": 0.011873,
+              "user_change": 3206
             },
             {
-              "host": "mastodon.social",
-              "change": 0.001603,
-              "user_change": 11881
+              "host": "piefed.social",
+              "change": 0.00434,
+              "user_change": 920
             },
             {
-              "host": "tingling.machinerunning.io",
-              "change": 0.001597,
-              "user_change": 215
+              "host": "alim.ie",
+              "change": 0.004107,
+              "user_change": 647
             },
             {
-              "host": "sociale.network",
-              "change": 0.001537,
-              "user_change": 206
+              "host": "piefed.ca",
+              "change": 0.002958,
+              "user_change": 488
             },
             {
-              "host": "phijkchu.com",
-              "change": 0.001345,
-              "user_change": 602
-            },
-            {
-              "host": "garr.tv",
-              "change": 0.001133,
-              "user_change": 162
+              "host": "troet.cafe",
+              "change": 0.002588,
+              "user_change": 750
             },
             {
               "host": "social.vivaldi.net",
-              "change": 0.001124,
-              "user_change": 477
+              "change": 0.001911,
+              "user_change": 668
+            },
+            {
+              "host": "hkust.social",
+              "change": 0.001562,
+              "user_change": 269
             }
           ],
           "decrease": [
             {
-              "host": "troet.cafe",
-              "change": -0.010821,
-              "user_change": -2706
+              "host": "pixelfed.social",
+              "change": -0.027836,
+              "user_change": -19453
+            },
+            {
+              "host": "lgbt.earth",
+              "change": -0.00595,
+              "user_change": -1000
+            },
+            {
+              "host": "baltic.social",
+              "change": -0.003887,
+              "user_change": -602
             },
             {
               "host": "gram.social",
-              "change": -0.008367,
-              "user_change": -2405
+              "change": -0.002838,
+              "user_change": -748
             },
             {
-              "host": "fed.brid.gy",
-              "change": -0.002019,
-              "user_change": 373
-            },
-            {
-              "host": "mostr.pub",
-              "change": -0.0011,
-              "user_change": 379
-            },
-            {
-              "host": "fedibird.com",
-              "change": -0.001058,
-              "user_change": -138
-            },
-            {
-              "host": "pix.netfreaks.fr",
-              "change": -0.00098,
-              "user_change": -148
+              "host": "pixelfed.uno",
+              "change": -0.00266,
+              "user_change": -676
             },
             {
               "host": "thu.closed.social",
-              "change": -0.00096,
-              "user_change": -163
+              "change": -0.002243,
+              "user_change": -418
             },
             {
-              "host": "mapstodon.space",
-              "change": -0.000806,
+              "host": "peertube-na.edifice.io",
+              "change": -0.001143,
+              "user_change": -149
+            },
+            {
+              "host": "fed.brid.gy",
+              "change": -0.001014,
+              "user_change": 294
+            },
+            {
+              "host": "arree.bzh",
+              "change": -0.000839,
               "user_change": -122
             },
             {
-              "host": "loforo.com",
-              "change": -0.000694,
-              "user_change": 48
-            },
-            {
-              "host": "m.cmx.im",
-              "change": -0.000635,
-              "user_change": -43
+              "host": "lemmy.eco.br",
+              "change": -0.000837,
+              "user_change": -105
             }
           ]
         }
       },
       "monthly": {
-        "shannon": -0.0307,
+        "shannon": -0.0092,
         "shannon_contrib": {
           "increase": [
             {
+              "host": "theden.network",
+              "change": 0.03834,
+              "user_change": 9377
+            },
+            {
               "host": "theforkiverse.com",
-              "change": 0.0189,
-              "user_change": 5329
+              "change": 0.020416,
+              "user_change": 6004
+            },
+            {
+              "host": "loops.video",
+              "change": 0.016131,
+              "user_change": 4334
             },
             {
               "host": "mstdn.z.org",
-              "change": 0.012583,
-              "user_change": 2348
+              "change": 0.012814,
+              "user_change": 2454
             },
             {
-              "host": "pixelfed.social",
-              "change": 0.008837,
-              "user_change": 9888
+              "host": "ak.z.org",
+              "change": 0.012805,
+              "user_change": 2452
             },
             {
-              "host": "pixelfed.au",
-              "change": 0.00645,
-              "user_change": 1294
+              "host": "pf.z.org",
+              "change": 0.012801,
+              "user_change": 2451
             },
             {
               "host": "pixelfed.tokyo",
-              "change": 0.003414,
-              "user_change": 682
+              "change": 0.006175,
+              "user_change": 1302
             },
             {
-              "host": "hawirkitabak.com",
-              "change": 0.003248,
-              "user_change": 496
+              "host": "pixelfed.au",
+              "change": 0.006012,
+              "user_change": 1242
             },
             {
-              "host": "tingling.machinerunning.io",
-              "change": 0.001597,
-              "user_change": 215
+              "host": "piefed.social",
+              "change": 0.004668,
+              "user_change": 1031
             },
             {
-              "host": "write.rlp.schule",
-              "change": 0.001427,
-              "user_change": 254
-            },
-            {
-              "host": "shitposter.world",
-              "change": 0.00129,
-              "user_change": 169
-            },
-            {
-              "host": "mastodon.social",
-              "change": 0.001249,
-              "user_change": 15486
+              "host": "alim.ie",
+              "change": 0.004107,
+              "user_change": 647
             }
           ],
           "decrease": [
             {
-              "host": "troet.cafe",
-              "change": -0.010862,
-              "user_change": -2611
+              "host": "pixelfed.social",
+              "change": -0.016993,
+              "user_change": -6981
             },
             {
               "host": "gram.social",
-              "change": -0.009576,
-              "user_change": -2590
+              "change": -0.016651,
+              "user_change": -4530
+            },
+            {
+              "host": "lgbt.earth",
+              "change": -0.006193,
+              "user_change": -997
             },
             {
               "host": "fed.brid.gy",
-              "change": -0.003759,
-              "user_change": 528
+              "change": -0.005725,
+              "user_change": 1052
             },
             {
-              "host": "mostr.pub",
-              "change": -0.001926,
-              "user_change": 680
+              "host": "baltic.social",
+              "change": -0.005319,
+              "user_change": -824
+            },
+            {
+              "host": "troet.cafe",
+              "change": -0.004745,
+              "user_change": -921
+            },
+            {
+              "host": "thu.closed.social",
+              "change": -0.004285,
+              "user_change": -759
+            },
+            {
+              "host": "m.cmx.im",
+              "change": -0.002681,
+              "user_change": -368
             },
             {
               "host": "pix.netfreaks.fr",
-              "change": -0.001483,
-              "user_change": -223
+              "change": -0.002626,
+              "user_change": -385
             },
             {
-              "host": "lemmy.world",
-              "change": -0.00148,
-              "user_change": 38
-            },
-            {
-              "host": "micro.blog",
-              "change": -0.00144,
-              "user_change": -164
-            },
-            {
-              "host": "loforo.com",
-              "change": -0.001247,
-              "user_change": 80
-            },
-            {
-              "host": "pleroma.z.org",
-              "change": -0.001196,
-              "user_change": -173
-            },
-            {
-              "host": "pixelfed.uno",
-              "change": -0.001123,
-              "user_change": -54
+              "host": "fedibird.com",
+              "change": -0.002481,
+              "user_change": -253
             }
           ]
         }
@@ -484,219 +484,219 @@ var data = {
     },
     "at": {
       "weekly": {
-        "shannon": -0.0004,
+        "shannon": 0.0009,
         "shannon_contrib": {
           "increase": [
             {
-              "host": "blacksky.app",
-              "change": 0.000287,
-              "user_change": 325
+              "host": "atproto.brid.gy",
+              "change": 0.000831,
+              "user_change": 1000
             },
             {
-              "host": "northsky.social",
-              "change": 0.000101,
-              "user_change": 65
+              "host": "blacksky.app",
+              "change": 0.000667,
+              "user_change": 616
+            },
+            {
+              "host": ".host.bsky.network",
+              "change": 0.00023,
+              "user_change": -22509
+            },
+            {
+              "host": "pds.1440.news",
+              "change": 0.000138,
+              "user_change": 74
+            },
+            {
+              "host": "selfhosted.social",
+              "change": 0.000134,
+              "user_change": 80
+            },
+            {
+              "host": "roomy.chat",
+              "change": 0.00012,
+              "user_change": 68
             },
             {
               "host": "pds.sprk.so",
-              "change": 5.7e-05,
-              "user_change": 44
+              "change": 9.8e-05,
+              "user_change": 66
             },
             {
-              "host": "skystack.xyz",
-              "change": 5.1e-05,
-              "user_change": 51
+              "host": "randomly-generated.ngrok-free.app",
+              "change": 5.8e-05,
+              "user_change": 0
             },
             {
-              "host": "pds.ridgeway.dev",
-              "change": 3.5e-05,
-              "user_change": 16
+              "host": "keik.info",
+              "change": 5.2e-05,
+              "user_change": 34
             },
             {
-              "host": "buttercup.wizardry.systems",
-              "change": 3e-05,
-              "user_change": 16
-            },
-            {
-              "host": "nstar.social",
-              "change": 2.9e-05,
-              "user_change": 14
-            },
-            {
-              "host": "climateai.org",
-              "change": 2.9e-05,
-              "user_change": 18
-            },
-            {
-              "host": "bluesky.bestofmodels.blog",
-              "change": 2.4e-05,
-              "user_change": 11
-            },
-            {
-              "host": "pds.rip",
-              "change": 2e-05,
-              "user_change": 11
+              "host": "northsky.social",
+              "change": 4.8e-05,
+              "user_change": 30
             }
           ],
           "decrease": [
             {
-              "host": "randomly-generated.ngrok-free.app",
-              "change": -0.000239,
-              "user_change": 1
+              "host": "testpds.wizardry.systems",
+              "change": -0.000193,
+              "user_change": -106
             },
             {
-              "host": "tngl.sh",
-              "change": -0.000229,
-              "user_change": -154
+              "host": "pds.tophhie.cloud",
+              "change": -0.000146,
+              "user_change": -81
             },
             {
-              "host": "gems.xyz",
-              "change": -0.000172,
-              "user_change": -104
+              "host": "seabikes.social",
+              "change": -0.00013,
+              "user_change": -67
             },
             {
-              "host": "surf.social",
-              "change": -0.000168,
-              "user_change": -107
+              "host": "oyster.pds.eny.network",
+              "change": -0.000129,
+              "user_change": -67
             },
             {
-              "host": "gumby.social",
-              "change": -9.3e-05,
-              "user_change": -51
+              "host": "pds.bigt.ai",
+              "change": -0.000125,
+              "user_change": -64
             },
             {
-              "host": ".host.bsky.network",
-              "change": -5.5e-05,
-              "user_change": 87820
+              "host": "casjay.social",
+              "change": -0.000123,
+              "user_change": -63
             },
             {
-              "host": "atproto.brid.gy",
-              "change": -3e-05,
-              "user_change": 318
+              "host": "crimson-field-2410.fly.dev",
+              "change": -0.000123,
+              "user_change": -63
             },
             {
-              "host": "pds.bsky.yinzcloud.net",
-              "change": -3e-05,
-              "user_change": -14
+              "host": "magallan.online",
+              "change": -0.000121,
+              "user_change": -62
             },
             {
-              "host": "at.app.wafrn.net",
-              "change": -2.3e-05,
-              "user_change": -9
+              "host": "pds.poltr.info",
+              "change": -0.000121,
+              "user_change": -65
             },
             {
-              "host": "pegasus.ldev",
-              "change": -2.1e-05,
-              "user_change": -9
+              "host": "pds.louisvillebsky.app",
+              "change": -0.000119,
+              "user_change": -62
             }
           ]
         }
       },
       "monthly": {
-        "shannon": -0.0011,
+        "shannon": 0.0012,
         "shannon_contrib": {
           "increase": [
             {
-              "host": "x.mt.social",
-              "change": 0.000209,
-              "user_change": 161
-            },
-            {
-              "host": "pds.sprk.so",
-              "change": 0.000155,
-              "user_change": 115
-            },
-            {
-              "host": "northsky.social",
-              "change": 0.000134,
-              "user_change": 87
-            },
-            {
-              "host": "climateai.org",
-              "change": 0.000108,
-              "user_change": 62
+              "host": "atproto.brid.gy",
+              "change": 0.0015,
+              "user_change": 2611
             },
             {
               "host": "blacksky.app",
-              "change": 6.8e-05,
-              "user_change": 218
+              "change": 0.000984,
+              "user_change": 1034
             },
             {
-              "host": "pds.rip",
-              "change": 3.8e-05,
-              "user_change": 21
+              "host": "keik.info",
+              "change": 0.000366,
+              "user_change": 248
             },
             {
-              "host": "sds-eu-west4.test.certified.app",
-              "change": 3.6e-05,
-              "user_change": 19
+              "host": "pds.sprk.so",
+              "change": 0.000345,
+              "user_change": 241
             },
             {
-              "host": "buttercup.wizardry.systems",
-              "change": 3.5e-05,
-              "user_change": 19
+              "host": ".host.bsky.network",
+              "change": 0.000275,
+              "user_change": 155463
             },
             {
-              "host": "pds.ridgeway.dev",
-              "change": 3.5e-05,
-              "user_change": 16
+              "host": "northsky.social",
+              "change": 0.000228,
+              "user_change": 145
             },
             {
-              "host": "dev-pds.periwinkle.social",
-              "change": 3.3e-05,
-              "user_change": 15
+              "host": "selfhosted.social",
+              "change": 0.000193,
+              "user_change": 116
+            },
+            {
+              "host": "pds.bsky.yinzcloud.net",
+              "change": 0.000185,
+              "user_change": 107
+            },
+            {
+              "host": "x.mt.social",
+              "change": 0.000176,
+              "user_change": 132
+            },
+            {
+              "host": "srv865737.hstgr.cloud",
+              "change": 0.000176,
+              "user_change": 93
             }
           ],
           "decrease": [
             {
+              "host": "esnoticia.online",
+              "change": -0.001144,
+              "user_change": -723
+            },
+            {
               "host": "randomly-generated.ngrok-free.app",
-              "change": -0.000627,
+              "change": -0.000443,
               "user_change": 1
             },
             {
-              "host": "atproto.brid.gy",
-              "change": -0.000276,
-              "user_change": 568
+              "host": "testpds.wizardry.systems",
+              "change": -0.00024,
+              "user_change": -130
+            },
+            {
+              "host": "seabikes.social",
+              "change": -0.000186,
+              "user_change": -96
+            },
+            {
+              "host": "stroam.social",
+              "change": -0.000181,
+              "user_change": -94
+            },
+            {
+              "host": "crimson-field-2410.fly.dev",
+              "change": -0.000181,
+              "user_change": -93
+            },
+            {
+              "host": "mybluesky.link",
+              "change": -0.000179,
+              "user_change": -93
+            },
+            {
+              "host": "pds.bigt.ai",
+              "change": -0.000179,
+              "user_change": -92
             },
             {
               "host": "tngl.sh",
-              "change": -0.000218,
-              "user_change": -131
-            },
-            {
-              "host": ".host.bsky.network",
-              "change": -0.000195,
-              "user_change": 225751
-            },
-            {
-              "host": "gems.xyz",
-              "change": -0.000187,
+              "change": -0.000177,
               "user_change": -108
             },
             {
-              "host": "gumby.social",
-              "change": -0.0001,
-              "user_change": -53
-            },
-            {
-              "host": "surf.social",
-              "change": -9.7e-05,
-              "user_change": -51
-            },
-            {
-              "host": "pds.bsky.yinzcloud.net",
-              "change": -6.4e-05,
-              "user_change": -31
-            },
-            {
-              "host": "y.mt.social",
-              "change": -4.7e-05,
-              "user_change": -22
-            },
-            {
-              "host": "bsky.bestofmodels.blog",
-              "change": -4.4e-05,
-              "user_change": -21
+              "host": "oyster.pds.eny.network",
+              "change": -0.000176,
+              "user_change": -91
             }
           ]
         }
@@ -708,105 +708,105 @@ var data = {
         "shannon_contrib": {
           "increase": [
             {
-              "host": "gitlabext.wsl.ch",
-              "change": 2e-06,
-              "user_change": 45
-            },
-            {
-              "host": "gitlab.esss.lu.se",
-              "change": 1e-06,
-              "user_change": 57
-            },
-            {
-              "host": "git.mihon.tech",
-              "change": 1e-06,
-              "user_change": 19
-            },
-            {
-              "host": "git.io-warnemuende.de",
-              "change": 0.0,
-              "user_change": 10
-            },
-            {
               "host": "gitea.com",
-              "change": 0.0,
-              "user_change": 37
+              "change": 1e-06,
+              "user_change": 41
             },
             {
-              "host": "gitlab.huma-num.fr",
-              "change": 0.0,
-              "user_change": 7
+              "host": "gitlab.dsi.universite-paris-saclay.fr",
+              "change": 1e-06,
+              "user_change": 28
             },
             {
-              "host": "gitea.michalczyk.pro",
+              "host": "forge.softwareheritage.org",
+              "change": 0.0,
+              "user_change": 9
+            },
+            {
+              "host": "git.codelinaro.org",
+              "change": 0.0,
+              "user_change": 30
+            },
+            {
+              "host": "phabricator.kde.org",
+              "change": 0.0,
+              "user_change": 6
+            },
+            {
+              "host": "gitlabext.wsl.ch",
+              "change": 0.0,
+              "user_change": 6
+            },
+            {
+              "host": "guix.gnu.org",
+              "change": 0.0,
+              "user_change": 35
+            },
+            {
+              "host": "git.tstarr.us",
               "change": 0.0,
               "user_change": 2
             },
             {
-              "host": "git.alpaga.dev",
+              "host": "projects.blender.org",
               "change": 0.0,
-              "user_change": 2
+              "user_change": 5
             },
             {
-              "host": "git.toradex.com",
+              "host": "git.adbjesus.com",
               "change": 0.0,
-              "user_change": 2
-            },
-            {
-              "host": "source.denx.de",
-              "change": 0.0,
-              "user_change": 2
+              "user_change": 1
             }
           ],
           "decrease": [
             {
               "host": "gitlab.com",
-              "change": -0.00016,
-              "user_change": 1172
+              "change": -0.000127,
+              "user_change": 931
             },
             {
               "host": "github",
-              "change": -8.8e-05,
-              "user_change": 1013878
+              "change": -7e-05,
+              "user_change": 808940
             },
             {
               "host": "bitbucket",
-              "change": -8.2e-05,
-              "user_change": 2719
+              "change": -6.7e-05,
+              "user_change": 1963
             },
             {
               "host": "packagist",
-              "change": -2.2e-05,
-              "user_change": 45
+              "change": -1.8e-05,
+              "user_change": 28
             },
             {
               "host": "main",
-              "change": -1.2e-05,
-              "user_change": 1
+              "change": -1e-05,
+              "user_change": 0
             },
             {
               "host": "gitorious",
-              "change": -9e-06,
-              "user_change": 0
-            },
-            {
-              "host": "launchpad",
-              "change": -8e-06,
-              "user_change": 0
-            },
-            {
-              "host": "googlecode",
               "change": -7e-06,
               "user_change": 0
             },
             {
-              "host": "salsa.debian.org",
+              "host": "launchpad",
+              "change": -7e-06,
+              "user_change": 4
+            },
+            {
+              "host": "googlecode",
               "change": -5e-06,
-              "user_change": 9
+              "user_change": 0
+            },
+            {
+              "host": "salsa.debian.org",
+              "change": -4e-06,
+              "user_change": 6
             },
             {
               "host": "git.drupalcode.org",
-              "change": -5e-06,
+              "change": -4e-06,
               "user_change": 0
             }
           ]
@@ -817,106 +817,106 @@ var data = {
         "shannon_contrib": {
           "increase": [
             {
-              "host": "git.fossgalaxy.com",
-              "change": 7e-06,
-              "user_change": 145
-            },
-            {
-              "host": "git.kernel.org",
-              "change": 3e-06,
-              "user_change": 113
-            },
-            {
-              "host": "gitlab.dsi.universite-paris-saclay.fr",
-              "change": 3e-06,
-              "user_change": 136
-            },
-            {
-              "host": "git.windmaker.net",
+              "host": "gitlabext.wsl.ch",
               "change": 2e-06,
-              "user_change": 48
+              "user_change": 51
             },
             {
               "host": "gitlab.esss.lu.se",
               "change": 2e-06,
-              "user_change": 125
+              "user_change": 108
             },
             {
-              "host": "gitlabext.wsl.ch",
-              "change": 2e-06,
-              "user_change": 45
-            },
-            {
-              "host": "git.jordan.im",
-              "change": 2e-06,
-              "user_change": 32
-            },
-            {
-              "host": "git.finf.uni-hannover.de",
+              "host": "guix.gnu.org",
               "change": 1e-06,
-              "user_change": 24
+              "user_change": 203
             },
             {
-              "host": "git.mihon.tech",
+              "host": "gitlab.dsi.universite-paris-saclay.fr",
               "change": 1e-06,
-              "user_change": 19
+              "user_change": 91
             },
             {
               "host": "gitea.com",
               "change": 1e-06,
-              "user_change": 138
+              "user_change": 151
+            },
+            {
+              "host": "git.io-warnemuende.de",
+              "change": 1e-06,
+              "user_change": 14
+            },
+            {
+              "host": "git.mihon.tech",
+              "change": 1e-06,
+              "user_change": 10
+            },
+            {
+              "host": "phabricator.kde.org",
+              "change": 0.0,
+              "user_change": 6
+            },
+            {
+              "host": "git.tstarr.us",
+              "change": 0.0,
+              "user_change": 6
+            },
+            {
+              "host": "forge.softwareheritage.org",
+              "change": 0.0,
+              "user_change": 9
             }
           ],
           "decrease": [
             {
               "host": "gitlab.com",
-              "change": -0.000692,
-              "user_change": 4741
+              "change": -0.000658,
+              "user_change": 4816
             },
             {
               "host": "github",
-              "change": -0.00038,
-              "user_change": 4324332
+              "change": -0.000362,
+              "user_change": 4159411
             },
             {
               "host": "bitbucket",
-              "change": -0.000344,
-              "user_change": 12251
+              "change": -0.000333,
+              "user_change": 11375
             },
             {
               "host": "packagist",
-              "change": -9.3e-05,
-              "user_change": 259
+              "change": -9e-05,
+              "user_change": 208
             },
             {
               "host": "main",
-              "change": -5.3e-05,
-              "user_change": 0
+              "change": -5e-05,
+              "user_change": 1
             },
             {
               "host": "gitorious",
-              "change": -3.7e-05,
+              "change": -3.5e-05,
               "user_change": 0
             },
             {
               "host": "launchpad",
-              "change": -3.6e-05,
-              "user_change": 8
+              "change": -3.5e-05,
+              "user_change": 9
             },
             {
               "host": "googlecode",
-              "change": -2.8e-05,
+              "change": -2.7e-05,
               "user_change": 0
             },
             {
               "host": "salsa.debian.org",
               "change": -2.2e-05,
-              "user_change": 67
+              "user_change": 40
             },
             {
               "host": "git.drupalcode.org",
-              "change": -2e-05,
-              "user_change": 0
+              "change": -1.9e-05,
+              "user_change": 1
             }
           ]
         }
@@ -924,30 +924,364 @@ var data = {
     },
     "fedi_software": {
       "weekly": {
-        "shannon": 0.0,
+        "shannon": 0.0069,
         "shannon_contrib": {
-          "increase": [],
-          "decrease": []
+          "increase": [
+            {
+              "host": "z",
+              "change": 0.039723,
+              "user_change": 9806
+            },
+            {
+              "host": "loops",
+              "change": 0.01218,
+              "user_change": 3300
+            },
+            {
+              "host": "piefed",
+              "change": 0.006804,
+              "user_change": 1632
+            },
+            {
+              "host": "peertube",
+              "change": 0.001787,
+              "user_change": 1318
+            },
+            {
+              "host": "microdotblog",
+              "change": 0.001454,
+              "user_change": 473
+            },
+            {
+              "host": "NodeBB",
+              "change": 0.000364,
+              "user_change": 62
+            },
+            {
+              "host": "smithereen",
+              "change": 0.000245,
+              "user_change": 34
+            },
+            {
+              "host": "flohmarkt",
+              "change": 7.7e-05,
+              "user_change": 10
+            },
+            {
+              "host": "gotosocial",
+              "change": 5.9e-05,
+              "user_change": 14
+            },
+            {
+              "host": "pulsar",
+              "change": 5.5e-05,
+              "user_change": 8
+            }
+          ],
+          "decrease": [
+            {
+              "host": "pixelfed",
+              "change": -0.022536,
+              "user_change": -20471
+            },
+            {
+              "host": "elektrine",
+              "change": -0.022156,
+              "user_change": -4697
+            },
+            {
+              "host": "mastodon",
+              "change": -0.005907,
+              "user_change": 21589
+            },
+            {
+              "host": "bridgy-fed",
+              "change": -0.001014,
+              "user_change": 294
+            },
+            {
+              "host": "pleroma",
+              "change": -0.000612,
+              "user_change": -109
+            },
+            {
+              "host": "wordpress",
+              "change": -0.00056,
+              "user_change": -25
+            },
+            {
+              "host": "fedibird",
+              "change": -0.000472,
+              "user_change": -47
+            },
+            {
+              "host": "ghost",
+              "change": -0.000444,
+              "user_change": -29
+            },
+            {
+              "host": "neodb",
+              "change": -0.00041,
+              "user_change": -66
+            },
+            {
+              "host": "lemmy",
+              "change": -0.000321,
+              "user_change": 301
+            }
+          ]
         }
       },
       "monthly": {
-        "shannon": 0.0,
+        "shannon": 0.011,
         "shannon_contrib": {
-          "increase": [],
-          "decrease": []
+          "increase": [
+            {
+              "host": "z",
+              "change": 0.039723,
+              "user_change": 9806
+            },
+            {
+              "host": "loops",
+              "change": 0.016217,
+              "user_change": 4287
+            },
+            {
+              "host": "piefed",
+              "change": 0.006798,
+              "user_change": 1653
+            },
+            {
+              "host": "peertube",
+              "change": 0.002342,
+              "user_change": 1976
+            },
+            {
+              "host": "microdotblog",
+              "change": 0.001415,
+              "user_change": 524
+            },
+            {
+              "host": "writefreely",
+              "change": 0.001068,
+              "user_change": 628
+            },
+            {
+              "host": "NodeBB",
+              "change": 0.000385,
+              "user_change": 68
+            },
+            {
+              "host": "smithereen",
+              "change": 0.000249,
+              "user_change": 35
+            },
+            {
+              "host": "hometown",
+              "change": 0.000216,
+              "user_change": 95
+            },
+            {
+              "host": "friendica",
+              "change": 0.000188,
+              "user_change": 80
+            }
+          ],
+          "decrease": [
+            {
+              "host": "elektrine",
+              "change": -0.022349,
+              "user_change": -4697
+            },
+            {
+              "host": "pixelfed",
+              "change": -0.02139,
+              "user_change": -17814
+            },
+            {
+              "host": "mastodon",
+              "change": -0.005283,
+              "user_change": 28034
+            },
+            {
+              "host": "bridgy-fed",
+              "change": -0.001965,
+              "user_change": 524
+            },
+            {
+              "host": "fedibird",
+              "change": -0.001601,
+              "user_change": -292
+            },
+            {
+              "host": "wordpress",
+              "change": -0.000889,
+              "user_change": 12
+            },
+            {
+              "host": "ghost",
+              "change": -0.000765,
+              "user_change": -31
+            },
+            {
+              "host": "pleroma",
+              "change": -0.00063,
+              "user_change": -81
+            },
+            {
+              "host": "neodb",
+              "change": -0.000531,
+              "user_change": -71
+            },
+            {
+              "host": "mostr",
+              "change": -0.000496,
+              "user_change": 755
+            }
+          ]
+        }
+      }
+    },
+    "bsky_verifiers": {
+      "weekly": {
+        "shannon": -0.0248,
+        "shannon_contrib": {
+          "increase": [
+            {
+              "host": "@forbes.com",
+              "change": 0.001942,
+              "user_change": 2
+            }
+          ],
+          "decrease": [
+            {
+              "host": "@bsky.app",
+              "change": -0.005193,
+              "user_change": 250
+            },
+            {
+              "host": "@theathletic.com",
+              "change": -0.00334,
+              "user_change": 0
+            },
+            {
+              "host": "@financialtimes.com",
+              "change": -0.002707,
+              "user_change": 0
+            },
+            {
+              "host": "@ign.com",
+              "change": -0.001891,
+              "user_change": 0
+            },
+            {
+              "host": "@washingtonpost.com",
+              "change": -0.001839,
+              "user_change": 0
+            },
+            {
+              "host": "@nytimes.com",
+              "change": -0.001785,
+              "user_change": 0
+            },
+            {
+              "host": "@nbcnews.com",
+              "change": -0.001717,
+              "user_change": 0
+            },
+            {
+              "host": "@wired.com",
+              "change": -0.001502,
+              "user_change": 0
+            },
+            {
+              "host": "@theglobeandmail.com",
+              "change": -0.0011,
+              "user_change": 0
+            },
+            {
+              "host": "@huffpost.com",
+              "change": -0.001029,
+              "user_change": 0
+            }
+          ]
+        }
+      },
+      "monthly": {
+        "shannon": -0.0287,
+        "shannon_contrib": {
+          "increase": [
+            {
+              "host": "@forbes.com",
+              "change": 0.00193,
+              "user_change": 2
+            }
+          ],
+          "decrease": [
+            {
+              "host": "@bsky.app",
+              "change": -0.005978,
+              "user_change": 285
+            },
+            {
+              "host": "@theathletic.com",
+              "change": -0.003821,
+              "user_change": 0
+            },
+            {
+              "host": "@financialtimes.com",
+              "change": -0.003096,
+              "user_change": 0
+            },
+            {
+              "host": "@ign.com",
+              "change": -0.002164,
+              "user_change": 0
+            },
+            {
+              "host": "@washingtonpost.com",
+              "change": -0.002104,
+              "user_change": 0
+            },
+            {
+              "host": "@nytimes.com",
+              "change": -0.002043,
+              "user_change": 0
+            },
+            {
+              "host": "@nbcnews.com",
+              "change": -0.001965,
+              "user_change": 0
+            },
+            {
+              "host": "@wired.com",
+              "change": -0.001719,
+              "user_change": 0
+            },
+            {
+              "host": "@theglobeandmail.com",
+              "change": -0.001259,
+              "user_change": 0
+            },
+            {
+              "host": "@huffpost.com",
+              "change": -0.001178,
+              "user_change": 0
+            }
+          ]
         }
       }
     }
   },
   "bsky_verifiers": {
-    "HHI": 6795,
-    "shannon": 0.907,
-    "simpson": 0.3205,
+    "HHI": 6914,
+    "shannon": 0.8783,
+    "simpson": 0.3086,
     "servers": 21,
-    "biggest_abs": 5217,
-    "biggest_pct": 82.22,
-    "rest_abs": 1128,
-    "rest_pct": 17.78,
+    "biggest_abs": 5502,
+    "biggest_pct": 82.96,
+    "rest_abs": 1130,
+    "rest_pct": 17.04,
     "b_vals": [
       [
         25,
@@ -974,18 +1308,18 @@ var data = {
         16
       ]
     ],
-    "lastUpdate": "01-24-2026",
-    "dataFile": "data/bsky-verifiers/2026-01-24T05:54:50Z.csv"
+    "lastUpdate": "02-04-2026",
+    "dataFile": "data/bsky-verifiers/2026-02-04T07:03:01Z.csv"
   },
   "fedi_software": {
-    "HHI": 4225,
-    "shannon": 1.4738,
-    "simpson": 0.5775,
-    "servers": 123,
-    "biggest_abs": 730520,
-    "biggest_pct": 63.15,
-    "rest_abs": 426352,
-    "rest_pct": 36.85,
+    "HHI": 4308,
+    "shannon": 1.4848,
+    "simpson": 0.5691,
+    "servers": 129,
+    "biggest_abs": 758554,
+    "biggest_pct": 64.11,
+    "rest_abs": 424645,
+    "rest_pct": 35.89,
     "b_vals": [
       [
         25,
@@ -997,7 +1331,7 @@ var data = {
       ],
       [
         75,
-        2
+        3
       ],
       [
         90,
@@ -1012,7 +1346,7 @@ var data = {
         23
       ]
     ],
-    "lastUpdate": "01-24-2026",
-    "dataFile": "data/fedi-software/2026-01-24T05:54:50Z.csv"
+    "lastUpdate": "02-04-2026",
+    "dataFile": "data/fedi-software/2026-02-04T07:03:01Z.csv"
   }
 }
