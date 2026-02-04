@@ -457,10 +457,8 @@ async def run(args: argparse.Namespace) -> None:
 
     async with aiohttp.ClientSession() as session:
         if args.relay:
-            client = AsyncFirehoseSubscribeReposClient(base_uri=args.relay)
             print(f"Using relay: {args.relay}")
         else:
-            client = AsyncFirehoseSubscribeReposClient()
             print("Using default relay from atproto library")
 
         # Start resolution workers
@@ -474,8 +472,25 @@ async def run(args: argparse.Namespace) -> None:
         # Background task: periodic snapshot (no stdout prints)
         asyncio.create_task(periodic_snapshot(snapshot_path, snapshot_interval))
 
+        reconnect_delay = 1
+        max_reconnect_delay = 60
         try:
-            await client.start(on_message)
+            while True:
+                try:
+                    if args.relay:
+                        client = AsyncFirehoseSubscribeReposClient(base_uri=args.relay)
+                    else:
+                        client = AsyncFirehoseSubscribeReposClient()
+
+                    await client.start(on_message)
+                    print("Firehose client stopped; reconnecting...")
+                except asyncio.CancelledError:
+                    raise
+                except Exception as exc:
+                    print(f"Firehose client error: {exc}; reconnecting in {reconnect_delay}s")
+                await async_save_snapshot(snapshot_path, verbose=True)
+                await asyncio.sleep(reconnect_delay)
+                reconnect_delay = min(reconnect_delay * 2, max_reconnect_delay)
         finally:
             # On exit, save one last snapshot
             await async_save_snapshot(snapshot_path, verbose=True)
