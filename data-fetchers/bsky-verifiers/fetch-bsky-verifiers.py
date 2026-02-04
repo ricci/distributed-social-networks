@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 
+import argparse
 import csv
 from datetime import datetime, timezone
 from pathlib import Path
 import socket
+import sys
 
 import requests
 from bs4 import BeautifulSoup
@@ -45,8 +47,13 @@ def extract_rows(table):
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--url", default=URL, help="Page URL to fetch (default: %(default)s)")
+    parser.add_argument("--stdout", action="store_true", help="Write CSV to stdout instead of a file")
+    args = parser.parse_args()
+
     _force_ipv4()
-    response = requests.get(URL, timeout=30)
+    response = requests.get(args.url, timeout=30)
     response.raise_for_status()
 
     soup = BeautifulSoup(response.text, "html.parser")
@@ -57,6 +64,13 @@ def main():
     rows = extract_rows(table)
     if not rows:
         raise RuntimeError("No rows found in Trusted Verifiers table.")
+
+    if args.stdout:
+        writer = csv.writer(sys.stdout)
+        writer.writerow(["verifier", "count"])
+        writer.writerows(rows)
+        print(f"Wrote {len(rows)} rows to stdout", file=sys.stderr)
+        return
 
     repo_root = Path(__file__).resolve().parents[2]
     output_dir = repo_root / "data" / "bsky-verifiers"
