@@ -76,6 +76,122 @@ struct AccountStore {
     pds_pool: HashMap<String, Arc<str>>,
 }
 
+struct RateStats {
+    current_events: AtomicU64,
+    current_bytes: AtomicU64,
+    events_per_sec: AtomicU64,
+    bytes_per_sec: AtomicU64,
+    events_per_sec_1m: AtomicU64,
+    bytes_per_sec_1m: AtomicU64,
+    events_per_sec_1h: AtomicU64,
+    bytes_per_sec_1h: AtomicU64,
+    events_per_sec_1d: AtomicU64,
+    bytes_per_sec_1d: AtomicU64,
+}
+
+impl RateStats {
+    fn new() -> Self {
+        Self {
+            current_events: AtomicU64::new(0),
+            current_bytes: AtomicU64::new(0),
+            events_per_sec: AtomicU64::new(0),
+            bytes_per_sec: AtomicU64::new(0),
+            events_per_sec_1m: AtomicU64::new(0),
+            bytes_per_sec_1m: AtomicU64::new(0),
+            events_per_sec_1h: AtomicU64::new(0),
+            bytes_per_sec_1h: AtomicU64::new(0),
+            events_per_sec_1d: AtomicU64::new(0),
+            bytes_per_sec_1d: AtomicU64::new(0),
+        }
+    }
+
+    fn record(&self, events: u64, bytes: u64) {
+        self.current_events.fetch_add(events, Ordering::Relaxed);
+        self.current_bytes.fetch_add(bytes, Ordering::Relaxed);
+    }
+
+    fn snapshot(&self) -> (u64, u64, u64, u64, u64, u64, u64, u64) {
+        (
+            self.events_per_sec.load(Ordering::Relaxed),
+            self.bytes_per_sec.load(Ordering::Relaxed),
+            self.events_per_sec_1m.load(Ordering::Relaxed),
+            self.bytes_per_sec_1m.load(Ordering::Relaxed),
+            self.events_per_sec_1h.load(Ordering::Relaxed),
+            self.bytes_per_sec_1h.load(Ordering::Relaxed),
+            self.events_per_sec_1d.load(Ordering::Relaxed),
+            self.bytes_per_sec_1d.load(Ordering::Relaxed),
+        )
+    }
+}
+
+async fn rate_sampler(stats: Arc<RateStats>) {
+    let mut ticker = tokio::time::interval(Duration::from_secs(1));
+    let mut events_window: std::collections::VecDeque<u64> = std::collections::VecDeque::new();
+    let mut bytes_window: std::collections::VecDeque<u64> = std::collections::VecDeque::new();
+    let mut sum_events_1m = 0u64;
+    let mut sum_bytes_1m = 0u64;
+    let mut sum_events_1h = 0u64;
+    let mut sum_bytes_1h = 0u64;
+    let mut sum_events_1d = 0u64;
+    let mut sum_bytes_1d = 0u64;
+
+    loop {
+        ticker.tick().await;
+        let events = stats.current_events.swap(0, Ordering::Relaxed);
+        let bytes = stats.current_bytes.swap(0, Ordering::Relaxed);
+
+        stats.events_per_sec.store(events, Ordering::Relaxed);
+        stats.bytes_per_sec.store(bytes, Ordering::Relaxed);
+
+        events_window.push_back(events);
+        bytes_window.push_back(bytes);
+        sum_events_1m += events;
+        sum_bytes_1m += bytes;
+        sum_events_1h += events;
+        sum_bytes_1h += bytes;
+        sum_events_1d += events;
+        sum_bytes_1d += bytes;
+
+        if events_window.len() > 60 {
+            sum_events_1m -= events_window[events_window.len() - 61];
+            sum_bytes_1m -= bytes_window[bytes_window.len() - 61];
+        }
+        if events_window.len() > 3600 {
+            sum_events_1h -= events_window[events_window.len() - 3601];
+            sum_bytes_1h -= bytes_window[bytes_window.len() - 3601];
+        }
+        if events_window.len() > 86400 {
+            sum_events_1d -= events_window[0];
+            sum_bytes_1d -= bytes_window[0];
+            events_window.pop_front();
+            bytes_window.pop_front();
+        }
+
+        let len_1m = events_window.len().min(60) as u64;
+        let len_1h = events_window.len().min(3600) as u64;
+        let len_1d = events_window.len().min(86400) as u64;
+
+        stats
+            .events_per_sec_1m
+            .store(if len_1m > 0 { sum_events_1m / len_1m } else { 0 }, Ordering::Relaxed);
+        stats
+            .bytes_per_sec_1m
+            .store(if len_1m > 0 { sum_bytes_1m / len_1m } else { 0 }, Ordering::Relaxed);
+        stats
+            .events_per_sec_1h
+            .store(if len_1h > 0 { sum_events_1h / len_1h } else { 0 }, Ordering::Relaxed);
+        stats
+            .bytes_per_sec_1h
+            .store(if len_1h > 0 { sum_bytes_1h / len_1h } else { 0 }, Ordering::Relaxed);
+        stats
+            .events_per_sec_1d
+            .store(if len_1d > 0 { sum_events_1d / len_1d } else { 0 }, Ordering::Relaxed);
+        stats
+            .bytes_per_sec_1d
+            .store(if len_1d > 0 { sum_bytes_1d / len_1d } else { 0 }, Ordering::Relaxed);
+    }
+}
+
 impl AccountStore {
     fn intern_pds(&mut self, value: &str) -> Arc<str> {
         if let Some(existing) = self.pds_pool.get(value) {
@@ -441,6 +557,7 @@ async fn run_firehose(
     resolve_enqueued: Arc<AtomicU64>,
     resolve_processed: Arc<AtomicU64>,
     resolve_dropped: Arc<AtomicU64>,
+    rate_stats: Arc<RateStats>,
 ) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     let base = relay.unwrap_or_else(|| "wss://bsky.network/xrpc".to_string());
     if base.contains(NSID) {
@@ -478,10 +595,12 @@ async fn run_firehose(
         let bytes = match message {
             Message::Binary(bytes) => {
                 binary_messages += 1;
+                rate_stats.record(1, bytes.len() as u64);
                 bytes
             }
             Message::Text(text) => {
                 text_messages += 1;
+                rate_stats.record(1, text.len() as u64);
                 text.into_bytes()
             }
             Message::Close(_) => {
@@ -580,12 +699,14 @@ async fn run_firehose(
         }
 
         if total_messages % 1000 == 0 {
+            let (eps, bps, eps_1m, bps_1m, eps_1h, bps_1h, eps_1d, bps_1d) =
+                rate_stats.snapshot();
             let updates_backlog = update_enqueued.load(Ordering::Relaxed)
                 .saturating_sub(update_processed.load(Ordering::Relaxed));
             let resolves_backlog = resolve_enqueued.load(Ordering::Relaxed)
                 .saturating_sub(resolve_processed.load(Ordering::Relaxed));
             println!(
-                "Firehose stats: total={}, binary={}, text={}, close={}, other={}, frame_failures={}, body_failures={}, commit={}, account={}, identity={}, other_events={}, error_frames={}, enqueued={}, updates_backlog={}, resolves_backlog={}, resolve_dropped={}",
+                "Firehose stats: total={}, binary={}, text={}, close={}, other={}, frame_failures={}, body_failures={}, commit={}, account={}, identity={}, other_events={}, error_frames={}, enqueued={}, updates_backlog={}, resolves_backlog={}, resolve_dropped={}, eps={}, bps={}, eps_1m={}, bps_1m={}, eps_1h={}, bps_1h={}, eps_1d={}, bps_1d={}",
                 total_messages,
                 binary_messages,
                 text_messages,
@@ -601,7 +722,15 @@ async fn run_firehose(
                 enqueued_updates,
                 updates_backlog,
                 resolves_backlog,
-                resolve_dropped.load(Ordering::Relaxed)
+                resolve_dropped.load(Ordering::Relaxed),
+                eps,
+                bps,
+                eps_1m,
+                bps_1m,
+                eps_1h,
+                bps_1h,
+                eps_1d,
+                bps_1d
             );
         }
     }
@@ -818,6 +947,7 @@ async fn main() {
     let resolve_enqueued = Arc::new(AtomicU64::new(0));
     let resolve_processed = Arc::new(AtomicU64::new(0));
     let resolve_dropped = Arc::new(AtomicU64::new(0));
+    let rate_stats = Arc::new(RateStats::new());
 
     let (resolve_tx, resolve_rx) = mpsc::channel(RESOLUTION_QUEUE_SIZE);
     let (update_tx, update_rx) = mpsc::unbounded_channel();
@@ -849,6 +979,7 @@ async fn main() {
         state.clone(),
         args.snapshot_interval,
     ));
+    tokio::spawn(rate_sampler(rate_stats.clone()));
 
     #[cfg(unix)]
     {
@@ -896,6 +1027,7 @@ async fn main() {
             resolve_enqueued.clone(),
             resolve_processed.clone(),
             resolve_dropped.clone(),
+            rate_stats.clone(),
         )
         .await;
 
