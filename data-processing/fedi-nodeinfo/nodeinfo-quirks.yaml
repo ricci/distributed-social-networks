@@ -197,6 +197,12 @@
                             # federating or not.
   },
 
+  # Domains to skip entirely from output.
+  "ignore_domains": {
+    "bridgy-federated.uc.r.appspot.com": "Internal site, not meant to be used",
+    "pixelfed.de.": "I'm not sure why this version - note trailing dot - ends up in the lists"
+  },
+
    # Lists of misskey and pleroma forks
   "forks": {
     "misskey": [

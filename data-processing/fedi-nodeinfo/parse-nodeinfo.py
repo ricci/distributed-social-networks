@@ -93,7 +93,14 @@ def _metadata_federation_disabled(nodeinfo_wrapper: dict) -> bool:
 
 def _load_quirks_config(
     path: str,
-) -> Tuple[Dict[str, Set[str]], Set[str], Set[str], Set[str], Dict[str, Tuple[int, ...]]]:
+) -> Tuple[
+    Dict[str, Set[str]],
+    Set[str],
+    Set[str],
+    Set[str],
+    Dict[str, Tuple[int, ...]],
+    Set[str],
+]:
     with open(path, "r", encoding="utf-8") as f:
         data = yaml.safe_load(f)
     if not isinstance(data, dict):
@@ -161,7 +168,21 @@ def _load_quirks_config(
                 continue
             minimum_versions[str(name).lower()] = parsed
 
-    return quirks_by_software, known_software, misskey_forks, pleroma_forks, minimum_versions
+    ignore_domains: Set[str] = set()
+    ignore_domains_section = data.get("ignore_domains", {})
+    if isinstance(ignore_domains_section, dict):
+        ignore_domains = {str(domain).lower() for domain in ignore_domains_section}
+    elif isinstance(ignore_domains_section, list):
+        ignore_domains = {str(domain).lower() for domain in ignore_domains_section}
+
+    return (
+        quirks_by_software,
+        known_software,
+        misskey_forks,
+        pleroma_forks,
+        minimum_versions,
+        ignore_domains,
+    )
 
 def _get_quirks(
     software_name: Optional[str],
@@ -304,6 +325,7 @@ def main() -> None:
         misskey_forks,
         pleroma_forks,
         minimum_versions,
+        ignore_domains,
     ) = _load_quirks_config(QUIRKS_CONFIG_PATH)
     configured_software = (
         set(known_software)
@@ -343,6 +365,8 @@ def main() -> None:
                 protocols,
                 protocols_str,
             ) = extract_fields(wrapper)
+            if str(hostname).lower() in ignore_domains:
+                continue
 
             if _metadata_federation_disabled(wrapper):
                 federation_disabled_count += 1
