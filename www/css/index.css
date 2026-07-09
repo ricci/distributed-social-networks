@@ -21,6 +21,11 @@ h1, h3, h4, h5, div.container {
   text-align: center;
 }
 
+h1 img {
+  height: 1em;
+  vertical-align: -0.1em;
+}
+
 div.container > * {
   vertical-align: top;
 }
