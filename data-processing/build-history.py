@@ -78,7 +78,8 @@ def write_history_js(path, sections):
         "sections": sections,
     }
     text = json.dumps(payload, ensure_ascii=True, separators=(",", ":"))
-    Path(path).write_text(f"var history = {text}\n")
+    # Not `history` -- that collides with the read-only window.history global.
+    Path(path).write_text(f"var historyData = {text}\n")
 
 
 def main():
