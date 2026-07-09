@@ -154,16 +154,41 @@ div.shannon div.index span {
   margin-left: 10px;
 }
 
-div.shannon div.icon {
-    margin-top: 0.5em;
+.contributors-mini > summary.trend-line {
+    list-style: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
     font-size: 15pt;
+    color: #f7f9fb;
+    margin-bottom: 4px;
 }
 
-div.shannon div.icon img {
-  display: inline;
-  height: 1.5em;
-  vertical-align: middle;
-  margin-left: 10px;
+.contributors-mini > summary.trend-line::-webkit-details-marker {
+    display: none;
+}
+
+.contributors-mini > summary.trend-line img {
+    height: 1.5em;
+    vertical-align: middle;
+}
+
+.contributors-mini > summary.trend-line .trend-period {
+    font-size: 0.62em;
+    color: #909296;
+}
+
+.contributors-mini > summary.trend-line::after {
+    content: "\25B8";
+    font-size: 0.7em;
+    color: #909296;
+    transition: transform 0.15s ease;
+}
+
+.contributors-mini[open] > summary.trend-line::after {
+    transform: rotate(90deg);
 }
 
 p {
@@ -205,4 +230,78 @@ details summary {
 .important {
     font-weight: bold;
     color: #cc5555
+}
+
+/* Shannon-index sparklines */
+details.spark {
+  margin-top: 6px;
+}
+
+details.spark > summary.spark-summary {
+  list-style: none;
+  cursor: pointer;
+  display: block;
+  margin-bottom: 0;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+details.spark > summary.spark-summary::-webkit-details-marker {
+  display: none;
+}
+
+details.spark > summary.spark-summary:hover {
+  background: #ffffff14;
+}
+
+.spark-mini {
+  height: 26px;
+}
+
+.spark-span {
+  font-size: 0.8em;
+  color: #909296;
+  text-align: center;
+  line-height: 1;
+  margin-top: 2px;
+}
+
+/* Caret marks the sparkline as an expandable control (rotates when open). */
+.spark-span::after {
+  content: "\25B8";
+  display: inline-block;
+  margin-left: 5px;
+  font-size: 0.85em;
+  transition: transform 0.15s ease;
+}
+
+details.spark[open] .spark-span::after {
+  transform: rotate(90deg);
+}
+
+/* Once the full chart is showing, the mini preview is redundant. */
+details.spark[open] .spark-mini {
+  display: none;
+}
+
+.spark-panel {
+  margin-top: 6px;
+}
+
+/* Custom hover readout for the detail chart (uPlot's own legend is off). */
+.spark-readout {
+  text-align: center;
+  font-size: 0.8em;
+  line-height: 1.4;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.spark-ro-date {
+  color: #909296;
+  margin-right: 8px;
+}
+
+.spark-ro-val {
+  color: #ffffff;
 }

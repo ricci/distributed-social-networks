@@ -11,8 +11,13 @@
     <script type="text/javascript" src="justgage-1.2.2/raphael-2.1.4.min.js"></script>
     <script type="text/javascript" src="justgage-1.2.2/justgage.js"></script>
 
-    <script type="text/javascript" src="data.js"></script>
+    <script type="text/javascript" src="vendor/uplot/uPlot.iife.min.js"></script>
 
+    <script type="text/javascript" src="data.js"></script>
+    <script type="text/javascript" src="history.js"></script>
+    <script type="text/javascript" src="js/sparklines.js"></script>
+
+    <link rel="stylesheet" href="vendor/uplot/uPlot.min.css">
     <link rel="stylesheet" href="css/index.css">
 
 </head>
@@ -66,9 +71,15 @@
         <div id="gageFedi" class="gage"></div>
         <div class="shannon" data-trend="weekly_shannon">
           <div class="index">Shannon Index: <span data-field="shannon"></span></div>
-          <div class="icon"><img data-trend-icon> <span data-trend-text></span></div>
+          <details class="spark">
+            <summary class="spark-summary"><div id="sparkFedi" class="spark-mini"></div></summary>
+            <div id="sparkFediDetail" class="spark-panel"></div>
+          </details>
           <details class="contributors-mini">
-            <summary>Details</summary>
+            <summary class="trend-line">
+              <img data-trend-icon>
+              <span class="trend-phrase"><span data-trend-text></span> <span class="trend-period">this week</span></span>
+            </summary>
             <div class="trend">One-Week Trend: <span data-trend-value></span> (<span data-trend-pct></span>%)</div>
             <div class="contributors-list">
               <table class="contributors-table" data-trend-list="increase">
@@ -105,9 +116,15 @@
         <div id="gageAtmosphere" class="gage"></div>
         <div class="shannon" data-trend="weekly_shannon">
           <div class="index">Shannon Index: <span data-field="shannon"></span></div>
-          <div class="icon"><img data-trend-icon> <span data-trend-text></span></div>
+          <details class="spark">
+            <summary class="spark-summary"><div id="sparkAtmosphere" class="spark-mini"></div></summary>
+            <div id="sparkAtmosphereDetail" class="spark-panel"></div>
+          </details>
           <details class="contributors-mini">
-            <summary>Details</summary>
+            <summary class="trend-line">
+              <img data-trend-icon>
+              <span class="trend-phrase"><span data-trend-text></span> <span class="trend-period">this week</span></span>
+            </summary>
             <div class="trend">One-week Trend: <span data-trend-value></span> (<span data-trend-pct></span>%)</div>
             <div class="contributors-list">
               <table class="contributors-table" data-trend-list="increase">
@@ -167,9 +184,15 @@
         <div id="gageFediSoftware" class="gage"></div>
         <div class="shannon" data-trend="weekly_shannon">
           <div class="index">Shannon Index: <span data-field="shannon"></span></div>
-          <div class="icon"><img data-trend-icon> <span data-trend-text></span></div>
+          <details class="spark">
+            <summary class="spark-summary"><div id="sparkFediSoftware" class="spark-mini"></div></summary>
+            <div id="sparkFediSoftwareDetail" class="spark-panel"></div>
+          </details>
           <details class="contributors-mini">
-            <summary>Details</summary>
+            <summary class="trend-line">
+              <img data-trend-icon>
+              <span class="trend-phrase"><span data-trend-text></span> <span class="trend-period">this week</span></span>
+            </summary>
             <div class="trend">One-Week Trend: <span data-trend-value></span> (<span data-trend-pct></span>%)</div>
             <div class="contributors-list">
               <table class="contributors-table" data-trend-list="increase">
@@ -221,9 +244,15 @@
         <div id="gageBskyVerifiers" class="gage"></div>
         <div class="shannon" data-trend="weekly_shannon">
           <div class="index">Shannon Index: <span data-field="shannon"></span></div>
-          <div class="icon"><img data-trend-icon> <span data-trend-text></span></div>
+          <details class="spark">
+            <summary class="spark-summary"><div id="sparkBskyVerifiers" class="spark-mini"></div></summary>
+            <div id="sparkBskyVerifiersDetail" class="spark-panel"></div>
+          </details>
           <details class="contributors-mini">
-            <summary>Details</summary>
+            <summary class="trend-line">
+              <img data-trend-icon>
+              <span class="trend-phrase"><span data-trend-text></span> <span class="trend-period">this week</span></span>
+            </summary>
             <div class="trend">One-Week Trend: <span data-trend-value></span> (<span data-trend-pct></span>%)</div>
             <div class="contributors-list">
               <table class="contributors-table" data-trend-list="increase">
@@ -305,9 +334,15 @@
         <div id="gageGit" class="gage"></div>
         <div class="shannon" data-trend="weekly_shannon">
           <div class="index">Shannon Index: <span data-field="shannon"></span></div>
-          <div class="icon"><img data-trend-icon> <span data-trend-text></span></div>
+          <details class="spark">
+            <summary class="spark-summary"><div id="sparkGit" class="spark-mini"></div></summary>
+            <div id="sparkGitDetail" class="spark-panel"></div>
+          </details>
           <details class="contributors-mini">
-            <summary>Details</summary>
+            <summary class="trend-line">
+              <img data-trend-icon>
+              <span class="trend-phrase"><span data-trend-text></span> <span class="trend-period">this week</span></span>
+            </summary>
             <div class="trend">One-Week Trend: <span data-trend-value></span> (<span data-trend-pct></span>%)</div>
             <div class="contributors-list">
               <table class="contributors-table" data-trend-list="increase">
@@ -561,6 +596,16 @@
       });
     });
 
+    const sparklines = [
+      { mini: "sparkFedi", detail: "sparkFediDetail", section: "fedi" },
+      { mini: "sparkAtmosphere", detail: "sparkAtmosphereDetail", section: "at" },
+      { mini: "sparkBskyVerifiers", detail: "sparkBskyVerifiersDetail", section: "bsky_verifiers" },
+      { mini: "sparkFediSoftware", detail: "sparkFediSoftwareDetail", section: "fedi_software" },
+      { mini: "sparkGit", detail: "sparkGitDetail", section: "git" }
+    ];
+
+    sparklines.forEach(renderSparkline);
+
     function addCommas(num) {
       return Math.round(num).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
@@ -593,7 +638,7 @@
         } else if (value <= -shannon_trend_threshold) {
             return "Centralizing";
         } else {
-            return "Holding Steady";
+            return "Holding steady";
         }
     }
 
