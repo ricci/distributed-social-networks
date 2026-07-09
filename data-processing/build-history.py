@@ -50,7 +50,11 @@ def collect(history_dir):
         if not isinstance(snap, dict):
             continue
         metrics = {
-            name: {"shannon": value["shannon"], "hhi": value["HHI"]}
+            name: {
+                "shannon": value["shannon"],
+                "hhi": value["HHI"],
+                "raw": value.get("dataFile"),
+            }
             for name, value in snap.items()
             if is_section(value)
         }
@@ -64,10 +68,11 @@ def build_series(points):
     for dt, metrics in points:
         stamp = dt.strftime("%Y-%m-%dT%H:%M:%SZ")
         for name, m in metrics.items():
-            s = sections.setdefault(name, {"t": [], "shannon": [], "hhi": []})
+            s = sections.setdefault(name, {"t": [], "shannon": [], "hhi": [], "raw": []})
             s["t"].append(stamp)
             s["shannon"].append(m["shannon"])
             s["hhi"].append(m["hhi"])
+            s["raw"].append(m.get("raw"))
     # Drop sections that never move -- the static datasets.
     return {n: s for n, s in sections.items() if len(set(s["shannon"])) > 1}
 

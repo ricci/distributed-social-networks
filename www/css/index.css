@@ -305,3 +305,13 @@ details.spark[open] .spark-mini {
 .spark-ro-val {
   color: #ffffff;
 }
+
+.spark-ro-link {
+  margin-left: 10px;
+}
+
+/* Pinned: highlight the readout so it's clear the point/link is locked. */
+.spark-readout.pinned {
+  background: #ffffff10;
+  border-radius: 4px;
+}

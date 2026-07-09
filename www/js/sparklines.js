@@ -45,7 +45,7 @@ function makeMiniSparkline(el, data) {
   );
 }
 
-function makeDetailSparkline(el, data) {
+function makeDetailSparkline(el, data, raw) {
   // Our own readout instead of uPlot's legend: no series label/marker, just the
   // hovered date and value. Fixed-width digits (tabular-nums) plus a numeric
   // date and fixed decimals keep it from shifting as the cursor moves.
@@ -55,8 +55,17 @@ function makeDetailSparkline(el, data) {
   dateEl.className = "spark-ro-date";
   var valEl = document.createElement("span");
   valEl.className = "spark-ro-val";
+  var linkEl = document.createElement("a");
+  linkEl.className = "spark-ro-link";
+  linkEl.textContent = "raw data ↗";
   readout.appendChild(dateEl);
   readout.appendChild(valEl);
+  readout.appendChild(linkEl);
+
+  // Hover previews the point under the cursor; clicking the chart pins a point
+  // so the reader can move down to the (now stable) link and open its CSV.
+  var liveIdx = null;
+  var pinned = null;
 
   function isoDate(seconds) {
     var d = new Date(seconds * 1000);
@@ -71,6 +80,17 @@ function makeDetailSparkline(el, data) {
     dateEl.textContent = isoDate(data[0][idx]);
     var v = data[1][idx];
     valEl.textContent = v == null ? "" : v.toFixed(4);
+    var path = raw && raw[idx];
+    if (path) {
+      linkEl.href = "csv-viewer.html?csv=" + path;
+      linkEl.hidden = false;
+    } else {
+      linkEl.removeAttribute("href");
+      linkEl.hidden = true;
+    }
+  }
+  function refresh() {
+    update(pinned != null ? pinned : liveIdx);
   }
 
   var u = new uPlot(
@@ -108,13 +128,33 @@ function makeDetailSparkline(el, data) {
         },
       ],
       hooks: {
-        ready: [function () { update(null); }],
-        setCursor: [function (self) { update(self.cursor.idx); }],
+        ready: [function () { refresh(); }],
+        setCursor: [
+          function (self) {
+            liveIdx = self.cursor.idx;
+            if (pinned == null) {
+              refresh();
+            }
+          },
+        ],
       },
     },
     data,
     el
   );
+
+  // Click toggles a pin on the hovered point (and off again).
+  u.over.title = "Click a point to pin it, then open its raw data";
+  u.over.addEventListener("click", function () {
+    if (pinned != null) {
+      pinned = null;
+      readout.classList.remove("pinned");
+    } else if (u.cursor.idx != null) {
+      pinned = u.cursor.idx;
+      readout.classList.add("pinned");
+    }
+    refresh();
+  });
 
   // Append after uPlot builds its DOM so the readout sits below the chart.
   el.appendChild(readout);
@@ -153,7 +193,7 @@ function renderSparkline(cfg) {
   details.addEventListener("toggle", function () {
     if (details.open && !built) {
       built = true;
-      makeDetailSparkline(detailEl, data);
+      makeDetailSparkline(detailEl, data, series.raw);
     }
   });
 
