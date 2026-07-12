@@ -350,7 +350,17 @@ fn write_snapshot_file(path: &str, accounts: Arc<HashSet<AccountEntry>>, verbose
     }
 }
 
-async fn save_snapshot(path: &str, state: Arc<Mutex<AccountStore>>, verbose: bool) {
+async fn save_snapshot(
+    path: &str,
+    state: Arc<Mutex<AccountStore>>,
+    snapshot_lock: Arc<Mutex<()>>,
+    verbose: bool,
+) {
+    // Serialize writes to the same snapshot file: periodic saves, signal-triggered
+    // saves, and reconnect-triggered saves can otherwise fire concurrently and race
+    // on the same tmp file, corrupting it before the atomic rename ever happens.
+    let _write_guard = snapshot_lock.lock().await;
+
     let snapshot = {
         let guard = state.lock().await;
         guard.accounts.clone()
@@ -365,11 +375,16 @@ async fn save_snapshot(path: &str, state: Arc<Mutex<AccountStore>>, verbose: boo
     .await;
 }
 
-async fn periodic_snapshot(path: String, state: Arc<Mutex<AccountStore>>, interval: u64) {
+async fn periodic_snapshot(
+    path: String,
+    state: Arc<Mutex<AccountStore>>,
+    snapshot_lock: Arc<Mutex<()>>,
+    interval: u64,
+) {
     let mut ticker = tokio::time::interval(Duration::from_secs(interval));
     loop {
         ticker.tick().await;
-        save_snapshot(&path, state.clone(), false).await;
+        save_snapshot(&path, state.clone(), snapshot_lock.clone(), false).await;
     }
 }
 
@@ -941,6 +956,7 @@ async fn main() {
     }
     store.accounts = Arc::new(accounts);
     let state = Arc::new(Mutex::new(store));
+    let snapshot_lock: Arc<Mutex<()>> = Arc::new(Mutex::new(()));
 
     let update_enqueued = Arc::new(AtomicU64::new(0));
     let update_processed = Arc::new(AtomicU64::new(0));
@@ -977,6 +993,7 @@ async fn main() {
     tokio::spawn(periodic_snapshot(
         snapshot_path,
         state.clone(),
+        snapshot_lock.clone(),
         args.snapshot_interval,
     ));
     tokio::spawn(rate_sampler(rate_stats.clone()));
@@ -985,12 +1002,13 @@ async fn main() {
     {
         let snapshot_path = args.snapshot_file.clone();
         let state = state.clone();
+        let snapshot_lock = snapshot_lock.clone();
         tokio::spawn(async move {
             use tokio::signal::unix::{signal, SignalKind};
             if let Ok(mut sig) = signal(SignalKind::user_defined1()) {
                 while sig.recv().await.is_some() {
                     println!("Received SIGUSR1, scheduling snapshot to {}", snapshot_path);
-                    save_snapshot(&snapshot_path, state.clone(), true).await;
+                    save_snapshot(&snapshot_path, state.clone(), snapshot_lock.clone(), true).await;
                 }
             }
         });
@@ -998,10 +1016,11 @@ async fn main() {
     {
         let snapshot_path = args.snapshot_file.clone();
         let state = state.clone();
+        let snapshot_lock = snapshot_lock.clone();
         tokio::spawn(async move {
             if tokio::signal::ctrl_c().await.is_ok() {
                 println!("Received Ctrl+C, saving snapshot to {}", snapshot_path);
-                save_snapshot(&snapshot_path, state.clone(), true).await;
+                save_snapshot(&snapshot_path, state.clone(), snapshot_lock.clone(), true).await;
                 std::process::exit(0);
             }
         });
@@ -1037,7 +1056,7 @@ async fn main() {
             println!("Firehose client stopped; reconnecting...");
         }
 
-        save_snapshot(&args.snapshot_file, state.clone(), true).await;
+        save_snapshot(&args.snapshot_file, state.clone(), snapshot_lock.clone(), true).await;
         tokio::time::sleep(Duration::from_secs(reconnect_delay)).await;
         reconnect_delay = std::cmp::min(reconnect_delay * 2, max_reconnect_delay);
     }
