@@ -96,7 +96,9 @@ def parse_int(value: str) -> Optional[int]:
         return None
 
 
-def load_snapshot(network: str, path: Path) -> Dict[str, int]:
+def load_snapshot(
+    network: str, path: Path, software_filter: Optional[str] = None
+) -> Dict[str, int]:
     data: Dict[str, int] = {}
     with path.open("r", encoding="utf-8", newline="") as f:
         reader = csv.DictReader(f)
@@ -115,6 +117,10 @@ def load_snapshot(network: str, path: Path) -> Dict[str, int]:
                 mau = parse_int(row.get("active_month"))
                 if not host or mau is None or mau < 0:
                     continue
+                if software_filter is not None:
+                    software = (row.get("software") or "").strip().lower()
+                    if software != software_filter:
+                        continue
                 data[host] = mau
         else:
             raise RuntimeError(f"Unknown network '{network}'")
@@ -168,9 +174,10 @@ def evaluate_rules(
     network: str,
     current_path: Path,
     config: Dict[str, Any],
+    software_filter: Optional[str] = None,
 ) -> Dict[str, Any]:
     now = datetime.now(timezone.utc)
-    current_data = load_snapshot(network, current_path)
+    current_data = load_snapshot(network, current_path, software_filter)
     current_ranks = build_ranks(current_data)
 
     results: Dict[str, Dict[str, Any]] = {}
@@ -193,7 +200,7 @@ def evaluate_rules(
         if lookback_days not in lookback_cache:
             target = now - timedelta(days=lookback_days)
             prev_path = find_closest_to(DATA_DIRS[network], target)
-            prev_data = load_snapshot(network, prev_path)
+            prev_data = load_snapshot(network, prev_path, software_filter)
             prev_ranks = build_ranks(prev_data)
             lookback_cache[lookback_days] = (prev_path, prev_data, prev_ranks)
 
@@ -360,6 +367,7 @@ def evaluate_rules(
 
     return {
         "network": network,
+        "software_filter": software_filter,
         "generated_at": now.strftime("%Y-%m-%dT%H:%M:%SZ"),
         "current_file": str(current_path.relative_to(REPO_ROOT)),
         "rules": rule_outputs,
@@ -392,6 +400,12 @@ def parse_args() -> argparse.Namespace:
         default=None,
         help="Override the current snapshot file path.",
     )
+    parser.add_argument(
+        "--software",
+        default=None,
+        help="Restrict to hosts running this software (fedi network only, "
+        "e.g. 'writefreely'). Matches the 'software' column, case-insensitive.",
+    )
     return parser.parse_args()
 
 
@@ -399,6 +413,10 @@ def main() -> None:
     args = parse_args()
     config = load_config(Path(args.config))
     network = args.network
+
+    software_filter = args.software.strip().lower() if args.software else None
+    if software_filter is not None and network != "fedi":
+        raise RuntimeError("--software is only supported for --network fedi")
 
     if args.current:
         current_path = Path(args.current)
@@ -408,7 +426,7 @@ def main() -> None:
         current_path = find_newest_file(DATA_DIRS[network])
 
     output_path = ensure_output_path(args.output, network)
-    payload = evaluate_rules(network, current_path, config)
+    payload = evaluate_rules(network, current_path, config, software_filter)
     output_path.write_text(json.dumps(payload, indent=2, ensure_ascii=True) + "\n")
     print(f"Wrote trends to {output_path}")
 

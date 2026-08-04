@@ -181,18 +181,21 @@ def main():
     fedi_software_csv = find_newest_file(REPO_ROOT / "data" / "fedi-software")
     at_csv = find_newest_file(REPO_ROOT / "data" / "at-mau")
     git_csv = find_newest_file(REPO_ROOT / "data" / "git")
+    git_ecosystems_csv = find_newest_file(REPO_ROOT / "data" / "git-ecosystems")
     bsky_verifiers_csv = find_newest_file(REPO_ROOT / "data" / "bsky-verifiers")
 
     fedi_dt = parse_timestamp_from_name(fedi_csv.name)
     fedi_software_dt = parse_timestamp_from_name(fedi_software_csv.name)
     at_dt = parse_timestamp_from_name(at_csv.name)
     git_dt = parse_timestamp_from_name(git_csv.name)
+    git_ecosystems_dt = parse_timestamp_from_name(git_ecosystems_csv.name)
     bsky_verifiers_dt = parse_timestamp_from_name(bsky_verifiers_csv.name)
     if (
         fedi_dt is None
         or fedi_software_dt is None
         or at_dt is None
         or git_dt is None
+        or git_ecosystems_dt is None
         or bsky_verifiers_dt is None
     ):
         raise RuntimeError("Unable to parse timestamps for latest files")
@@ -224,6 +227,13 @@ def main():
         git_csv,
         git_dt.strftime("%m-%d-%Y"),
         data_file=str(git_csv.relative_to(REPO_ROOT)),
+    )
+    update_network(
+        data,
+        "git_ecosystems",
+        git_ecosystems_csv,
+        git_ecosystems_dt.strftime("%m-%d-%Y"),
+        data_file=str(git_ecosystems_csv.relative_to(REPO_ROOT)),
     )
     update_network(
         data,
@@ -265,6 +275,13 @@ def main():
     )
     update_period_trend(
         data,
+        "git_ecosystems",
+        "weekly",
+        git_ecosystems_csv,
+        find_closest_to(REPO_ROOT / "data" / "git-ecosystems", week_target),
+    )
+    update_period_trend(
+        data,
         "bsky_verifiers",
         "weekly",
         bsky_verifiers_csv,
@@ -297,6 +314,13 @@ def main():
         "monthly",
         git_csv,
         find_closest_to(REPO_ROOT / "data" / "git", month_target),
+    )
+    update_period_trend(
+        data,
+        "git_ecosystems",
+        "monthly",
+        git_ecosystems_csv,
+        find_closest_to(REPO_ROOT / "data" / "git-ecosystems", month_target),
     )
     update_period_trend(
         data,

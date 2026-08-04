@@ -12,3 +12,6 @@ python3 ./data-fetchers/fetch-fedilist.py data/fedi/${TIMESTAMP}__fedilist-fromh
 
 echo "Fetching Git data"
 python3 ./data-fetchers/fetch-sh.py data/git/${TIMESTAMP}__sh-fromhtml.csv
+
+echo "Fetching Git data (ecosyste.ms)"
+python3 ./data-fetchers/fetch-ecosystems.py data/git-ecosystems/${TIMESTAMP}__ecosystems-hosts.csv
