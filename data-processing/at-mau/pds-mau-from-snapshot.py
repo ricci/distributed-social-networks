@@ -2,10 +2,14 @@
 import argparse
 import csv
 import json
+import time
 from collections import Counter
 from datetime import datetime, timedelta, timezone
 from urllib.parse import urlparse
 from typing import Dict, List
+
+READ_RETRIES = 3
+READ_RETRY_DELAY = 5  # seconds
 
 
 def parse_args():
@@ -40,8 +44,24 @@ def counts_from_snapshot(path: str, cutoff: datetime) -> Counter:
     Given a single snapshot JSON file (accounts_snapshot.json-style), return
     a Counter mapping domain -> MAU (number of active DIDs on that domain).
     """
-    with open(path, "r", encoding="utf-8") as f:
-        data = json.load(f)
+    # These snapshots are rewritten in place (write to tmp + atomic rename) by
+    # a long-running watcher process while we read them. A read that lands on
+    # a multi-GB file mid-rewrite can see a truncated/garbled read, so retry
+    # a few times before giving up rather than failing the whole batch.
+    data = None
+    last_error = None
+    for attempt in range(1, READ_RETRIES + 1):
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            break
+        except (UnicodeDecodeError, json.JSONDecodeError) as e:
+            last_error = e
+            if attempt < READ_RETRIES:
+                print(f"  Read error on {path} (attempt {attempt}/{READ_RETRIES}): {e}; retrying...")
+                time.sleep(READ_RETRY_DELAY)
+    if data is None:
+        raise RuntimeError(f"Failed to read {path} after {READ_RETRIES} attempts") from last_error
 
     counts = Counter()
 
